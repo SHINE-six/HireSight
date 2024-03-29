@@ -1,11 +1,14 @@
 import shutil
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks, WebSocket
 import uvicorn
 import resume_parser
 import speech_to_text
 import facial_prediction
+import eye_tracking
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
+import datetime
+import json
 
 
 app = FastAPI()
@@ -156,11 +159,11 @@ async def upload_resume(resume: UploadFile = File(...)):
 
     return resume_data
 
-task_status: Dict[str, bool] = {"audio": False, "video": False}
+task_status: Dict[str, bool] = {"transcript": False, "face_emotion": False, "eye": False}
 
 def run_speech_to_text():
     speech_to_text.main()
-    task_status["audio"] = True
+    task_status["transcript"] = True
     check_process_files()
 
 @app.post("/audio")
@@ -176,7 +179,12 @@ async def upload_audio(background_tasks: BackgroundTasks, audio: UploadFile = Fi
 
 def run_facial_prediction():
     facial_prediction.main()
-    task_status["video"] = True
+    task_status["face_emotion"] = True
+    check_process_files()
+
+def run_eye_track():
+    eye_tracking.main()
+    task_status["eye"] = True
     check_process_files()
 
 @app.post("/video")
@@ -186,17 +194,44 @@ async def upload_video(background_tasks: BackgroundTasks, video: UploadFile = Fi
         shutil.copyfileobj(video.file, buffer)
         buffer.close()
     background_tasks.add_task(run_facial_prediction)
+    background_tasks.add_task(run_eye_track)
 
     return {"message": "Video converted and saved successfully"}
 
-def combine_transcript_and_emotion():
-    task_status["audio"] = False
-    task_status["video"] = False
-    return {"message": "Transcript and emotion combined successfully"}
+def combine_transcript_emotion_eye():
+    task_status["transcript"] = False
+    task_status["face_emotion"] = False
+    task_status["eye"] = False
+
+    current_time = datetime.datetime.now()
+    transcript_file = open("uploads/audio/transcript_detected.json", "r")
+    emotion_file = open("uploads/video/emotion_detected.json", "r")
+    eye_file = open("uploads/video/blink_detected.json", "r")
+
+    transcript_data = json.load(transcript_file)
+    emotion_data = json.load(emotion_file)
+    eye_data = json.load(eye_file)
+
+    transcript_file.close()
+    emotion_file.close()
+    eye_file.close()
+
+    combined_json_data = {
+        "timestamp": current_time.strftime("%H:%M:%S"),
+        "transcript": transcript_data['text'],
+        "emotion": emotion_data,
+        "eye": eye_data
+    }
+
+    with open("uploads/combined/combined_data.json", "w") as combined_file:
+        json.dump(combined_json_data, combined_file, indent=2)
+        combined_file.close()
+
+    print ("Transcript and emotion combined successfully")
 
 def check_process_files():
-    if task_status["audio"] and task_status["video"]:
-        combine_transcript_and_emotion()
+    if task_status["transcript"] and task_status["face_emotion"] and task_status["eye"]:
+        combine_transcript_emotion_eye()
 
         print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     else:
@@ -204,26 +239,28 @@ def check_process_files():
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     image_chunk_counter = 0
-#     list_to_write = []
-#     while True:
-#         data = await websocket.receive_bytes()
-#         list_to_write.append(data)
-#         print(len(list_to_write), len(data))
-#         if len(list_to_write) >= 10:
-#             save_images(image_chunk_counter, list_to_write)
-#             image_chunk_counter += 1
-#             list_to_write = []
+#         await websocket.accept()
+#         while True:
+#             # await audio data
+#             data = await websocket.receive_bytes()
+            
+#             print("Received audio data")
+            
+#             # Check if it is a proper webm file
+#             if data[:4] == b'\x1a\x45\xdf\xa3':
+#                 # save_audio(data)
+#                 print("Audio data saved successfully")
+#             else:
+#                 print("Invalid audio format")
+#                 save_audio(data)
+            
 
-# def save_images(image_chunk_counter: int, list_to_write: list):
-#     print(f"Saving image chunk")
-#     image_counter = 0
-#     for item in list_to_write:
-#         with open(f"uploads/image_{image_chunk_counter}_{image_counter}.jpg", "wb") as f:
-#             f.write(item)
-#             print(f"Image saved {image_counter}")
-#             image_counter += 1
+# def save_audio(data):
+    # # save the webm audio 
+    # with open("uploads/audio/mic-audio_live_bad.webm", "wb") as audio:
+    #     audio.write(data)
+    #     audio.close()
+    #  return speech_to_text.main_for_live()
 
 
 if __name__ == "__main__":

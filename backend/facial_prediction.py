@@ -47,20 +47,19 @@ def prediction(video_path: str, new_model: tf.keras.Model):
             else:
                 for (ex, ey, ew, eh) in facess:
                     face_roi = roi_color[ey: ey+eh, ex: ex+ew]
+                
+                    # Preprocess the face image for prediction
+                    final_image = cv2.resize(face_roi, (48, 48))
+                    final_image = cv2.cvtColor(final_image, cv2.COLOR_BGR2GRAY)
                     
+                    final_image = np.expand_dims(final_image, axis=-1)
+                    final_image = np.expand_dims(final_image, axis=0)
                     
-        # Preprocess the face image for prediction
-        final_image = cv2.resize(face_roi, (48, 48))
-        final_image = cv2.cvtColor(final_image, cv2.COLOR_BGR2GRAY)
-        
-        final_image = np.expand_dims(final_image, axis=-1)
-        final_image = np.expand_dims(final_image, axis=0)
-        
-        # Make predictions using the model
-        Predictions = new_model.predict(final_image)
-        # Predictions = np.argmax(Predictions, axis=1)
-        status = status_dict[np.argmax(Predictions)]
-        emotion_counts[status] += 1
+                    # Make predictions using the model
+                    Predictions = new_model.predict(final_image)
+                    # Predictions = np.argmax(Predictions, axis=1)
+                    status = status_dict[np.argmax(Predictions)]
+                    emotion_counts[status] += 1
 
     cap.release()
 
@@ -78,7 +77,7 @@ def main():
         exit()
     
     new_model = tf.keras.models.load_model(model_path)
-    prepare_to_json = prediction('uploads/video/webcam-video.mp4', new_model)
+    prepare_to_json = prediction('uploads/video/webcam-video(potato).mp4', new_model)
 
     with open('uploads/video/emotion_detected.json', 'w') as file:
         json.dump(prepare_to_json, file)
