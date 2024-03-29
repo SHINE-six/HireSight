@@ -28,19 +28,21 @@ def convert_wav_to_text(input_file):
     with sr.AudioFile(input_file) as source:
         r.adjust_for_ambient_noise(source)
         audio_text = r.listen(source)
+        json_data = {
+            "text": "null"
+        }
         
         try:
             # using google speech recognition
-            print('Converting audio transcripts into text ...')
             text = r.recognize_google(audio_text)
-            print(text)
             json_data = {
                 "text": text
             }
-            return json_data
         
         except:
                 print('Sorry.. run again...')
+        
+        return json_data
 
 def main():
     convert_webm_to_wav("uploads/audio/mic-audio.webm", 'uploads/audio/mic-audio.wav')
@@ -49,3 +51,9 @@ def main():
         json.dump(prepare_to_json, json_file, indent=2)
         json_file.close()
     print("Transcript saved successfully")
+
+def main_for_live():
+    convert_webm_to_wav("uploads/audio/mic-audio_live.webm", 'uploads/audio/mic-audio_live.wav')
+    prepare_to_json = convert_wav_to_text('uploads/audio/mic-audio_live.wav')
+    return prepare_to_json
+    
