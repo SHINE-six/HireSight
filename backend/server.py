@@ -1,9 +1,31 @@
 import shutil
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks
 import uvicorn
 import resume_parser
+import speech_to_text
+import facial_prediction
+from fastapi.middleware.cors import CORSMiddleware
+from typing import Dict
+
 
 app = FastAPI()
+
+
+origins = [
+    "https://ddncl8rd-3000.asse.devtunnels.ms/",  # Assuming your React app runs on localhost:3000
+    "https://ddncl8rd-8000.asse.devtunnels.ms/",  # Add your production origin as needed
+]
+
+# Add CORSMiddleware to the application
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows specified origins
+    allow_credentials=True,  # Allows cookies to be included in cross-origin HTTP requests
+    allow_methods=["*"],  # Allows all methods (e.g., GET, POST, PUT, DELETE)
+    allow_headers=["*"],  # Allows all headers
+)
+
+
 
 # sample data
 data = [
@@ -109,6 +131,11 @@ data = [
 }
 ]
 
+@app.post("/")
+async def read_root():
+    print("Welcome to the Job Portal!")
+    return {"message": "Welcome to the Job Portal!"}
+
 @app.get("/jobopenings")
 async def read_root():
     return data
@@ -129,6 +156,75 @@ async def upload_resume(resume: UploadFile = File(...)):
 
     return resume_data
 
+task_status: Dict[str, bool] = {"audio": False, "video": False}
+
+def run_speech_to_text():
+    speech_to_text.main()
+    task_status["audio"] = True
+    check_process_files()
+
+@app.post("/audio")
+async def upload_audio(background_tasks: BackgroundTasks, audio: UploadFile = File(...)):
+    print(audio)
+    with open(f"uploads/audio/{audio.filename}", "wb") as buffer:
+        shutil.copyfileobj(audio.file, buffer)
+        print(buffer)
+        buffer.close()
+    background_tasks.add_task(run_speech_to_text)
+
+    return {"message": "Audio converted and saved successfully"}
+
+def run_facial_prediction():
+    facial_prediction.main()
+    task_status["video"] = True
+    check_process_files()
+
+@app.post("/video")
+async def upload_video(background_tasks: BackgroundTasks, video: UploadFile = File(...)):
+    print(video)
+    with open(f"uploads/video/{video.filename}", "wb") as buffer:
+        shutil.copyfileobj(video.file, buffer)
+        buffer.close()
+    background_tasks.add_task(run_facial_prediction)
+
+    return {"message": "Video converted and saved successfully"}
+
+def combine_transcript_and_emotion():
+    task_status["audio"] = False
+    task_status["video"] = False
+    return {"message": "Transcript and emotion combined successfully"}
+
+def check_process_files():
+    if task_status["audio"] and task_status["video"]:
+        combine_transcript_and_emotion()
+
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    else:
+        print("nope, havent finish BBBBBBBBBBBBBBBB")
+
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     image_chunk_counter = 0
+#     list_to_write = []
+#     while True:
+#         data = await websocket.receive_bytes()
+#         list_to_write.append(data)
+#         print(len(list_to_write), len(data))
+#         if len(list_to_write) >= 10:
+#             save_images(image_chunk_counter, list_to_write)
+#             image_chunk_counter += 1
+#             list_to_write = []
+
+# def save_images(image_chunk_counter: int, list_to_write: list):
+#     print(f"Saving image chunk")
+#     image_counter = 0
+#     for item in list_to_write:
+#         with open(f"uploads/image_{image_chunk_counter}_{image_counter}.jpg", "wb") as f:
+#             f.write(item)
+#             print(f"Image saved {image_counter}")
+#             image_counter += 1
+
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, workers=4)

@@ -21,7 +21,7 @@ export default async function jobOpeningPage() {
         </div>
         <br />
         <div className='grid grid-cols-2 gap-4'>
-          {data && data.map((jobCategory: JobCatType) => (
+          {Array.isArray(data) && data.map((jobCategory: JobCatType) => (
             <IndiJobCategory key={jobCategory.id} jobCat={jobCategory} />
           ))}
         </div>

@@ -1,39 +1,37 @@
-import React, { useEffect, useRef, useState, } from 'react';
+import React, { use, useEffect, useRef, useState, } from 'react';
 
-const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
-  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+const MicStream = ({ isRecording }: { isRecording: boolean }) => {
+  const [audioStream, setaudioStream] = useState<MediaStream | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   let recorder: MediaRecorder | null;
 
   useEffect(() => {
-    // Access the webcam
-    const accessWebcam = async () => {
+    // Access the Mic
+    const accessMic = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        setVideoStream(stream);
-        const videoElement = document.querySelector('video');
-        if (videoElement) videoElement.srcObject = stream;
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        setaudioStream(stream);
       } catch (error) {
-        console.error("Error accessing the camera", error);
+        console.error("Error accessing the mic", error);
       }
     };
 
-    accessWebcam();
+    accessMic();
 
     return () => {
       // Cleanup
-      videoStream?.getTracks().forEach(track => track.stop());
+      audioStream?.getTracks().forEach(track => track.stop());
     };
-  }, []); // Dependency array should include videoStream to correctly clean up
+  }, []);
 
   const startRecording = () => {
-    if (!videoStream) {
-      console.error('No video stream available');
+    if (!audioStream) {
+      console.error('No audio stream available');
       return;
     }
 
-    recorder = new MediaRecorder(videoStream, { mimeType: 'video/webm; codecs=vp9' });
+    recorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
     recorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         recordedChunksRef.current.push(event.data);
@@ -53,24 +51,24 @@ const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
 
     mediaRecorder.stop();
     mediaRecorder.onstop = () => {
-      const videoBlob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      const audioBlob = new Blob(recordedChunksRef.current, { type: 'audio/webm' });
       console.log(recordedChunksRef)
-      sendVideoToBackend(videoBlob);
+      sendVideoToBackend(audioBlob);
       recordedChunksRef.current = [];
     };
   };
 
   const sendVideoToBackend = async (blob: Blob | null) => {
     if (blob === null) {
-      console.error('No video blob available');
+      console.error('No audio blob available');
       return;
     }
     const formData = new FormData();
-    formData.append('video', blob, 'webcam-video.mp4');
+    formData.append('audio', blob, 'mic-audio.webm');
     console.log(formData)
 
     try {
-      const response = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/video', {
+      const response = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/audio', {
         method: 'POST',
         body: formData,
       });
@@ -79,7 +77,7 @@ const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
         throw new Error('Network response was not ok');
       }
 
-      console.log('Video uploaded successfully');
+      console.log('Audio uploaded successfully');
     } catch (error) {
       console.error('Error uploading the video:', error);
     }
@@ -96,9 +94,8 @@ const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
 
   return (
     <div>
-      <video autoPlay playsInline muted style={{ transform: 'scaleX(-1)' }}></video>
     </div>
   );
 };
 
-export default WebcamRecorder;
+export default MicStream;
