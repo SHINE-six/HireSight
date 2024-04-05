@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "soundFile": "C:\\Users\\TUF\\Documents\\HireSight\\backend\\uploads\\audio\\fromAI(8).wav",
+    "duration": 4.95
+  },
+  "mouthCues": [
+    { "start": 0.00, "end": 0.04, "value": "X" },
+    { "start": 0.04, "end": 0.17, "value": "B" },
+    { "start": 0.17, "end": 0.25, "value": "A" },
+    { "start": 0.25, "end": 0.37, "value": "C" },
+    { "start": 0.37, "end": 0.51, "value": "B" },
+    { "start": 0.51, "end": 0.58, "value": "G" },
+    { "start": 0.58, "end": 1.28, "value": "B" },
+    { "start": 1.28, "end": 1.63, "value": "F" },
+    { "start": 1.63, "end": 1.71, "value": "A" },
+    { "start": 1.71, "end": 1.90, "value": "H" },
+    { "start": 1.90, "end": 1.97, "value": "B" },
+    { "start": 1.97, "end": 2.04, "value": "G" },
+    { "start": 2.04, "end": 2.11, "value": "C" },
+    { "start": 2.11, "end": 2.19, "value": "A" },
+    { "start": 2.19, "end": 2.89, "value": "B" },
+    { "start": 2.89, "end": 2.96, "value": "C" },
+    { "start": 2.96, "end": 3.03, "value": "B" },
+    { "start": 3.03, "end": 3.17, "value": "E" },
+    { "start": 3.17, "end": 3.38, "value": "C" },
+    { "start": 3.38, "end": 3.52, "value": "B" },
+    { "start": 3.52, "end": 3.59, "value": "C" },
+    { "start": 3.59, "end": 3.80, "value": "B" },
+    { "start": 3.80, "end": 3.94, "value": "C" },
+    { "start": 3.94, "end": 4.26, "value": "X" },
+    { "start": 4.26, "end": 4.66, "value": "B" },
+    { "start": 4.66, "end": 4.80, "value": "C" },
+    { "start": 4.80, "end": 4.87, "value": "H" },
+    { "start": 4.87, "end": 4.95, "value": "X" }
+  ]
+}

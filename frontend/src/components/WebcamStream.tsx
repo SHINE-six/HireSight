@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, } from 'react';
 
-const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
+const WebcamRecorder: React.FC<{isRecording: boolean}> = ({ isRecording }: { isRecording: boolean }) => {
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
@@ -70,7 +70,7 @@ const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
     console.log(formData)
 
     try {
-      const response = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/video', {
+      const response = await fetch('http://localhost:8000/video', {
         method: 'POST',
         body: formData,
       });
@@ -96,7 +96,7 @@ const WebcamRecorder = ({ isRecording }: { isRecording: boolean }) => {
 
   return (
     <div>
-      <video autoPlay playsInline muted style={{ transform: 'scaleX(-1)' }}></video>
+      <video autoPlay playsInline muted className="transform scale-x-[-1] filter contrast-[1.2] saturate-[1.3] brightness-[1.2] relative top-[-4.5rem]"></video>
     </div>
   );
 };

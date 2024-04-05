@@ -1,10 +1,15 @@
 import shutil
 from fastapi import FastAPI, File, UploadFile, BackgroundTasks, WebSocket
+from fastapi.responses import FileResponse
 import uvicorn
 import resume_parser
 import speech_to_text
 import facial_prediction
 import eye_tracking
+import LLM
+import tts
+import wavspeech_to_json
+import mongoDB
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -15,8 +20,8 @@ app = FastAPI()
 
 
 origins = [
-    "https://ddncl8rd-3000.asse.devtunnels.ms/",  # Assuming your React app runs on localhost:3000
-    "https://ddncl8rd-8000.asse.devtunnels.ms/",  # Add your production origin as needed
+    "http://localhost:3000",  # Assuming your React app runs on localhost:3000
+    # "https://ddncl8rd-8000.asse.devtunnels.ms/",  # Add your production origin as needed
 ]
 
 # Add CORSMiddleware to the application
@@ -28,14 +33,14 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-
+task_status: Dict[str, bool] = {"transcript": False, "face_emotion": False, "eye": False, "text_LLM_tts_wavToJson": False}
 
 # sample data
 data = [
 {
     "id": 1,
     "jobCategory": "Project Management",
-    "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects",
+    "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects.",
     "availableJobs": [
         {
             "jobId": "1a",
@@ -59,76 +64,52 @@ data = [
 },
 {
     "id": 2,
-    "jobCategory": "Project Management",
-    "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects",
+    "jobCategory": "Research & Development",
+    "jobCategoryDescription": "Research & Development is responsible for developing new products and services.",
     "availableJobs": [
         {
             "jobId": "2a",
-            "jobTitle": "Scrum Master",
+            "jobTitle": "Full Stack Developer",
             "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
             "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
         },
         {
             "jobId": "2b",
-            "jobTitle": "Project Manager",
+            "jobTitle": "Test Engineer",
             "jobDescription": "We're looking for a dedicated Product Manager to spearhead the lifecycle of our products. In this role, you'll be at the helm of product development from inception through to launch. Collaboration will be key as you work closely with teams across the board, from engineering and design to marketing and sales, ensuring our products not only meet market demands but also drive our business objectives forward. Your responsibilities will include conducting thorough market research, strategizing product development, prioritizing features, and orchestrating effective go-to-market plans. With your keen eye for detail and knack for problem-solving, you'll track and analyze performance metrics to continually refine and improve our offerings. As the go-to expert for our products, you'll provide invaluable support to both internal teams and external stakeholders, guiding them through the intricacies of our product line. If you're ready to make your mark in a fast-paced and collaborative environment, join us on this exciting journey of innovation and growth.",
             "jobSkills": ["Project Management", "Agile", "Jira", "Risk Management"]
-        },
-        {
-            "jobId": "2c",
-            "jobTitle": "Business Analyst",
-            "jobDescription": "Business Analyst is responsible for analyzing the business needs of clients to help identify business problems and propose solutions.",
-            "jobSkills": ["Business Analysis", "Requirement Gathering", "Jira", "SQL"]
         }
     ]
 },
 {
     "id": 3,
-    "jobCategory": "Game Management",
+    "jobCategory": "Visual Design",
     "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects",
     "availableJobs": [
         {
             "jobId": "3a",
-            "jobTitle": "Scrum Master",
+            "jobTitle": "UI/UX Designer",
             "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
             "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
         },
-        {
+                {
             "jobId": "3b",
-            "jobTitle": "Project Manager",
-            "jobDescription": "Project Manager is responsible for planning, executing, and closing projects.",
-            "jobSkills": ["Project Management", "Agile", "Jira", "Risk Management"]
-        },
-        {
-            "jobId": "3c",
-            "jobTitle": "Business Analyst",
-            "jobDescription": "Business Analyst is responsible for analyzing the business needs of clients to help identify business problems and propose solutions.",
-            "jobSkills": ["Business Analysis", "Requirement Gathering", "Jira", "SQL"]
+            "jobTitle": "Marketing Designer",
+            "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
+            "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
         }
     ]
 },
 {
     "id": 4,
-    "jobCategory": "Project Management",
+    "jobCategory": "Human Resources",
     "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects",
     "availableJobs": [
         {
             "jobId": "4a",
-            "jobTitle": "Scrum Master",
+            "jobTitle": "Business Analyst",
             "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
             "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
-        },
-        {
-            "jobId": "4b",
-            "jobTitle": "Project Manager",
-            "jobDescription": "Project Manager is responsible for planning, executing, and closing projects.",
-            "jobSkills": ["Project Management", "Agile", "Jira", "Risk Management"]
-        },
-        {
-            "jobId": "4c",
-            "jobTitle": "Business Analyst",
-            "jobDescription": "Business Analyst is responsible for analyzing the business needs of clients to help identify business problems and propose solutions.",
-            "jobSkills": ["Business Analysis", "Requirement Gathering", "Jira", "SQL"]
         }
     ]
 }
@@ -155,28 +136,52 @@ async def read_job(job_id: str):
 async def upload_resume(resume: UploadFile = File(...)):
     with open(f"resume/resume_in/{resume.filename}", "wb") as buffer:
         shutil.copyfileobj(resume.file, buffer)
-        resume_data = resume_parser.parse_resume(resume.filename)
+        resume_data = resume_parser.main(resume.filename)
 
-    return resume_data
+    return {"status": 200, "message": "Resume uploaded successfully"}
 
-task_status: Dict[str, bool] = {"transcript": False, "face_emotion": False, "eye": False}
+# ----------------------- Audio thingy -----------------------
+def text_LLM_tts_wavToJson():
+    # output_text = LLM.main()
+    tts.main("output_text")
+    wavspeech_to_json.main()
+    print("Text, TTS, and WAV to JSON conversion completed")
+    task_status["text_LLM_tts_wavToJson"] = True
 
-def run_speech_to_text():
+def run_speech_to_text(background_tasks):
     speech_to_text.main()
+    background_tasks.add_task(text_LLM_tts_wavToJson)
     task_status["transcript"] = True
     check_process_files()
 
 @app.post("/audio")
 async def upload_audio(background_tasks: BackgroundTasks, audio: UploadFile = File(...)):
     print(audio)
+    background_tasks.add_task(run_speech_to_text, background_tasks)
     with open(f"uploads/audio/{audio.filename}", "wb") as buffer:
         shutil.copyfileobj(audio.file, buffer)
         print(buffer)
         buffer.close()
-    background_tasks.add_task(run_speech_to_text)
 
     return {"message": "Audio converted and saved successfully"}
 
+@app.get("/get-fromAI-wav")
+async def get_fromAI_wav():
+    file_path = "uploads/audio/fromAI.wav"
+    return FileResponse(file_path, media_type="audio/wav", filename="fromAI.wav")
+
+@app.get("/get-fromAI-json")
+async def get_fromAI_json():
+    file_path = "uploads/audio/fromAI.json"
+    task_status["text_LLM_tts_wavToJson"] = False
+    return FileResponse(file_path, media_type="application/json", filename="fromAI.json")
+
+@app.get("/task-status")
+async def get_task_status():
+    print("I was called by frontend:", task_status)
+    return {"status": task_status["text_LLM_tts_wavToJson"]}
+
+# ----------------------- Video thingy -----------------------
 def run_facial_prediction():
     facial_prediction.main()
     task_status["face_emotion"] = True
@@ -194,10 +199,12 @@ async def upload_video(background_tasks: BackgroundTasks, video: UploadFile = Fi
         shutil.copyfileobj(video.file, buffer)
         buffer.close()
     background_tasks.add_task(run_facial_prediction)
-    background_tasks.add_task(run_eye_track)
+    run_eye_track()
 
     return {"message": "Video converted and saved successfully"}
 
+
+# ----------------------- Combine transcript, emotion, eye -----------------------
 def combine_transcript_emotion_eye():
     task_status["transcript"] = False
     task_status["face_emotion"] = False
@@ -223,6 +230,10 @@ def combine_transcript_emotion_eye():
         "eye": eye_data
     }
 
+    #* to process plagiarism, disfluency, behavioral analysis at here
+
+    print(mongoDB.post_data("combinedData", combined_json_data))
+
     with open("uploads/combined/combined_data.json", "w") as combined_file:
         json.dump(combined_json_data, combined_file, indent=2)
         combined_file.close()
@@ -233,7 +244,7 @@ def check_process_files():
     if task_status["transcript"] and task_status["face_emotion"] and task_status["eye"]:
         combine_transcript_emotion_eye()
 
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        print("The End")
     else:
         print("nope, havent finish BBBBBBBBBBBBBBBB")
 

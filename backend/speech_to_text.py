@@ -26,7 +26,7 @@ def convert_wav_to_text(input_file):
     r = sr.Recognizer()
 
     with sr.AudioFile(input_file) as source:
-        r.adjust_for_ambient_noise(source)
+        # r.adjust_for_ambient_noise(source)
         audio_text = r.listen(source)
         json_data = {
             "text": "null"
