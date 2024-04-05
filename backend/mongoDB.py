@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import json
 
-client = MongoClient('mongodb+srv://shine:CKjnvcbrpVXClTyG@cluster0.mxiiu7b.mongodb.net/UserData?retryWrites=true&w=majority')
+
 db = client['HireSight']
 print("Connected to MongoDB Atlas database Successfully!")
 
