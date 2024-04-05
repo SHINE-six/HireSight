@@ -67,49 +67,43 @@ def eye_tracking(video_path, model_path):
         if not ret:
             break
         
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = detector(gray)
-        
-        for face in faces:
-            landmarks = predictor(gray, face)
+        if cap.get(cv2.CAP_PROP_POS_FRAMES) % 15 == 0:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = detector(gray)
             
-            # Blink Detection
-            left_eye = np.array([(landmarks.part(n).x, landmarks.part(n).y) for n in range(42, 48)])
-            right_eye = np.array([(landmarks.part(n).x, landmarks.part(n).y) for n in range(36, 42)])
-            left_EAR = eye_aspect_ratio(left_eye)
-            right_EAR = eye_aspect_ratio(right_eye)
-            ear = (left_EAR + right_EAR) / 2.0
-            
-            if ear < 0.21:  # Threshold for blink detection
-                blink_timestamps.append(time.time() - start_time)
-            
-            # Updated Gaze Detection with pupil marker
-            gaze_ratio_left_eye, left_eye_center = calculate_gaze_ratio_and_center([36, 37, 38, 39, 40, 41], landmarks, frame, gray)
-            gaze_ratio_right_eye, right_eye_center = calculate_gaze_ratio_and_center([42, 43, 44, 45, 46, 47], landmarks, frame, gray)
-            
-            gaze_ratio = (gaze_ratio_right_eye + gaze_ratio_left_eye) / 2
-            
-            if gaze_ratio <= 0.80:
-                text = "RIGHT"
-            elif 0.80 < gaze_ratio < 1.85:
-                text = "CENTER"
-            else:
-                text = "LEFT"
-            
-            gaze_counts[text] += 1
+            for face in faces:
+                landmarks = predictor(gray, face)
+                
+                # Blink Detection
+                left_eye = np.array([(landmarks.part(n).x, landmarks.part(n).y) for n in range(42, 48)])
+                right_eye = np.array([(landmarks.part(n).x, landmarks.part(n).y) for n in range(36, 42)])
+                left_EAR = eye_aspect_ratio(left_eye)
+                right_EAR = eye_aspect_ratio(right_eye)
+                ear = (left_EAR + right_EAR) / 2.0
+                
+                if ear < 0.21:  # Threshold for blink detection
+                    blink_timestamps.append(time.time() - start_time)
+                
+                # Updated Gaze Detection with pupil marker
+                gaze_ratio_left_eye, left_eye_center = calculate_gaze_ratio_and_center([36, 37, 38, 39, 40, 41], landmarks, frame, gray)
+                gaze_ratio_right_eye, right_eye_center = calculate_gaze_ratio_and_center([42, 43, 44, 45, 46, 47], landmarks, frame, gray)
+                
+                gaze_ratio = (gaze_ratio_right_eye + gaze_ratio_left_eye) / 2
+                
+                if gaze_ratio <= 0.70:
+                    text = "RIGHT"
+                elif 0.70 < gaze_ratio < 1.95:
+                    text = "CENTER"
+                else:
+                    text = "LEFT"
+                
+                gaze_counts[text] += 1
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):  # Press 'q' to quit
-            break
+            if cv2.waitKey(1) & 0xFF == ord('q'):  # Press 'q' to quit
+                break
 
     cap.release()
-    # After exiting the main loop, we analyze the blinks
     high_freq_blink_count = analyze_blinks(blink_timestamps)
-    # print(f"High-frequency blink episodes: {high_freq_blink_count}")
-
-    # Summarize gaze direction counts
-    # print("Gaze direction summary:")
-    # for direction, count in gaze_counts.items():
-    #     print(f"{direction}: {count}")
     to_return = {"blink episode": high_freq_blink_count,"gaze": gaze_counts}
     return to_return
 
@@ -133,8 +127,8 @@ def analyze_blinks(blink_timestamps, duration=5, threshold=3):
 
 
 
+model_path = "model/shape_predictor_68_face_landmarks.dat"
 def main():
-    model_path = "model/shape_predictor_68_face_landmarks.dat"
     video_path = "uploads/video/webcam-video.mp4"
     prepare_to_json = eye_tracking(video_path, model_path)
 

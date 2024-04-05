@@ -1,10 +1,19 @@
-import React, { use, useEffect, useRef, useState, } from 'react';
+import React, { useEffect, useRef, useState, } from 'react';
 
-const MicStream = ({ isRecording }: { isRecording: boolean }) => {
+
+interface ChildProps {
+  isRecording: any;
+  onAudioUrlChange: (newAudioUrl: string | null) => void;
+  onJsonDataChange: (newJsonData: any | null) => void;
+}
+
+const MicStream: React.FC<ChildProps> = (props) => {
   const [audioStream, setaudioStream] = useState<MediaStream | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   let recorder: MediaRecorder | null;
+
+  const { onAudioUrlChange, onJsonDataChange } = props;
 
   useEffect(() => {
     // Access the Mic
@@ -12,6 +21,7 @@ const MicStream = ({ isRecording }: { isRecording: boolean }) => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         setaudioStream(stream);
+        return () => stream.getTracks().forEach(track => track.stop());  // Cleanup
       } catch (error) {
         console.error("Error accessing the mic", error);
       }
@@ -19,10 +29,10 @@ const MicStream = ({ isRecording }: { isRecording: boolean }) => {
 
     accessMic();
 
-    return () => {
-      // Cleanup
-      audioStream?.getTracks().forEach(track => track.stop());
-    };
+    // return () => {
+    //   // Cleanup
+    //   audioStream?.getTracks().forEach(track => track.stop());
+    // };
   }, []);
 
   const startRecording = () => {
@@ -67,29 +77,78 @@ const MicStream = ({ isRecording }: { isRecording: boolean }) => {
     formData.append('audio', blob, 'mic-audio.webm');
     console.log(formData)
 
-    try {
-      const response = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/audio', {
-        method: 'POST',
-        body: formData,
-      });
+    const response = await fetch('http://localhost:8000/audio', {
+      method: 'POST',
+      body: formData,
+    });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+    console.log(response);
 
-      console.log('Audio uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading the video:', error);
-    }
+    get_fromAI_fromBackend();
+
   };
 
+  const get_fromAI_fromBackend = async () => {
+    let intervalId: NodeJS.Timeout;
+    const fetchData = async () => {
+      try {
+          const response = await fetch('http://localhost:8000/task-status', { method: 'GET' });
+          const data = await response.json();
+          console.log("status: ", data.status);
+          if (data.status) {
+              clearInterval(intervalId);
+
+              const responseAudio = await fetch('http://localhost:8000/get-fromAI-wav', { method: 'GET' });
+              const blob = await responseAudio.blob();
+              const url = URL.createObjectURL(blob);
+              onAudioUrlChange(url);
+
+              const responseJson = await fetch('http://localhost:8000/get-fromAI-json', { method: 'GET' });
+              const jsonData = await responseJson.json();
+              onJsonDataChange(jsonData);
+          }
+      } catch (error) {
+          console.error('Error getting fromAI from backend:', error);
+          clearInterval(intervalId);
+          setTimeout(get_fromAI_fromBackend, 10000);
+      }
+    };
+    intervalId = setInterval(fetchData, 6000);
+  };
+
+  // const get_fromAI_fromBackend: () => Promise<void> = async () => {
+  //   let data = {status: false};
+  //   while (!data.status) {
+  //     try {
+  //       const response = await fetch('http://localhost:8000/task-status', { method: 'GET' });
+  //       const data = await response.json();
+  //       console.log("status: ", data.status);
+  //       if (!data.status) {
+  //         await new Promise(resolve => setTimeout(resolve, 6000));
+  //       } else {
+  //         const response = await fetch('http://localhost:8000/get-fromAI-wav', { method: 'GET' });
+  //         const blob = await response.blob();
+  //         const url = URL.createObjectURL(blob);
+  //         onAudioUrlChange(url);
+
+  //         const responseJson = await fetch('http://localhost:8000/get-fromAI-json', { method: 'GET' });
+  //         const jsonData = await responseJson.json();
+  //         onJsonDataChange(jsonData);
+  //       }            
+  //     } catch (error) {
+  //       console.error('Error getting fromAI from backend:', error);
+  //       setTimeout(get_fromAI_fromBackend, 10000);
+  //     }
+  //   }
+  // }
+
   useEffect(() => {
-    if (isRecording) {
+    if (props.isRecording) {
       startRecording();
     } else {
       stopRecording();
     }
-  }, [isRecording]);
+  }, [props.isRecording]);
 
 
   return (

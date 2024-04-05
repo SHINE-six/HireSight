@@ -1,0 +1,62 @@
+{
+  "timestamp": "22:10:37",
+  // "ai ask question": "hello, what is your name?",
+  "transcript": "hello hello my name is Desmond foo today I'm coming for interview at welcome to our team hire site blah bl",
+  // "ai response": "hello Desmond, nice to meet you. I'm the AI assistant here to help you with the interview process. How are you feeling today?",
+  "emotion": {
+    "Angry": 330,
+    "Disgust": 0,
+    "Fear": 27,
+    "Happy": 42,
+    "Sad": 0,
+    "Surprise": 11,
+    "Neutral": 12
+  },
+  "eye": {
+    "blink episode": 2,
+    "gaze": {
+      "RIGHT": 3,
+      "CENTER": 57,
+      "LEFT": 107
+    }
+    "gesture": {
+
+    }
+  },
+  
+  "body-language_sus_percentage": 0.6, (emotion & eye & gesture)
+  "speech_disfluency": 0.2, (text)
+  "plagiarism": 0.4
+}
+
+
+{
+  "speech_disfluency": avergae(speech_disfluency), (text)
+  "plagiarism": avergae(plagiarism), (text)
+  "ai-detection": 
+  "mbti": "INTJ", (text)
+  "tone": { (text)
+    "profesionallism": 0.8,
+    "confident": 0.8,
+    "direct": 0.2,
+    "friendly": 0.2,
+    "etc"
+  },
+  "company_culture": {
+    "job description": 0.8,
+    "devop": 0.8,
+    "work-lifestyle": 0.6,
+    "etc"
+  }
+  "attitude": 0.8, (text)
+  "suitability/hiring-index": 0.8, (speech_disfluency, company_culture (json: description, devop, work-lifestyle), )
+  // speech-disfluency, tone(profesionallism/confidence)
+}
+
+// Conversation log
+{
+  "user": "bfldbs",
+  "ai": "bfdbfbre",
+  "user": "bfldbs",
+  "ai": "bfdbfbre",
+}
