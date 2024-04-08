@@ -1,10 +1,9 @@
-<div style="text-align:center;">
-    <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" />
-</div>
+
 
 # HireSight
-![HireSight](https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34)
-
+<div style="text-align:center;">
+    <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5](https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34" alt="Hire Sight" />
+</div>
 HireSight is an artificial intelligence recruiting solution designed to improve the efficiency and accuracy of talent acquisition. The platform offers a comprehensive approach to the recruitment process, leveraging advanced technologies to streamline candidate selection.
 
 ## Matching Resumes:
@@ -26,5 +25,6 @@ The interview process consists of two rounds:
 Following the completion of the interview process, HireSight generates a comprehensive report based on all interview information. This report evaluates whether the candidate's abilities align with the job requirements and provides constructive feedback for candidates to improve their performance in future interviews.
 
 # System Architecture
-![image](https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5)
-
+<div style="text-align:center;">
+    <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" />
+</div>
