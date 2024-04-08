@@ -1,5 +1,7 @@
 # HireSight
-![HireSight](https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34)
+<div style="text-align:center;">
+    <img src="https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34" alt="HireSight" />
+</div>
 
 HireSight is an artificial intelligence recruiting solution designed to improve the efficiency and accuracy of talent acquisition. The platform offers a comprehensive approach to the recruitment process, leveraging advanced technologies to streamline candidate selection.
 
