@@ -11,6 +11,9 @@ import tts
 import wavspeech_to_json
 import mongoDB
 import disfluency
+import plagiarism_check_modify
+import mbti
+import ai_detection
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -141,11 +144,15 @@ async def upload_resume(resume: UploadFile = File(...)):
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
+@app.get("/resume-ranking")
+async def get_resume_ranking():
+    file_path = "resume/resume_ranking.json"
+    return FileResponse(file_path, media_type="application/json", filename="resume_ranking.json")
+
+# -------------------- Initialize the session --------------------
 global uniqueSessionID
 uniqueSessionID = ""
 
-
-# -------------------- Initialize the session --------------------
 @app.post("/ai-interview/session/start")
 async def create_session(session_json: Request):
     session_json = await session_json.json()

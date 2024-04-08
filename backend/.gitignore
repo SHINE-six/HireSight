@@ -2,4 +2,5 @@ venv
 .dockerignore
 Dockerfile
 __pycache__/
+.env
 model/*
