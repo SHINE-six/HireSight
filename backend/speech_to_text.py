@@ -52,8 +52,5 @@ def main():
         json_file.close()
     print("Transcript saved successfully")
 
-def main_for_live():
-    convert_webm_to_wav("uploads/audio/mic-audio_live.webm", 'uploads/audio/mic-audio_live.wav')
-    prepare_to_json = convert_wav_to_text('uploads/audio/mic-audio_live.wav')
     return prepare_to_json
     

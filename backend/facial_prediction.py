@@ -1,4 +1,3 @@
-from datetime import time
 import json
 import cv2
 import numpy as np
@@ -50,7 +49,7 @@ def prediction(video_path: str, new_model: tf.keras.Model):
             print("Error: Failed to retrieve frame from webcam")
             break
         
-        if cap.get(cv2.CAP_PROP_POS_FRAMES) % 15 == 0:
+        if cap.get(cv2.CAP_PROP_POS_FRAMES) % 8 == 0:
             # Convert the frame to grayscale
             gray_scale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # Detect faces in the grayscale frame
