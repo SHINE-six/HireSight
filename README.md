@@ -26,7 +26,7 @@ The interview process consists of two rounds:
 
 ## Evaluation and Feedback:
 Following the completion of the interview process, HireSight generates a comprehensive report based on all interview information. This report evaluates whether the candidate's abilities align with the job requirements and provides constructive feedback for candidates to improve their performance in future interviews.
-
+# System Architecture
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" width="80%" />
 </p>
