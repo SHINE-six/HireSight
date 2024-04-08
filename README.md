@@ -16,9 +16,8 @@ The proliferation of digital tools introduces challenges in verifying candidates
 Lengthy and complex hiring processes deter candidates, with 60% abandoning applications due to the 36-day process duration. Inadequate communication and feedback damage employer brand and deter future candidates. Ensuring a positive candidate experience is crucial.
 
 These challenges necessitate innovative solutions to enhance recruitment efficiency, mitigate bias, and improve candidate experience.
-```
 
-This markdown code represents the problem statement 2.0 with proper formatting for readability.
+# HireSight
 
 ![HireSight](https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34)
 
