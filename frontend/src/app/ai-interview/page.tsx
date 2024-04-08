@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React, { useEffect, useRef, useState } from "react";
 import WebcamStream from "@/components/WebcamStream";
 import MicStream from "@/components/MicStream";
@@ -7,11 +8,13 @@ import Experience from "@/components/Experience";
 import { CiMicrophoneOn, CiMicrophoneOff } from "react-icons/ci";
 import { Canvas } from "@react-three/fiber";
 
+const firstJsonResponse = require('../../../public/audios/fromAI.json');
+
 export default function AiInterviewPage() {
     const isLogin = useRef<boolean>(false);
     const [isRecording, setIsRecording] = useState(false);
     const [audioUrl, setAudioUrl] = useState<string | null>('/audios/fromAI.wav');
-    const [jsonData, setJsonData] = useState<any | null>('/audios/fromAI.json');
+    const [jsonData, setJsonData] = useState<any | null>(firstJsonResponse);
     const [loading, setLoading] = useState(false);
 
     // const wav_file = ['/audios/fromAI(1).wav', '/audios/fromAI(1r).wav', '/audios/fromAI(2).wav', '/audios/fromAI(3).wav', '/audios/fromAI(4).wav', '/audios/fromAI(5).wav', '/audios/fromAI(6).wav', '/audios/fromAI(7).wav', '/audios/fromAI(8).wav'];
@@ -31,6 +34,16 @@ export default function AiInterviewPage() {
         }
     }
 
+    const handleSessionEnd = () => {
+        const postEndSession = async () => {
+            const response = await fetch('http://localhost:8000/ai-interview/session/end', {
+                method: 'POST',
+            })
+            console.log(response);
+        }
+        postEndSession();
+    }
+
     const handleAudioUrlChange = (newAudioUrl: string | null) => {
         console.log("this is ", newAudioUrl);
         if (!newAudioUrl) return;
@@ -47,6 +60,16 @@ export default function AiInterviewPage() {
     useEffect(() => {
         if (!isLogin.current) {
             console.log("FFFFFFFFFFFFFFF");
+            const postUniqueSessionID = async () => {
+                const uniqueSessionID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                const response = await fetch('http://localhost:8000/ai-interview/session/start', {
+                    method: 'POST',
+                    body: JSON.stringify({ uniqueSessionID }),
+                })
+                console.log(JSON.stringify({ uniqueSessionID }));
+                console.log(response);
+            }
+            postUniqueSessionID();
         }
         isLogin.current = true;
     }, []);
@@ -78,6 +101,13 @@ export default function AiInterviewPage() {
                     {isRecording ? <CiMicrophoneOn /> : <CiMicrophoneOff />}
                 </div>
             </button>
+            <Link href="/report">
+                <button onClick={handleSessionEnd}>
+                    <div className="bg-red-700 ">
+                        End
+                    </div>
+                </button>
+            </Link>
         </div>
     );
 }

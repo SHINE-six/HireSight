@@ -19,9 +19,9 @@ const corresponding = {
 
 export function Avatar(props) {
     const audio = useMemo(() => new Audio(props.newAudioURL), [props.newAudioURL]);
-    // const lipsync = props.newJsonData;
-    const jsonFile = useLoader(THREE.FileLoader, props.newJsonData);
-    const lipsync = JSON.parse(jsonFile);
+    const lipsync = props.newJsonData;
+    // const jsonFile = useLoader(THREE.FileLoader, props.newJsonData);
+    // const lipsync = JSON.parse(jsonFile);
 
     console.log(audio, "from AVATAR");
 
@@ -71,7 +71,7 @@ export function Avatar(props) {
         nodes.Wolf3D_Teeth.morphTargetDictionary["viseme_I"]
         ] = 1;
 
-        // audio.play();
+        audio.play();
 
     }, [audio]);
 

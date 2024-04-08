@@ -67,7 +67,7 @@ def eye_tracking(video_path, model_path):
         if not ret:
             break
         
-        if cap.get(cv2.CAP_PROP_POS_FRAMES) % 15 == 0:
+        if cap.get(cv2.CAP_PROP_POS_FRAMES) % 5 == 0:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = detector(gray)
             

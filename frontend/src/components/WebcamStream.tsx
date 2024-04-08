@@ -96,7 +96,7 @@ const WebcamRecorder: React.FC<{isRecording: boolean}> = ({ isRecording }: { isR
 
   return (
     <div>
-      <video autoPlay playsInline muted className="transform scale-x-[-1] filter contrast-[1.2] saturate-[1.3] brightness-[1.2] relative top-[-4.5rem]"></video>
+      <video autoPlay playsInline muted className="transform scale-x-[-1] filter contrast-[1.4] saturate-[1.3] brightness-[1.5] relative top-[-4.5rem]"></video>
     </div>
   );
 };

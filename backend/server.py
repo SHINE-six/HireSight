@@ -1,5 +1,5 @@
 import shutil
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks, WebSocket
+from fastapi import FastAPI, File, Request, UploadFile, BackgroundTasks, WebSocket
 from fastapi.responses import FileResponse
 import uvicorn
 import resume_parser
@@ -10,6 +10,7 @@ import LLM
 import tts
 import wavspeech_to_json
 import mongoDB
+import disfluency
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -140,17 +141,34 @@ async def upload_resume(resume: UploadFile = File(...)):
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
+global uniqueSessionID
+uniqueSessionID = ""
+
+
+# -------------------- Initialize the session --------------------
+@app.post("/ai-interview/session/start")
+async def create_session(session_json: Request):
+    session_json = await session_json.json()
+    global uniqueSessionID
+    uniqueSessionID = session_json['uniqueSessionID']
+    print(mongoDB.post_data("combinedData", session_json))
+    print(mongoDB.post_data("conversationLog", session_json))
+    return {"status": 200, "message": "Session created successfully"}
+
 # ----------------------- Audio thingy -----------------------
-def text_LLM_tts_wavToJson():
-    # output_text = LLM.main()
-    tts.main("output_text")
+def text_LLM_tts_wavToJson(user_transcript: str):
+    output_text = LLM.main(user_transcript)
+    print(mongoDB.append_data_to_document("conversationLog", {"user": "Ai - EVA", "text": output_text}, uniqueSessionID))
+    tts.main(output_text)
     wavspeech_to_json.main()
     print("Text, TTS, and WAV to JSON conversion completed")
     task_status["text_LLM_tts_wavToJson"] = True
 
 def run_speech_to_text(background_tasks):
-    speech_to_text.main()
-    background_tasks.add_task(text_LLM_tts_wavToJson)
+    user_transcript = speech_to_text.main()
+    user_transcript = user_transcript['text']
+    print(mongoDB.append_data_to_document("conversationLog", {"user": "applicant", "text": user_transcript}, uniqueSessionID))
+    background_tasks.add_task(text_LLM_tts_wavToJson, user_transcript)
     task_status["transcript"] = True
     check_process_files()
 
@@ -230,9 +248,11 @@ def combine_transcript_emotion_eye():
         "eye": eye_data
     }
 
+    combined_json_data = disfluency.main(combined_json_data)
+
     #* to process plagiarism, disfluency, behavioral analysis at here
 
-    print(mongoDB.post_data("combinedData", combined_json_data))
+    print(mongoDB.append_data_to_document("combinedData", combined_json_data, uniqueSessionID))
 
     with open("uploads/combined/combined_data.json", "w") as combined_file:
         json.dump(combined_json_data, combined_file, indent=2)
@@ -244,9 +264,31 @@ def check_process_files():
     if task_status["transcript"] and task_status["face_emotion"] and task_status["eye"]:
         combine_transcript_emotion_eye()
 
-        print("The End")
+        return True
     else:
-        print("nope, havent finish BBBBBBBBBBBBBBBB")
+        return False
+
+# ----------------------- Interview Session Finish -----------------------
+@app.post("/ai-interview/session/end")
+async def finish_interview():
+    while True:
+        if check_process_files():
+            break
+        else:
+            continue
+
+    concat_user_transcript()
+
+    return {"status": 200, "message": "Interview session finished successfully"}
+
+def concat_user_transcript():
+    conversation_log = mongoDB.get_data_with_uniqueSessionID("conversationLog", uniqueSessionID)
+    log_full = ""
+    for log in conversation_log['log']:
+        if log['user'] == "applicant":
+            log_full += log['text'] + ". "
+        
+    print(log_full)
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
