@@ -1,3 +1,25 @@
+### Problem Statement
+
+#### Overcoming Unconscious Bias in Recruitment
+Organizations like WPH are challenged with adapting recruitment processes to evolving business needs. The primary concern is establishing clear objectives that transcend traditional job descriptions to align with dynamic requirements and organizational goals. Addressing unconscious bias, a pervasive issue in recruitment, is crucial. It's imperative to implement structured processes ensuring fair assessment based on competencies rather than subjective criteria. However, accurately assessing competencies remains challenging. Market data from GitNux indicates disparities in callback rates based on names, highlighting bias concerns.
+
+#### Addressing Talent Shortages and Attracting the Right Candidates
+Recruiters face talent shortages (63%) and struggle to attract suitable candidates (78%). Assessing whether job roles match diverse skills and competencies is a challenge. Traditional methods often fail to capture candidates' full potential, especially soft skills not well-represented on resumes. Fully assessing alignment with WPH's culture, values, and long-term vision remains elusive.
+
+#### Streamlining Interview Scheduling Processes
+Scheduling interviews poses a significant challenge, with finding mutually agreeable times being the biggest obstacle. Both parties' busy schedules often lead to complications, consuming substantial time (42% of recruiting teams' time). Compromises are difficult, causing delays and frustration.
+
+#### Ensuring Authenticity of Candidate Competencies in the Digital Era
+The proliferation of digital tools introduces challenges in verifying candidates' competencies. Candidates may leverage online resources to enhance performance in assessments and interviews, hindering WPH's ability to gauge true competencies.
+
+#### Improving Candidate Experience through Timely Feedback
+Lengthy and complex hiring processes deter candidates, with 60% abandoning applications due to the 36-day process duration. Inadequate communication and feedback damage employer brand and deter future candidates. Ensuring a positive candidate experience is crucial.
+
+These challenges necessitate innovative solutions to enhance recruitment efficiency, mitigate bias, and improve candidate experience.
+```
+
+This markdown code represents the problem statement 2.0 with proper formatting for readability.
+
 ![HireSight](https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34)
 
 HireSight is an artificial intelligence recruiting solution designed to improve the efficiency and accuracy of talent acquisition. The platform offers a comprehensive approach to the recruitment process, leveraging advanced technologies to streamline candidate selection.
