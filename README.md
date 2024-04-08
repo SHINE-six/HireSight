@@ -21,7 +21,7 @@ The interview process consists of two rounds:
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/206f692f-946e-4d3f-b304-2caf33db5ffa" alt="AI Interview" width="30%" />
   <br/>
-  <b>Figure: AI Interview</b>
+  <b>Figure: EVA - AI interview model</b>
 </p>
 
 
