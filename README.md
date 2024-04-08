@@ -1,6 +1,6 @@
 # HireSight
 <p align="center">
-  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/fa354b16-5b01-492b-bd81-2e2e0914997e" alt="image" />
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/fa354b16-5b01-492b-bd81-2e2e0914997e" alt="image" width="80%" />
 </p>
 
 HireSight is an artificial intelligence recruiting solution designed to improve the efficiency and accuracy of talent acquisition. The platform offers a comprehensive approach to the recruitment process, leveraging advanced technologies to streamline candidate selection.
@@ -25,5 +25,5 @@ The interview process consists of two rounds:
 Following the completion of the interview process, HireSight generates a comprehensive report based on all interview information. This report evaluates whether the candidate's abilities align with the job requirements and provides constructive feedback for candidates to improve their performance in future interviews.
 
 <p align="center">
-  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" style="max-width:50%;" />
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" width="80%" />
 </p>
