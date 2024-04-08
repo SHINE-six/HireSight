@@ -1,3 +1,7 @@
+<div style="text-align:center;">
+    <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" />
+</div>
+
 # HireSight
 ![HireSight](https://github.com/SHINE-six/HireSight/assets/91732305/163dbad2-c48f-4f83-8f90-3fd8c229aa34)
 
