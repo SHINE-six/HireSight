@@ -1,8 +1,10 @@
 import google.generativeai as genai
 import re
+import os
  
 # Configure the SDK with your API key by recovering the API key from a config file
-genai.configure(api_key= 'AIzaSyBf4CTKNe4hTUTNRNxjDbs9sMNOnEwwgFk')
+GENAI_API_KEY = os.getenv('GENAI_API_KEY')
+genai.configure(api_key= GENAI_API_KEY)
 
 #Setting the Gen AI model to be used (one of- gemini-1.0-pro, gemini-1.0-pro-001,gemini-1.0-pro-latest,gemini-1.0-pro-vision-latest,gemini-pro,gemini-pro-vision)
 model = genai.GenerativeModel('gemini-pro')
@@ -75,26 +77,3 @@ def main(text):
     else:
         reply = generate_interview_questions(text) # This is not a question
     return reply
-
-# counter = 0
-
-# sampleGenerated = [
-#     "I am a sample generated text one",
-#     "You are a sample generated text two",
-#     "We are a sample generated text three",
-# ]
-
-# def generate_text(user_input):
-#     global counter
-#     if (counter < len(sampleGenerated)):
-#         counter += 1
-#         return sampleGenerated[counter - 1]
-#     else:
-#         return "No more data to generate!"
-
-# def main(user_input):
-#     to_return = generate_text(user_input)
-
-#     return to_return
-
-
