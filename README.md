@@ -1,13 +1,13 @@
 # Problem Statement
-## Overcoming Unconscious Bias in Recruitment
+1. **Overcoming Unconscious Bias in Recruitment**
 Organizations like WPH are challenged with adapting recruitment processes to evolving business needs. The primary concern is establishing clear objectives that transcend traditional job descriptions to align with dynamic requirements and organizational goals. Addressing unconscious bias, a pervasive issue in recruitment, is crucial. It's imperative to implement structured processes ensuring fair assessment based on competencies rather than subjective criteria. However, accurately assessing competencies remains challenging. Market data from GitNux indicates disparities in callback rates based on names, highlighting bias concerns.
-## Addressing Talent Shortages and Attracting the Right Candidates
+2. **Addressing Talent Shortages and Attracting the Right Candidates**
 Recruiters face talent shortages (63%) and struggle to attract suitable candidates (78%). Assessing whether job roles match diverse skills and competencies is a challenge. Traditional methods often fail to capture candidates' full potential, especially soft skills not well-represented on resumes. Fully assessing alignment with WPH's culture, values, and long-term vision remains elusive.
-## Streamlining Interview Scheduling Processes
+3. **Streamlining Interview Scheduling Processes**
 Scheduling interviews poses a significant challenge, with finding mutually agreeable times being the biggest obstacle. Both parties' busy schedules often lead to complications, consuming substantial time (42% of recruiting teams' time). Compromises are difficult, causing delays and frustration.
-## Ensuring Authenticity of Candidate Competencies in the Digital Era
+4. **Ensuring Authenticity of Candidate Competencies in the Digital Era**
 The proliferation of digital tools introduces challenges in verifying candidates' competencies. Candidates may leverage online resources to enhance performance in assessments and interviews, hindering WPH's ability to gauge true competencies.
-## Improving Candidate Experience through Timely Feedback
+5. **Improving Candidate Experience through Timely Feedback**
 Lengthy and complex hiring processes deter candidates, with 60% abandoning applications due to the 36-day process duration. Inadequate communication and feedback damage employer brand and deter future candidates. Ensuring a positive candidate experience is crucial.
 
 These challenges necessitate innovative solutions to enhance recruitment efficiency, mitigate bias, and improve candidate experience.
@@ -22,7 +22,6 @@ HireSight begins by matching resumes against job requirements, using sophisticat
 
 ## Natural Language Processing (NLP) Analysis:
 The platform utilizes natural language processing technology to delve deeper into the content of resumes. By analyzing the applicant's skills, experience, and qualifications, HireSight provides a detailed assessment of each candidate's suitability for the role.
-
 ## Content and Plagiarism Detection:
 HireSight incorporates AI-generated content detection and plagiarism detection tools to further verify the accuracy and authenticity of candidate resumes. This ensures that only qualified candidates proceed to the next stage of the recruitment process.
 
