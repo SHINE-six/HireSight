@@ -67,9 +67,9 @@ The following models were trained as part of the AI Recruitment System:
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/09d02a52-481d-4946-b465-25fd43890292" alt="image" width="60%" />
 </p>
 For the extra information please look at this model that we run in on kaggle
-(https://www.kaggle.com/code/chenming777/ai-gen-preprocess/notebook)
-(https://www.kaggle.com/code/chenming777/ai-gen-feature)
-(https://www.kaggle.com/code/chenming777/ai-gen-train/notebook)
+[Link to Preprocessing Notebook](https://www.kaggle.com/code/chenming777/ai-gen-preprocess/notebook)
+[Link to Preprocessing Notebook](https://www.kaggle.com/code/chenming777/ai-gen-feature)
+[Link to Preprocessing Notebook](https://www.kaggle.com/code/chenming777/ai-gen-train/notebook)
 
 7. **Interview Performance Assessment Model**
     This model will summarize all the model information and compile into two different version of reports like interviewee report and HR report
