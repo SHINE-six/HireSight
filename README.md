@@ -39,18 +39,18 @@ Following the completion of the interview process, HireSight generates a compreh
 # AI Recruitment System Models
 The following models were trained as part of the AI Recruitment System:
 
-1. **Resume Matching Similarity Algorithm Model**
+1. **Resume Matching Similarity Algorithm Model:**
    We will use a parse model to take down all the text from the resume and perform detection to ensure the authoritative of the resume owner.
 2. **Resume Ranker Model**
    Resume Ranker will provide suitability calculation algorithm to provide suitability rank based on candidates' resume toward the job description.
-3. **MBTI Personality Prediction Model**
+3. **MBTI Personality Prediction Model:**
    In our report we will have a section for the MBTI which we check from the performance of the interviewee as well as the work they sent to us. The MBTI test is a trend and it is an accurate personality model. It can let the candidate and company know the user behaviour for a better talents allocation.
-4. **Facial Emotion Recognition Model**
+4. **Facial Emotion Recognition Model:**
    The is one of the main model in the AI interviewer where we will detect the facial emotion from the candidate to evaluate the performances of the user
-5. **Eye Tracking Model**
+5. **Eye Tracking Model:**
    The eyes tracking model consist of left right eyeball movement tracking as well as blinking detection which is significant to know whether the user not focusing on the   
    interview window.
-6. **Plagiarism Detection Model**
+6. **Plagiarism Detection Model:**
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/bdf3a1c8-2fb2-4379-b3de-eb072f735c69" alt="image" width="60%" />
 </p>
@@ -59,29 +59,29 @@ The following models were trained as part of the AI Recruitment System:
 </p>
    The plagirism model will detect the similiar text that found from the website.
    
-6. **AI text Detection Model**
+6. **AI text Detection Model:**
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/c1a0f9c2-2a37-4e8b-95d7-4076c16f2ccc" alt="image" width="60%" />
 </p>
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/09d02a52-481d-4946-b465-25fd43890292" alt="image" width="60%" />
 </p>
-For the extra information please look at this model that we run in on kaggle
-https://www.kaggle.com/code/chenming777/ai-gen-preprocess/notebook
-https://www.kaggle.com/code/chenming777/ai-gen-feature
-https://www.kaggle.com/code/chenming777/ai-gen-train/notebook
+    For the extra information please look at this model that we run in on kaggle
+    https://www.kaggle.com/code/chenming777/ai-gen-preprocess/notebook
+    https://www.kaggle.com/code/chenming777/ai-gen-feature
+    https://www.kaggle.com/code/chenming777/ai-gen-train/notebook
 
-7. **Interview Performance Assessment Model**
+7. **Interview Performance Assessment Model:**
     This model will summarize all the model information and compile into two different version of reports like interviewee report and HR report
-8. **Identifying Speech Disfluency Models**
+8. **Identifying Speech Disfluency Models:**
     This model will detect the fluency of the model and help HR to evaluate the performance during the interview.
-9. **LLM Conversation Model**
+9. **LLM Conversation Model:**
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/be798721-7072-42c2-bfda-05473d0d36ee" alt="image" width="60%" />
 </p>
     We called gemini API for the LLM generation this will handle all the conversation during the EVA interviewer process
     
-10. **AI Avatar**
+10. **AI Avatar:**
     This is the AI avatar with the model and lip sync and text-to-speech and speech-to-text model with audio to make it more real and interactable.
 
 # Impact and Future of AI in Recruitment
