@@ -39,14 +39,29 @@ Following the completion of the interview process, HireSight generates a compreh
 # AI Recruitment System Models
 The following models were trained as part of the AI Recruitment System:
 1. **Resume Matching Similarity Algorithm Model**
+   We will use a parse model to take down all the text from the resume and perform detection to ensure the authoritative of the resume owner.
 2. **MBTI Personality Prediction Model**
+   In our report we will have a section for the MBTI which we check from the performance of the interviewee as well as the work they sent to us. The MBTI test is a trend and it is an accurate personality model. It can let the candidate and company know the user behaviour for a better talents allocation.
 3. **Facial Emotion Recognition Model**
+   The is one of the main model in the AI interviewer where we will detect the facial emotion from the candidate to evaluate the performances of the user
 4. **Eye Tracking Model**
-5. **Text Authenticity Detection Model**
-6. **Interview Performance Assessment Model**
-7. **Identifying Speech Disfluency Models**
-8. **LLM Conversation Model**
-9. **AI Avatar**
+   The eyes tracking model consist of left right eyeball movement tracking as well as blinking detection which is significant to know whether the user not focusing on the   
+   interview window.
+5. **Plagiarism Detection Model**
+   The plagirism model will detect the similiar text that found from the website.
+6. **AI text Detection Model**
+   For the extra information please look at this model that we run in on kaggle
+   https://www.kaggle.com/code/chenming777/ai-gen-preprocess/notebook
+   https://www.kaggle.com/code/chenming777/ai-gen-feature
+   https://www.kaggle.com/code/chenming777/ai-gen-train/notebook
+7. **Interview Performance Assessment Model**
+    This model will summarize all the model information and compile into two different version of reports like interviewee report and HR report
+8. **Identifying Speech Disfluency Models**
+    This model will detect the fluency of the model and help HR to evaluate the performance during the interview.
+9. **LLM Conversation Model**
+    We called gemini API for the LLM generation this will handle all the conversation during the EVA interviewer process
+10. **AI Avatar**
+    This is the AI avatar with the model and lip sync and text-to-speech and speech-to-text model with audio to make it more real and interactable.
 
 # Impact and Future of AI in Recruitment
 
