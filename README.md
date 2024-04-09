@@ -60,16 +60,16 @@ Following the completion of the interview process, HireSight generates a compreh
 
 ## Future:
 
-1. **AI-Assisted Interviews:** 
+1. **Human Interviews with AI Copilot and Analysis:** 
    - AI assistants will become integral in conducting interviews, providing real-time analysis and feedback to assess candidates' skills and adaptability accurately.
 
 2. **Customized Services:** 
    - AI systems will offer tailored services based on individual needs and backgrounds, ensuring fair treatment and enhancing workplace inclusivity.
 
-3. **New Employee Reception Chatbots:** 
+3. **Onboard Chatbots:** 
    - Chatbots will assist new employees in familiarizing themselves with company policies and culture, accelerating their integration into the organization.
 
-4. **Closed Browsers:** 
+4. **Lockdown Browsers:** 
    - To maintain assessment accuracy and fairness, closed browsers will be employed for online testing and assessments, preventing candidates from accessing external resources during evaluations.
 
 Overall, the integration of AI and automation technologies in recruitment processes not only streamlines operations but also fosters fairness, transparency, and inclusivity in the workplace, promising a more efficient and equitable future of recruitment.
