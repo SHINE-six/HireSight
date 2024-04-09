@@ -11,9 +11,9 @@ import tts
 import wavspeech_to_json
 import mongoDB
 import disfluency
-import plagiarism_check_modify
-import mbti
-import ai_detection
+# import plagiarism_check_modify
+# import mbti
+# import ai_detection
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -96,7 +96,7 @@ data = [
             "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
             "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
         },
-                {
+        {
             "jobId": "3b",
             "jobTitle": "Marketing Designer",
             "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
