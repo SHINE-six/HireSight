@@ -7,8 +7,10 @@ opencv-python==4.9.0.80
 SpeechRecognition==3.10.1
 gunicorn==21.2.0
 cmake==3.29.0.1
+google-generativeai==0.4.1
 dlib==19.24.2  # normal install probably give wheel problem, download from https://github.com/Silufer/dlib-python, then pip install dlib-19.24.2-cp312-cp312-win_amd64.whl
 pymongo==4.6.3
+torch==2.2.2
 
 #? From pip freeze result
 # absl-py==2.1.0
