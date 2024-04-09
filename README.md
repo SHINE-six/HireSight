@@ -59,7 +59,7 @@ The following models were trained as part of the AI Recruitment System:
 </p>
    The plagirism model will detect the similiar text that found from the website.
    
-6. **AI text Detection Model:**
+7. **AI text Detection Model:**
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/c1a0f9c2-2a37-4e8b-95d7-4076c16f2ccc" alt="image" width="60%" />
 </p>
@@ -71,17 +71,17 @@ For additional information, please refer to the following models that we ran on 
 - [AI Gen Feature Notebook](https://www.kaggle.com/code/chenming777/ai-gen-feature)
 - [AI Gen Train Notebook](https://www.kaggle.com/code/chenming777/ai-gen-train/notebook)
 
-7. **Interview Performance Assessment Model:**
+8. **Interview Performance Assessment Model:**
     This model will summarize all the model information and compile into two different version of reports like interviewee report and HR report
-8. **Identifying Speech Disfluency Models:**
+9. **Identifying Speech Disfluency Models:**
     This model will detect the fluency of the model and help HR to evaluate the performance during the interview.
-9. **LLM Conversation Model:**
+10. **LLM Conversation Model:**
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/be798721-7072-42c2-bfda-05473d0d36ee" alt="image" width="60%" />
 </p>
     We called gemini API for the LLM generation this will handle all the conversation during the EVA interviewer process
     
-10. **AI Avatar:**
+11. **AI Avatar:**
     This is the AI avatar with the model and lip sync and text-to-speech and speech-to-text model with audio to make it more real and interactable.
 
 # Impact and Future of AI in Recruitment
