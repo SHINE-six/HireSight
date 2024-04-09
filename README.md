@@ -51,14 +51,14 @@ The following models were trained as part of the AI Recruitment System:
    The eyes tracking model consist of left right eyeball movement tracking as well as blinking detection which is significant to know whether the user not focusing on the   
    interview window.
 6. **Plagiarism Detection Model:**
+   The plagirism model will detect the similiar text that found from the website.
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/bdf3a1c8-2fb2-4379-b3de-eb072f735c69" alt="image" width="60%" />
 </p>
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/2a89da7e-3563-4e60-a24b-5dd7116ef091" alt="image" width="60%" />
 </p>
-   The plagirism model will detect the similiar text that found from the website.
-   
+
 7. **AI text Detection Model:**
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/c1a0f9c2-2a37-4e8b-95d7-4076c16f2ccc" alt="image" width="60%" />
