@@ -77,10 +77,11 @@ The following models were trained as part of the AI Recruitment System:
 9. **Identifying Speech Disfluency Models:**
     This model will detect the fluency of the model and help HR to evaluate the performance during the interview.
 10. **LLM Conversation Model:**
+     We called gemini API for the LLM generation this will handle all the conversation during the EVA interviewer process
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/be798721-7072-42c2-bfda-05473d0d36ee" alt="image" width="60%" />
 </p>
-    We called gemini API for the LLM generation this will handle all the conversation during the EVA interviewer process
+   
     
 11. **AI Avatar:**
     This is the AI avatar with the model and lip sync and text-to-speech and speech-to-text model with audio to make it more real and interactable.
