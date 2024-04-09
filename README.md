@@ -36,6 +36,18 @@ Following the completion of the interview process, HireSight generates a compreh
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/03800935-4da0-4021-a364-e00ba10256b5" alt="System Architecture" width="80%" />
 </p>
 
+# AI Recruitment System Models
+The following models were trained as part of the AI Recruitment System:
+1. **Resume Matching Similarity Algorithm Model**
+2. **MBTI Personality Prediction Model**
+3. **Facial Emotion Recognition Model**
+4. **Eye Tracking Model**
+5. **Text Authenticity Detection Model**
+6. **Interview Performance Assessment Model**
+7. **Identifying Speech Disfluency Models**
+8. **LLM Conversation Model**
+9. **AI Avatar**
+
 # Impact and Future of AI in Recruitment
 
 ## Impact:
