@@ -66,6 +66,7 @@ The following models were trained as part of the AI Recruitment System:
 <p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/09d02a52-481d-4946-b465-25fd43890292" alt="image" width="60%" />
 </p>
+
 For additional information, please refer to the following models that we ran on Kaggle:
 - [AI Gen Preprocess Notebook](https://www.kaggle.com/code/chenming777/ai-gen-preprocess/notebook)
 - [AI Gen Feature Notebook](https://www.kaggle.com/code/chenming777/ai-gen-feature)
