@@ -51,19 +51,19 @@ The following models were trained as part of the AI Recruitment System:
    The eyes tracking model consist of left right eyeball movement tracking as well as blinking detection which is significant to know whether the user not focusing on the   
    interview window.
 6. **Plagiarism Detection Model**
-<p align="">
+<p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/bdf3a1c8-2fb2-4379-b3de-eb072f735c69" alt="image" width="60%" />
 </p>
-<p align="">
+<p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/2a89da7e-3563-4e60-a24b-5dd7116ef091" alt="image" width="60%" />
 </p>
    The plagirism model will detect the similiar text that found from the website.
    
 6. **AI text Detection Model**
-<p align="">
+<p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/c1a0f9c2-2a37-4e8b-95d7-4076c16f2ccc" alt="image" width="60%" />
 </p>
-<p align="">
+<p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/09d02a52-481d-4946-b465-25fd43890292" alt="image" width="60%" />
 </p>
 For the extra information please look at this model that we run in on kaggle
@@ -76,7 +76,7 @@ https://www.kaggle.com/code/chenming777/ai-gen-train/notebook
 8. **Identifying Speech Disfluency Models**
     This model will detect the fluency of the model and help HR to evaluate the performance during the interview.
 9. **LLM Conversation Model**
-<p align="">
+<p align="center">
   <img src="https://github.com/SHINE-six/HireSight/assets/91732305/be798721-7072-42c2-bfda-05473d0d36ee" alt="image" width="60%" />
 </p>
     We called gemini API for the LLM generation this will handle all the conversation during the EVA interviewer process
