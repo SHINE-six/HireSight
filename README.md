@@ -38,6 +38,22 @@ Following the completion of the interview process, HireSight generates a compreh
 
 # AI Recruitment System Models
 The following models were trained as part of the AI Recruitment System:
+<p align="center">
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/be798721-7072-42c2-bfda-05473d0d36ee" alt="image" width="40%" />
+</p>
+<p align="center">
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/09d02a52-481d-4946-b465-25fd43890292" alt="image" width="40%" />
+</p>
+<p align="center">
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/c1a0f9c2-2a37-4e8b-95d7-4076c16f2ccc" alt="image" width="40%" />
+</p>
+<p align="center">
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/2a89da7e-3563-4e60-a24b-5dd7116ef091" alt="image" width="40%" />
+</p>
+<p align="center">
+  <img src="https://github.com/SHINE-six/HireSight/assets/91732305/bdf3a1c8-2fb2-4379-b3de-eb072f735c69" alt="image" width="40%" />
+</p>
+
 1. **Resume Matching Similarity Algorithm Model**
    We will use a parse model to take down all the text from the resume and perform detection to ensure the authoritative of the resume owner.
 2. **MBTI Personality Prediction Model**
