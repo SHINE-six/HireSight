@@ -1,12 +1,14 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # ----------------- Connection to MongoDB Atlas ----------------- #
 MONGODB_URI = os.getenv('MONGODB_URI')
 client = MongoClient(MONGODB_URI)
 db = client['HireSight']
-print("Connected to MongoDB Atlas database Successfully!")
-
+print(db.list_collection_names())
 
 
 # ----------------- Foundation Functions ----------------- #
@@ -51,4 +53,4 @@ def append_data_to_document(collection, data: dict, uniqueSessionID: str):
 
 # ----------------- Specific Functions ----------------- #
 
-# print(json.dumps(get_data_with_uniqueSessionID('conversationLog', 'pswshaz5zx7l22zcqrb33m'), indent=4))
+print(get_all_data_from_collection('conversationLog'))

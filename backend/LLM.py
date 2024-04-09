@@ -1,6 +1,9 @@
 import google.generativeai as genai
+from dotenv import load_dotenv
 import re
 import os
+
+load_dotenv()
  
 # Configure the SDK with your API key by recovering the API key from a config file
 GENAI_API_KEY = os.getenv('GENAI_API_KEY')
