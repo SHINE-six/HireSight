@@ -52,5 +52,3 @@ def append_data_to_document(collection, data: dict, uniqueSessionID: str):
     return {"status": 200, "message": "Data appended successfully!"}
 
 # ----------------- Specific Functions ----------------- #
-
-print(get_all_data_from_collection('conversationLog'))
