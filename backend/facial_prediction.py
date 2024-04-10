@@ -17,7 +17,7 @@ new_model = tf.keras.models.load_model(model_path)
 
 def prediction(video_path: str, new_model: tf.keras.Model):
     # Define the path to the Haar cascade file
-    path = "haarcascade_frontalface_default.xml"
+    path = "model/haarcascade_frontalface_default.xml"
 
     # Initialize the video capture
     cap = cv2.VideoCapture(video_path)
