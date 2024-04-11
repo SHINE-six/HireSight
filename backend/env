@@ -1,0 +1,2 @@
+export MONGODB_URI = mongodb+srv://shine:shine@cluster0.mxiiu7b.mongodb.net/UserData?retryWrites=true&w=majority
+export GENAI_API_KEY = AIzaSyBf4CTKNe4hTUTNRNxjDbs9sMNOnEwwgFk
