@@ -11,7 +11,7 @@ import tts
 import wavspeech_to_json
 import mongoDB
 import disfluency
-# import plagiarism_check_modify
+import plagiarism
 # import mbti
 # import ai_detection
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,7 +24,8 @@ app = FastAPI()
 
 
 origins = [
-    "http://localhost:3000",  # Assuming your React app runs on localhost:3000
+    "http://localhost:3000",  # Assuming your frontend app runs on localhost:3000
+    "http://localhost:3001"
     # "https://ddncl8rd-8000.asse.devtunnels.ms/",  # Add your production origin as needed
 ]
 
@@ -37,7 +38,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-task_status: Dict[str, bool] = {"transcript": False, "face_emotion": False, "eye": False, "text_LLM_tts_wavToJson": False}
+taskStatus: Dict[str, bool] = {"transcript": False, "face_emotion": False, "eye": False, "text_LLM_tts_wavToJson": False}
 
 # sample data
 data = [
@@ -120,16 +121,16 @@ data = [
 ]
 
 @app.post("/")
-async def read_root():
+async def readRoot():
     print("Welcome to the Job Portal!")
     return {"message": "Welcome to the Job Portal!"}
 
 @app.get("/jobopenings")
-async def read_root():
+async def readRoot():
     return data
 
 @app.get("/jobopenings/{job_id}")
-async def read_job(job_id: str):
+async def readJob(job_id: str):
     for category in data:
         for job in category["availableJobs"]:
             if job["jobId"] == job_id:
@@ -137,46 +138,46 @@ async def read_job(job_id: str):
     return {"message": "Job not found"}
 
 @app.post("/resume")
-async def upload_resume(resume: UploadFile = File(...)):
+async def uploadResume(resume: UploadFile = File(...)):
     with open(f"resume/resume_in/{resume.filename}", "wb") as buffer:
         shutil.copyfileobj(resume.file, buffer)
-        resume_data = resume_parser.main(resume.filename)
+        resumeData = resume_parser.main(resume.filename)
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
 @app.get("/resume-ranking")
-async def get_resume_ranking():
-    file_path = "resume/resume_ranking.json"
-    return FileResponse(file_path, media_type="application/json", filename="resume_ranking.json")
+async def getResumeRanking():
+    filePath = "resume/resume_ranking.json"
+    return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
 uniqueSessionID = ""
 
 @app.post("/ai-interview/session/start")
-async def create_session(session_json: Request):
-    session_json = await session_json.json()
+async def create_session(sessionJson: Request):
+    sessionJson = await sessionJson.json()
     global uniqueSessionID
-    uniqueSessionID = session_json['uniqueSessionID']
-    print(mongoDB.post_data("combinedData", session_json))
-    print(mongoDB.post_data("conversationLog", session_json))
+    uniqueSessionID = sessionJson['uniqueSessionID']
+    print(mongoDB.postData("combinedData", sessionJson))
+    print(mongoDB.postData("conversationLog", sessionJson))
     return {"status": 200, "message": "Session created successfully"}
 
 # ----------------------- Audio thingy -----------------------
-def text_LLM_tts_wavToJson(user_transcript: str):
-    output_text = LLM.main(user_transcript)
-    print(mongoDB.append_data_to_document("conversationLog", {"user": "Ai - EVA", "text": output_text}, uniqueSessionID))
-    tts.main(output_text)
+def text_LLM_tts_wavToJson(userTranscript: str):
+    outputText = LLM.main(userTranscript)
+    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText}, uniqueSessionID))
+    tts.main(outputText)
     wavspeech_to_json.main()
     print("Text, TTS, and WAV to JSON conversion completed")
-    task_status["text_LLM_tts_wavToJson"] = True
+    taskStatus["text_LLM_tts_wavToJson"] = True
 
 def run_speech_to_text(background_tasks):
-    user_transcript = speech_to_text.main()
-    user_transcript = user_transcript['text']
-    print(mongoDB.append_data_to_document("conversationLog", {"user": "applicant", "text": user_transcript}, uniqueSessionID))
-    background_tasks.add_task(text_LLM_tts_wavToJson, user_transcript)
-    task_status["transcript"] = True
+    userTranscript = speech_to_text.main()
+    userTranscript = userTranscript['text']
+    print(mongoDB.appendDataToDocument("conversationLog", {"user": "applicant", "text": userTranscript}, uniqueSessionID))
+    background_tasks.add_task(text_LLM_tts_wavToJson, userTranscript)
+    taskStatus["transcript"] = True
     check_process_files()
 
 @app.post("/audio")
@@ -192,29 +193,29 @@ async def upload_audio(background_tasks: BackgroundTasks, audio: UploadFile = Fi
 
 @app.get("/get-fromAI-wav")
 async def get_fromAI_wav():
-    file_path = "uploads/audio/fromAI.wav"
-    return FileResponse(file_path, media_type="audio/wav", filename="fromAI.wav")
+    filePath = "uploads/audio/fromAI.wav"
+    return FileResponse(filePath, media_type="audio/wav", filename="fromAI.wav")
 
 @app.get("/get-fromAI-json")
 async def get_fromAI_json():
-    file_path = "uploads/audio/fromAI.json"
-    task_status["text_LLM_tts_wavToJson"] = False
-    return FileResponse(file_path, media_type="application/json", filename="fromAI.json")
+    filePath = "uploads/audio/fromAI.json"
+    taskStatus["text_LLM_tts_wavToJson"] = False
+    return FileResponse(filePath, media_type="application/json", filename="fromAI.json")
 
 @app.get("/task-status")
 async def get_task_status():
-    print("I was called by frontend:", task_status)
-    return {"status": task_status["text_LLM_tts_wavToJson"]}
+    print("I was called by frontend:", taskStatus)
+    return {"status": taskStatus["text_LLM_tts_wavToJson"]}
 
 # ----------------------- Video thingy -----------------------
 def run_facial_prediction():
     facial_prediction.main()
-    task_status["face_emotion"] = True
+    taskStatus["face_emotion"] = True
     check_process_files()
 
 def run_eye_track():
     eye_tracking.main()
-    task_status["eye"] = True
+    taskStatus["eye"] = True
     check_process_files()
 
 @app.post("/video")
@@ -231,44 +232,44 @@ async def upload_video(background_tasks: BackgroundTasks, video: UploadFile = Fi
 
 # ----------------------- Combine transcript, emotion, eye -----------------------
 def combine_transcript_emotion_eye():
-    task_status["transcript"] = False
-    task_status["face_emotion"] = False
-    task_status["eye"] = False
+    taskStatus["transcript"] = False
+    taskStatus["face_emotion"] = False
+    taskStatus["eye"] = False
 
-    current_time = datetime.datetime.now()
-    transcript_file = open("uploads/audio/transcript_detected.json", "r")
-    emotion_file = open("uploads/video/emotion_detected.json", "r")
-    eye_file = open("uploads/video/blink_detected.json", "r")
+    currentTime = datetime.datetime.now()
+    transcriptFile = open("uploads/audio/transcript_detected.json", "r")
+    emotionFile = open("uploads/video/emotion_detected.json", "r")
+    eyeFile = open("uploads/video/blink_detected.json", "r")
 
-    transcript_data = json.load(transcript_file)
-    emotion_data = json.load(emotion_file)
-    eye_data = json.load(eye_file)
+    transcriptData = json.load(transcriptFile)
+    emotionData = json.load(emotionFile)
+    eyeData = json.load(eyeFile)
 
-    transcript_file.close()
-    emotion_file.close()
-    eye_file.close()
+    transcriptFile.close()
+    emotionFile.close()
+    eyeFile.close()
 
-    combined_json_data = {
-        "timestamp": current_time.strftime("%H:%M:%S"),
-        "transcript": transcript_data['text'],
-        "emotion": emotion_data,
-        "eye": eye_data
+    combinedJsonData = {
+        "timestamp": currentTime.strftime("%H:%M:%S"),
+        "transcript": transcriptData['text'],
+        "emotion": emotionData,
+        "eye": eyeData,
+        "disfluencies": None,
+        "behavioralAnalysis": None,
+        "plagiarism": None,
     }
 
-    combined_json_data = disfluency.main(combined_json_data)
-
+    combinedJsonData = disfluency.main(combinedJsonData)
+    # combinedJsonData = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
+    # combinedJsonData = plagiarism.main(combinedJsonData)   # await cleanup, deadline 14/4
     #* to process plagiarism, disfluency, behavioral analysis at here
 
-    print(mongoDB.append_data_to_document("combinedData", combined_json_data, uniqueSessionID))
-
-    with open("uploads/combined/combined_data.json", "w") as combined_file:
-        json.dump(combined_json_data, combined_file, indent=2)
-        combined_file.close()
+    print(mongoDB.append_data_to_document("combinedData", combinedJsonData, uniqueSessionID))
 
     print ("Transcript and emotion combined successfully")
 
 def check_process_files():
-    if task_status["transcript"] and task_status["face_emotion"] and task_status["eye"]:
+    if taskStatus["transcript"] and taskStatus["face_emotion"] and taskStatus["eye"]:
         combine_transcript_emotion_eye()
 
         return True
@@ -277,25 +278,44 @@ def check_process_files():
 
 # ----------------------- Interview Session Finish -----------------------
 @app.post("/ai-interview/session/end")
-async def finish_interview():
+async def finish_interview(BackgroundTasks: BackgroundTasks):
     while True:
         if check_process_files():
             break
         else:
             continue
 
-    concat_user_transcript()
+    concat_result = concat_user_transcript()
+    BackgroundTasks.add_task(generate_report, concat_result)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
 def concat_user_transcript():
-    conversation_log = mongoDB.get_data_with_uniqueSessionID("conversationLog", uniqueSessionID)
-    log_full = ""
-    for log in conversation_log['log']:
+    conversationLog = mongoDB.get_data_with_uniqueSessionID("conversationLog", uniqueSessionID)
+    log_full:str = ""
+    for log in conversationLog['log']:
         if log['user'] == "applicant":
             log_full += log['text'] + ". "
         
-    print(log_full)
+    return log_full
+
+def generate_report(concat_result: str):
+    to_store_json = {
+        ""
+        "uniqueSessionID": uniqueSessionID,
+        "disfluencies": None,
+        "plagiarism": None,
+        "aiDetection": None,
+        "mbti": None,
+        "tone": None,  # Dict
+        "companySpecificSuitability": None,   # Dict
+        # "personalityAnalysis": None,   # Dict
+        "HiringIndex": None
+    }
+    # @ An Ning, @ Chen Ming
+    #* to process MBTI, disfluency, behavioral analysis at here
+
+    return {"status": 200, "message": "Report generated successfully"}
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
