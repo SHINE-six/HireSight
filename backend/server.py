@@ -1,5 +1,3 @@
-# Desmond
-
 import shutil
 from fastapi import FastAPI, File, Request, UploadFile, BackgroundTasks, WebSocket
 from fastapi.responses import FileResponse
@@ -144,6 +142,9 @@ async def uploadResume(resume: UploadFile = File(...)):
     with open(f"resume/resume_in/{resume.filename}", "wb") as buffer:
         shutil.copyfileobj(resume.file, buffer)
         resumeData = resume_parser.main(resume.filename)
+        
+        
+    
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
@@ -303,11 +304,12 @@ def concat_user_transcript():
 
 def generate_report(concat_result: str):
     to_store_json = {
-        ""
+        "email": str,
+        "concat_result": concat_result,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
-        "aiDetection": None,
+        "aiDetection": None,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
@@ -315,6 +317,7 @@ def generate_report(concat_result: str):
         "HiringIndex": None
     }
     # @ An Ning, @ Chen Ming
+    to_store_json['aiDetection'] = plagiarism.main(to_store_json)
     #* to process MBTI, disfluency, behavioral analysis at here
 
     return {"status": 200, "message": "Report generated successfully"}
