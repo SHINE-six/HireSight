@@ -1,10 +1,12 @@
+'use client';
+
 import React from 'react';
 import IndiJobCategory, { JobCatType} from './indiJobCategory';
 
 
 async function getData() {
   // sample data
-  const res = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/jobopenings', { cache: "no-store" });
+  const res = await fetch('http://localhost:8000/jobopenings', { cache: "no-store" });
   const data = await res.json();
   console.log("request data done");
   return data;
