@@ -4,7 +4,7 @@ import IndiJobCategory, { JobCatType} from './indiJobCategory';
 
 async function getData() {
   // sample data
-  const res = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/jobopenings', { cache: "no-store" });
+  const res = await fetch('https://3g5dh36k-8000.asse.devtunnels.ms/', { cache: "no-store" });
   const data = await res.json();
   console.log("request data done");
   return data;
