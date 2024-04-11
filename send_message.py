@@ -4,7 +4,7 @@ import json
 from twilio.rest import Client
 
 def get_latest_commit_sha():
-    response = requests.get(f"https://api.github.com/repos/SHINE-six/HireSight/commits?per_page=1", headers={"Authorization": f"token {GITHUB_TOKEN}"})
+    response = requests.get(f"https://api.github.com/repos/SHINE-six/HireSight/commits?per_page=1", headers={"Authorization": f"token {os.getenv('GITHUB_TOKEN')}"})
     commits = response.json()
     commits_message_json = {
         "sha": commits[0]['sha'][0:8],

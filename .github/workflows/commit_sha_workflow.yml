@@ -25,7 +25,7 @@ jobs:
 
     - name: Notify Latest Commit SHA via WhatsApp
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN}}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
         TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
         TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
         TWILIO_WHATSAPP_NUMBER: ${{ secrets.TWILIO_WHATSAPP_NUMBER }}
