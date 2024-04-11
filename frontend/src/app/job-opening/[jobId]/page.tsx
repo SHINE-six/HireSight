@@ -2,7 +2,7 @@ import { Job } from "../indiJobCategory";
 import { FormEvent } from "react";
 
 async function getJobDetail(JobId: any) {
-    const res = await fetch(`https://ddncl8rd-8000.asse.devtunnels.ms/jobopenings/${JobId}`, 
+    const res = await fetch(`https://4x174vzx-8000.asse.devtunnels.ms/jobopenings/${JobId}`, 
         {
             next: { revalidate: 10 },
         }
