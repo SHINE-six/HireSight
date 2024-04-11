@@ -1,4 +1,4 @@
-
+'use client';
 
 async function fetchResumeRanking() {
     const res = await fetch('https://chp1g6v4-8000.asse.devtunnels.ms/resume-ranking', { cache: "no-store" });
