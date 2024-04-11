@@ -1,7 +1,7 @@
 
 
 async function fetchResumeRanking() {
-    const res = await fetch('https://ddncl8rd-8000.asse.devtunnels.ms/resume-ranking', { cache: "no-store" });
+    const res = await fetch('https://chp1g6v4-8000.asse.devtunnels.ms/resume-ranking', { cache: "no-store" });
     const data = await res.json();
     console.log("request data done");
     return data;
