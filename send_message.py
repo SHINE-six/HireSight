@@ -15,7 +15,7 @@ def get_latest_commit_sha():
 
 
 def send_whatsapp_message(commit_sha):
-    client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+    client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_TOKEN'))
     message = client.messages.create(
         body=f"Latest Commit SHA: {commit_sha}",
         from_=f'whatsapp:{os.getenv('TWILIO_WHATSAPP_NUMBER')}',
