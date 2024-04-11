@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "soundFile": "C:\\HireMeModel\\Hiresight\\backend\\uploads\\audio\\fromAI.wav",
+    "duration": 4.13
+  },
+  "mouthCues": [
+    { "start": 0.00, "end": 0.04, "value": "X" },
+    { "start": 0.04, "end": 0.10, "value": "B" },
+    { "start": 0.10, "end": 0.23, "value": "C" },
+    { "start": 0.23, "end": 0.30, "value": "G" },
+    { "start": 0.30, "end": 0.65, "value": "B" },
+    { "start": 0.65, "end": 0.72, "value": "C" },
+    { "start": 0.72, "end": 0.93, "value": "E" },
+    { "start": 0.93, "end": 1.00, "value": "B" },
+    { "start": 1.00, "end": 1.07, "value": "G" },
+    { "start": 1.07, "end": 1.35, "value": "B" },
+    { "start": 1.35, "end": 1.42, "value": "F" },
+    { "start": 1.42, "end": 1.49, "value": "E" },
+    { "start": 1.49, "end": 1.66, "value": "A" },
+    { "start": 1.66, "end": 1.70, "value": "C" },
+    { "start": 1.70, "end": 1.88, "value": "B" },
+    { "start": 1.88, "end": 1.95, "value": "E" },
+    { "start": 1.95, "end": 2.23, "value": "B" },
+    { "start": 2.23, "end": 2.37, "value": "F" },
+    { "start": 2.37, "end": 2.44, "value": "C" },
+    { "start": 2.44, "end": 2.79, "value": "B" },
+    { "start": 2.79, "end": 2.93, "value": "C" },
+    { "start": 2.93, "end": 3.52, "value": "B" },
+    { "start": 3.52, "end": 3.60, "value": "A" },
+    { "start": 3.60, "end": 3.86, "value": "B" },
+    { "start": 3.86, "end": 4.07, "value": "C" },
+    { "start": 4.07, "end": 4.13, "value": "X" }
+  ]
+}
