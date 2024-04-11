@@ -30,23 +30,4 @@ jobs:
         TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
         TWILIO_WHATSAPP_NUMBER: ${{ secrets.TWILIO_WHATSAPP_NUMBER }}
         YOUR_WHATSAPP_NUMBER: ${{ secrets.YOUR_WHATSAPP_NUMBER }}
-      run: |
-        import requests
-        from twilio.rest import Client
-
-        def get_latest_commit_sha():
-            response = requests.get(f"https://api.github.com/repos/${{ github.repository }}/commits?per_page=1", headers={"Authorization": f"token ${{ secrets.GITHUB_TOKEN }}"})
-            commits = response.json()
-            return commits[0]['sha']
-
-        def send_whatsapp_message(commit_sha):
-            client = Client("${{ secrets.TWILIO_ACCOUNT_SID }}", "${{ secrets.TWILIO_AUTH_TOKEN }}")
-            message = client.messages.create(
-                                    body=f"Latest Commit SHA: {commit_sha}",
-                                    from_='whatsapp:${{ secrets.TWILIO_WHATSAPP_NUMBER }}',
-                                    to='whatsapp:${{ secrets.YOUR_WHATSAPP_NUMBER }}'
-                                )
-            print(message.sid)
-
-        latest_commit_sha = get_latest_commit_sha()
-        send_whatsapp_message(latest_commit_sha)
+      run: python send_message.py
