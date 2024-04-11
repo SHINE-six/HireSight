@@ -48,7 +48,7 @@
     "work-lifestyle": 0.6,
     "etc"
   }
-  "attitude": 0.8, (text)
+  "personality analysis": , (text)
   "suitability/hiring-index": 0.8, (speech_disfluency, company_culture (json: description, devop, work-lifestyle), )
   // speech-disfluency, tone(profesionallism/confidence)
 }

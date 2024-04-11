@@ -29,8 +29,6 @@ def print_report(result):
         highlights = ", ".join([f"Word {h[0]}-{h[1]}" for h in match['highlight']])
         print(f"   - **Highlighted Sections:** {highlights}\n")
 
-
-
 def main(text):
     result = check_plagiarism(text)
     print_report(result)
