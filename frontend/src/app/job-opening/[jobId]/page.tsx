@@ -1,8 +1,12 @@
 import { Job } from "../indiJobCategory";
-import { FormEvent } from "react";
+
 
 async function getJobDetail(JobId: any) {
+<<<<<<< HEAD
     const res = await fetch(`https://4x174vzx-8000.asse.devtunnels.ms/jobopenings/${JobId}`, 
+=======
+    const res = await fetch(`http://localhost:8000/jobopenings/${JobId}`, 
+>>>>>>> main
         {
             next: { revalidate: 10 },
         }
@@ -10,7 +14,6 @@ async function getJobDetail(JobId: any) {
     const data = await res.json();
     return data;
 }
-
 
 
 export default async function jobOpeningPage({ params }: any) {
