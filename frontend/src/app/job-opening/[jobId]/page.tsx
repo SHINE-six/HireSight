@@ -2,11 +2,7 @@ import { Job } from "../indiJobCategory";
 
 
 async function getJobDetail(JobId: any) {
-<<<<<<< HEAD
-    const res = await fetch(`https://4x174vzx-8000.asse.devtunnels.ms/jobopenings/${JobId}`, 
-=======
     const res = await fetch(`http://localhost:8000/jobopenings/${JobId}`, 
->>>>>>> main
         {
             next: { revalidate: 10 },
         }
