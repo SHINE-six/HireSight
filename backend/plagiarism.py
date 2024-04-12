@@ -2,7 +2,7 @@ import requests
 import json
 
 # Function to check plagiarism
-def check_plagiarism(text):
+def check_plagiarism(text: str):
     #input("[?] Input text to check with Turnitin > ")
     burp0_url = "https://papersowl.com:443/plagiarism-checker-send-data"
 
@@ -16,22 +16,29 @@ def check_plagiarism(text):
 
     return json.loads(r.text)
 
-# Function to print the plagiarism check report
-def print_report(result):
-    print("\nPlagiarism Check Report\n")
-    print(f"**Word Count:** {result['words_count']}")
-    print(f"**Index:** {100 - float(result['percent'])}% Similarity\n")
-    print("Detected Matches\n")
+def beautify_matches(matchedResult):
+    if not matchedResult:
+        return []
+    result = []
+    for match in matchedResult:
+        result.append({
+            "source": match['url'],
+            "percent": match['percent']
+        })
 
-    for i, match in enumerate(result['matches'], start=1):
-        print(f"{i}. **Source:** [{match['url']}]({match['url']})")
-        print(f"   - **Match Percentage:** {match['percent']}%")
-        highlights = ", ".join([f"Word {h[0]}-{h[1]}" for h in match['highlight']])
-        print(f"   - **Highlighted Sections:** {highlights}\n")
+    return result
+    
 
-def main(text):
+def main(text: str):
     result = check_plagiarism(text)
-    print_report(result)
+    if result['error_code']:
+        return []
+    result = {
+        "Score": f"{100 - float(result['percent'])}%",
+        "matches": beautify_matches(result['matches'])
+    }
+
+    return result
 
 # text = """ETL is a critical process for data integration and analytics. Some common use cases include:
 #     - Data warehousing: ETL pipelines are used to extract data from source systems such as databases, files and APIs, transform the data into a consistent format and then load it into a data warehouse.

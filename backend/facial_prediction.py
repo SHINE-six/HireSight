@@ -3,21 +3,22 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import os
-import datetime
 
 
 model_path = 'model/version4.h5'
+haarPath = "model/haarcascade_frontalface_default.xml"
+# Load the face cascade classifier
+faceCascade = cv2.CascadeClassifier(haarPath)
 
 if not os.path.exists(model_path):
     print(f"Error: Model file '{model_path}' does not exist")
     exit()
 
 new_model = tf.keras.models.load_model(model_path)
+print("Model loaded successfully", faceCascade)
 
-
-def prediction(video_path: str, new_model: tf.keras.Model):
+def prediction(video_path: str, new_model: tf.keras.Model, faceCascade: str = faceCascade):
     # Define the path to the Haar cascade file
-    path = "model/haarcascade_frontalface_default.xml"
 
     # Initialize the video capture
     cap = cv2.VideoCapture(video_path)
@@ -26,22 +27,13 @@ def prediction(video_path: str, new_model: tf.keras.Model):
         print("Error: Failed to open video file")
         exit()
 
-    original_fps = cap.get(cv2.CAP_PROP_FPS)
-    # frame_skip = int(round(original_fps / 10))
-
-    # fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    # out = cv2.VideoWriter('uploads/video/output.avi', fourcc, original_fps, (int(cap.get(3)), int(cap.get(4))))
-
-
     # Initialize variables to count emotions
     status_dict = {0: "Angry", 1: "Disgust", 2: "Fear", 3: "Happy", 4: "Sad", 5: "Surprise", 6: "Neutral"}
     emotion_counts = {status_dict[i]: 0 for i in range(7)}
 
 
-    # Load the face cascade classifier
-    faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + path)
 
-    start_time = datetime.datetime.now()
+
 
     while True:
         ret, frame = cap.read()
@@ -80,7 +72,6 @@ def prediction(video_path: str, new_model: tf.keras.Model):
 
     cap.release()
 
-    print("Time taken: ", datetime.datetime.now() - start_time)
     return emotion_counts
 
 

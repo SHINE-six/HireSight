@@ -73,6 +73,10 @@ export function Avatar(props) {
 
         audio.play();
 
+        return () => {
+          audio.pause();
+        };
+
     }, [audio]);
 
     const { nodes, materials } = useGLTF("/models/660ad1058d2d6c082659cc71.glb");
