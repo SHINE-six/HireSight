@@ -34,8 +34,7 @@ def detect_disfluencies(text):
     return toReturnJson
 
 
-def main(combinedJson):
-    disfluenciesJson = detect_disfluencies(combinedJson['transcript'])
-    combinedJson['disfluencies'] = disfluenciesJson
+def main(transcript):
+    disfluencies = detect_disfluencies(transcript)
 
-    return combinedJson
+    return disfluencies

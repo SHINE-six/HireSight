@@ -154,10 +154,6 @@ def generate_end_message():
 
 
 def main(text):
-    empty = {
-        "reply": "",
-        "flag": ""
-    }
     if request_end(text):
          return generate_end_message()
     if request_repeat(text):
