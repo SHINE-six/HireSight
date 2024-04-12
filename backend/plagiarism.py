@@ -31,7 +31,7 @@ def print_report(result):
 
 def main(text):
     result = check_plagiarism(text)
-    print_report(result)
+    return result;
 
 # text = """ETL is a critical process for data integration and analytics. Some common use cases include:
 #     - Data warehousing: ETL pipelines are used to extract data from source systems such as databases, files and APIs, transform the data into a consistent format and then load it into a data warehouse.

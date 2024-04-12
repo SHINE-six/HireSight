@@ -12,6 +12,7 @@ import wavspeech_to_json
 import mongoDB
 import disfluency
 import plagiarism
+import aiDetection
 # import mbti
 # import ai_detection
 from fastapi.middleware.cors import CORSMiddleware
@@ -317,7 +318,8 @@ def generate_report(concat_result: str):
         "HiringIndex": None
     }
     # @ An Ning, @ Chen Ming
-    to_store_json['aiDetection'] = plagiarism.main(to_store_json)
+    to_store_json['aiDetection'] = aiDetection.main(to_store_json)
+    to_store_json['plagiarism'] = plagiarism.main(to_store_json)
     #* to process MBTI, disfluency, behavioral analysis at here
 
     return {"status": 200, "message": "Report generated successfully"}
