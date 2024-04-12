@@ -9,7 +9,6 @@ gunicorn==21.2.0
 cmake==3.29.0.1
 google-generativeai==0.4.1
 # dlib==19.24.2  # normal install probably give wheel problem, download from https://github.com/Silufer/dlib-python, then pip install dlib-19.24.2-cp312-cp312-win_amd64.whl
-flask==3.0.3
 nltk==3.8.1
 pymongo==4.6.3
 torch==2.2.2
@@ -18,7 +17,8 @@ joblib==1.3.2
 textstat==0.7.3
 Werkzeug==3.0.2
 language-tool-python==2.7.1
-gensim==4.3.2
+flask==3.0.3  # prepare to throw
+gensim==4.3.2 # prepare to throw
 # for ffmpeg-python, need to install ffmpeg first, download from https://ffmpeg.org/download.html, then add to PATH, tutorial: https://phoenixnap.com/kb/ffmpeg-windows
 
 # # spaCy
