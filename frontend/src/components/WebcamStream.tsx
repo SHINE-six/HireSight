@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState, } from 'react';
 
 const WebcamRecorder: React.FC<{isRecording: boolean}> = ({ isRecording }: { isRecording: boolean }) => {
-  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  // const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const videoStream = useRef<MediaStream | null>(null);
+  // const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const mediaRecorder = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   let recorder: MediaRecorder | null;
 
@@ -11,7 +13,8 @@ const WebcamRecorder: React.FC<{isRecording: boolean}> = ({ isRecording }: { isR
     const accessWebcam = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        setVideoStream(stream);
+        // setVideoStream(stream);
+        videoStream.current = stream;
         const videoElement = document.querySelector('video');
         if (videoElement) videoElement.srcObject = stream;
       } catch (error) {
@@ -23,17 +26,23 @@ const WebcamRecorder: React.FC<{isRecording: boolean}> = ({ isRecording }: { isR
 
     return () => {
       // Cleanup
-      videoStream?.getTracks().forEach(track => track.stop());
+      if (videoStream.current) {
+        videoStream.current.getTracks().forEach(track => track.stop());
+      }
+
+      if (mediaRecorder.current) {
+        mediaRecorder.current.stop();
+      }
     };
-  }, []); // Dependency array should include videoStream to correctly clean up
+  }, []);
 
   const startRecording = () => {
-    if (!videoStream) {
+    if (!videoStream.current) {
       console.error('No video stream available');
       return;
     }
 
-    recorder = new MediaRecorder(videoStream, { mimeType: 'video/webm; codecs=vp9' });
+    recorder = new MediaRecorder(videoStream.current, { mimeType: 'video/webm; codecs=vp9' });
     recorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         recordedChunksRef.current.push(event.data);
@@ -41,18 +50,19 @@ const WebcamRecorder: React.FC<{isRecording: boolean}> = ({ isRecording }: { isR
       }
     };
     recorder.start();
-    setMediaRecorder(recorder);
+    // setMediaRecorder(recorder);
+    mediaRecorder.current = recorder;
     console.log(recorder)
   };
 
   const stopRecording = () => {
-    if (!mediaRecorder) {
+    if (!mediaRecorder.current) {
       console.error('No media recorder available');
       return;
     }
 
-    mediaRecorder.stop();
-    mediaRecorder.onstop = () => {
+    mediaRecorder.current.stop();
+    mediaRecorder.current.onstop = () => {
       const videoBlob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
       console.log(recordedChunksRef)
       sendVideoToBackend(videoBlob);

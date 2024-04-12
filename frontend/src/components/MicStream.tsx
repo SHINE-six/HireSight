@@ -29,10 +29,12 @@ const MicStream: React.FC<ChildProps> = (props) => {
 
     accessMic();
 
-    // return () => {
-    //   // Cleanup
-    //   audioStream?.getTracks().forEach(track => track.stop());
-    // };
+    return () => {
+      // Cleanup
+      if (audioStream) {
+        audioStream.getTracks().forEach(track => track.stop());
+      }
+    };
   }, []);
 
   const startRecording = () => {
