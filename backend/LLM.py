@@ -245,11 +245,6 @@ def main(text):
 # Data analysis is also vital as it allows for understanding trends, deriving insights from complex datasets, 
 # and making data-driven decisions which are fundamental in shaping any business strategy."""
 
-text = "I have shared my thoughts and answered your questions to the best of my ability. I'm happy to finish up."
-
-while True:
-    print("\nPrevious reply: " + previous_reply + " GQ:" + str(generalQuestion) + " TQ: " + str(technicalQuestion) + "\n")
-    print(main(text))
     
 
 
