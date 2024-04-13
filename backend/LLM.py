@@ -122,14 +122,12 @@ def detect_sentence(text, prompt_parts):
 
 
 #function to generate the interview questions by connecting to the Gen AI model
-def generate_general_interview_questions(text):
+def generate_general_interview_questions(text,previous_reply):
 
-    prompt = f"""Generate brief, one or two-sentence responses for common job interview questions, please only generate the question only
-      Generated question dont be too similar to all previous responses:{text} 
+    prompt = f"""Generate brief, one or two-sentence responses for only one general introduction interview question not need to related to business analyst, 
+    please only generate the question only, do not add extra things like label or newline.
+      New generated question must not be too similar to previous answer:{text}, previous_question:{previous_reply}
     """
-
-    
-    
 
     response = model.generate_content(prompt)
 
@@ -140,9 +138,9 @@ def generate_general_interview_questions(text):
 
 #function to generate the interview questions by connecting to the Gen AI model
 def generate_technical_interview_questions(text):
-    prompt = f"""Compliment the user first then generate just only one business analysis position related interview questions, 
-    the one question should be related to the previous reply and all in one paragraph just only write the question.
-    Previous answer:{text} """
+    prompt = f"""praise the user then generate strictly one business analysis position related interview question, 
+    the one question should not be similar to previous question:{text}. Please only make in a sentence do not add extra things like label or newline.
+    """
 
     response = model.generate_content(prompt)
 
@@ -162,7 +160,7 @@ def generate_interview_answer(text):
     return generated_answers
 
 def generate_ask_question():
-    prompt = f""""""
+    prompt = f"""Generate a reponse to ask the interviewee if they have any questions. Please only generate the question do not add extra things."""
     response = model.generate_content(prompt)
 
     #formatting the output to make it look cleaner
@@ -171,7 +169,7 @@ def generate_ask_question():
     return generated_answers
  
 def generate_repeat(text):
-    prompt = f"""Repeat this question:{text} in a simpler way. Please only generate the answer for the question do not add extra things"""
+    prompt = f"""Repeat this question:{text} in a simpler way. Please only generate the question do not add extra things"""
     response = model.generate_content(prompt)
 
     #formatting the output to make it look cleaner
@@ -193,22 +191,25 @@ def generate_end_message():
 
 # i need to save data or retrieve data from mongoDB
 # i want the previous reply, the generalQuestion, the technicalQuestion
+previous_reply = ""
+generalQuestion = 0
+technicalQuestion = 0
 
 def main(text):
+    global previous_reply
+    global generalQuestion
+    global technicalQuestion
     flag = detect_sentence(text, prompt_parts)
     data = {
         "reply": "",
         "flag": "",
-        "previous_reply": "",
-        "generalQuestion": 0,
-        "technicalQuestion": 0 
     }
     if flag == "1":
          data["reply"] = generate_end_message()
          previous_reply = data["reply"]
          data["flag"] = "1"
-         data['generalQuestion'] = 0
-         data['technicalQuestion'] = 0
+         generalQuestion = 0
+         technicalQuestion = 0
          return data
     if flag == "2":
          data["reply"] = generate_repeat(previous_reply)
@@ -216,17 +217,17 @@ def main(text):
          data["flag"] = "2"
          return data
     if flag == "3":
-        if data['generalQuestion'] < 2:
-            data["reply"] = generate_general_interview_questions(text)
+        if generalQuestion < 2:
+            data["reply"] = generate_general_interview_questions(text,previous_reply)
             previous_reply = data["reply"]
             data["flag"] = "3"
-            data['generalQuestion'] += 1
+            generalQuestion += 1
             return data
-        elif data['generalQuestion'] >= 2 and data['technicalQuestion'] < 4:
-            data["reply"] = generate_technical_interview_questions(text)
+        elif generalQuestion >= 2 and technicalQuestion < 4:
+            data["reply"] = generate_technical_interview_questions(previous_reply)
             previous_reply = data["reply"]
             data["flag"] = "3"
-            data['technicalQuestion'] += 1
+            technicalQuestion += 1
             return data
         else:
             data["reply"] =  generate_ask_question()
@@ -237,14 +238,18 @@ def main(text):
         data["reply"] = generate_interview_answer(text)
         previous_reply = data["reply"]
         data["flag"] = "4"
-        return data# This is not a question
+        return data
 
-text = """In my experience, some of the most crucial skills for a business analyst revolve around problem-solving, data analysis, and communication. 
-Problem-solving is essential because it enables a business analyst to identify challenges within an organization and devise strategic solutions. 
-Data analysis is also vital as it allows for understanding trends, deriving insights from complex datasets, 
-and making data-driven decisions which are fundamental in shaping any business strategy."""
+# text = """In my experience, some of the most crucial skills for a business analyst revolve around problem-solving, data analysis, and communication. 
+# Problem-solving is essential because it enables a business analyst to identify challenges within an organization and devise strategic solutions. 
+# Data analysis is also vital as it allows for understanding trends, deriving insights from complex datasets, 
+# and making data-driven decisions which are fundamental in shaping any business strategy."""
+
+text = "I have shared my thoughts and answered your questions to the best of my ability. I'm happy to finish up."
 
 while True:
+    print("\nPrevious reply: " + previous_reply + " GQ:" + str(generalQuestion) + " TQ: " + str(technicalQuestion) + "\n")
     print(main(text))
+    
 
 
