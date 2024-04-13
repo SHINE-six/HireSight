@@ -111,7 +111,7 @@ def detect_sentence(text, prompt_parts):
     prompt = f"""{prompt_parts} Detect the type of the sentence strictly one word 
     (output 1 if the text is related to end the interview,
     output 2 if the text ask for repeat the question,
-    output 3 if the text is answer a questions or saying so useful information,
+    output 3 if the text is answering a questions or saying so useful information or not asking a question,
     output 4 if the text is related to asking a question,). Sentence:{text}"""
     response = model.generate_content(prompt)
     
