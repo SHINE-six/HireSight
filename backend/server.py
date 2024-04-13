@@ -142,14 +142,16 @@ async def uploadResume(resume: UploadFile = File(...)):
     with open(f"resume/resume_in/{resume.filename}", "wb") as buffer:
         shutil.copyfileobj(resume.file, buffer)
         resumeData = resume_parser.main(resume.filename)
-        
-        
-    
+        # Use case 1: Once candidate upload resume, resume will be stored into MongoDB
 
+        # Use case 2: Once candidate upload resume, suitability for all job will be calculate, and only retrieve job with suitability > 0.5
     return {"status": 200, "message": "Resume uploaded successfully"}
 
 @app.get("/resume-ranking")
 async def getResumeRanking():
+    # Once HR select to view resume ranking
+    # Get resume from MongoDB
+    # Get job title to pull relative job description
     filePath = "resume/resume_ranking.json"
     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
