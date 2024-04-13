@@ -34,7 +34,7 @@ export default async function jobOpeningPage({ params }: any) {
             <br /> <hr /> <br />
             <div className="text-2xl font-bold">Apply for this job</div>
             <br />
-            <form action="https://pd3kt66x-8000.asse.devtunnels.ms/resume" method="post" encType="multipart/form-data" target="form_target" className="space-y-5">
+            <form action="http://localhost:8000/resume" method="post" encType="multipart/form-data" target="form_target" className="space-y-5">
                 <div className="flex flex-row justify-start">
                     <div className="w-[20rem] flex items-center justify-center h-12 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                         <div>Upload a file</div>
