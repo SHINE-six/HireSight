@@ -10,8 +10,8 @@ nltk.download('punkt')
 nltk.download('words')
 
 def predict_text(df):
-    model = joblib.load('ai_text_detector/app/model/gb_model_v1.pkl')
-    pca = joblib.load('ai_text_detector/app/model/pca_v5.pkl')
+    model = joblib.load('model/gb_model_v1.pkl')
+    pca = joblib.load('model/pca_v5.pkl')
     
 
     X = df.drop(['normal_text', 'cleaned_text'], axis=1)
