@@ -7,6 +7,7 @@ import MicStream from "@/components/MicStream";
 import Experience from "@/components/Experience";
 import { CiMicrophoneOn, CiMicrophoneOff } from "react-icons/ci";
 import { Canvas } from "@react-three/fiber";
+import { useRouter } from 'next/navigation';
 
 const firstJsonResponse = require('../../../public/audios/fromAI.json');
 
@@ -16,6 +17,7 @@ export default function AiInterviewPage() {
     const [audioUrl, setAudioUrl] = useState<string | null>('/audios/fromAI.wav');
     const [jsonData, setJsonData] = useState<any | null>(firstJsonResponse);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     // const wav_file = ['/audios/fromAI(1).wav', '/audios/fromAI(1r).wav', '/audios/fromAI(2).wav', '/audios/fromAI(3).wav', '/audios/fromAI(4).wav', '/audios/fromAI(5).wav', '/audios/fromAI(6).wav', '/audios/fromAI(7).wav', '/audios/fromAI(8).wav'];
     // const json_file = ['/audios/fromAI(1).json', '/audios/fromAI(1r).json', '/audios/fromAI(2).json', '/audios/fromAI(3).json', '/audios/fromAI(4).json', '/audios/fromAI(5).json', '/audios/fromAI(6).json', '/audios/fromAI(7).json', '/audios/fromAI(8).json'];
@@ -42,6 +44,7 @@ export default function AiInterviewPage() {
             console.log(response);
         }
         postEndSession();
+        router.push('/report')
     }
 
     const handleAudioUrlChange = (newAudioUrl: string | null) => {
@@ -72,6 +75,10 @@ export default function AiInterviewPage() {
             postUniqueSessionID();
         }
         isLogin.current = true;
+
+        return () => {
+            console.log("unmount");
+        }
     }, []);
 
     return (
@@ -101,13 +108,11 @@ export default function AiInterviewPage() {
                     {isRecording ? <CiMicrophoneOn /> : <CiMicrophoneOff />}
                 </div>
             </button>
-            <Link href="/report">
-                <button onClick={handleSessionEnd}>
-                    <div className="bg-red-700 ">
-                        End
-                    </div>
+            <button onClick={handleSessionEnd}>
+                <div className="bg-red-700 ">
+                    End
+                </div>
                 </button>
-            </Link>
         </div>
     );
 }

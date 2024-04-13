@@ -1,4 +1,5 @@
 import shutil
+import time
 from fastapi import FastAPI, File, Request, UploadFile, BackgroundTasks, WebSocket
 from fastapi.responses import FileResponse
 import uvicorn
@@ -38,32 +39,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-taskStatus: Dict[str, bool] = {"transcript": False, "face_emotion": False, "eye": False, "text_LLM_tts_wavToJson": False}
-# {
-#     "id": 1,
-#     "jobCategory": "Project Managements",
-#     "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects.",
-#     "availableJobs": [
-#         {
-#             "jobId": "1a",
-#             "jobTitle": "Scrum Master",
-#             "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
-#             "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
-#         },
-#         {
-#             "jobId": "1b",
-#             "jobTitle": "Project Manager",
-#             "jobDescription": "Project Manager is responsible for planning, executing, and closing projects.",
-#             "jobSkills": ["Project Management", "Agile", "Jira", "Risk Management"]
-#         },
-#         {
-#             "jobId": "1c",
-#             "jobTitle": "Business Analyst",
-#             "jobDescription": "Business Analyst is responsible for analyzing the business needs of clients to help identify business problems and propose solutions.",
-#             "jobSkills": ["Business Analysis", "Requirement Gathering", "Jira", "SQL"]
-#         }
-#     ]
-# },
+taskStatus: Dict[str, bool] = {"transcript": False, "faceEmotion": False, "eye": False, "text_LLM_tts_wavToJson": False}
+
 # sample data
 data = [
 {
@@ -214,7 +191,7 @@ def run_speech_to_text(background_tasks):
     print(mongoDB.appendDataToDocument("conversationLog", {"user": "applicant", "text": userTranscript}, uniqueSessionID))
     background_tasks.add_task(text_LLM_tts_wavToJson, userTranscript)
     taskStatus["transcript"] = True
-    check_process_files()
+    checkProcessFiles()
 
 @app.post("/audio")
 async def upload_audio(background_tasks: BackgroundTasks, audio: UploadFile = File(...)):
@@ -244,15 +221,15 @@ async def get_task_status():
     return {"status": taskStatus["text_LLM_tts_wavToJson"]}
 
 # ----------------------- Video thingy -----------------------
-def run_facial_prediction():
+def runFacialPrediction():
     facial_prediction.main()
-    taskStatus["face_emotion"] = True
-    check_process_files()
+    taskStatus["faceEmotion"] = True
+    checkProcessFiles()
 
 def run_eye_track():
     eye_tracking.main()
     taskStatus["eye"] = True
-    check_process_files()
+    checkProcessFiles()
 
 @app.post("/video")
 async def upload_video(background_tasks: BackgroundTasks, video: UploadFile = File(...)):
@@ -260,16 +237,16 @@ async def upload_video(background_tasks: BackgroundTasks, video: UploadFile = Fi
     with open(f"uploads/video/{video.filename}", "wb") as buffer:
         shutil.copyfileobj(video.file, buffer)
         buffer.close()
-    background_tasks.add_task(run_facial_prediction)
+    background_tasks.add_task(runFacialPrediction)
     run_eye_track()
 
     return {"message": "Video converted and saved successfully"}
 
 
 # ----------------------- Combine transcript, emotion, eye -----------------------
-def combine_transcript_emotion_eye():
+def combineTranscriptEmotionEye():
     taskStatus["transcript"] = False
-    taskStatus["face_emotion"] = False
+    taskStatus["faceEmotion"] = False
     taskStatus["eye"] = False
 
     currentTime = datetime.datetime.now()
@@ -295,39 +272,37 @@ def combine_transcript_emotion_eye():
         "plagiarism": None,
     }
 
-    combinedJsonData = disfluency.main(combinedJsonData)
+    combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
+    combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
     # combinedJsonData = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
     # combinedJsonData = plagiarism.main(combinedJsonData)   # await cleanup, deadline 14/4
     #* to process plagiarism, disfluency, behavioral analysis at here
 
-    print(mongoDB.append_data_to_document("combinedData", combinedJsonData, uniqueSessionID))
+    print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
 
     print ("Transcript and emotion combined successfully")
 
-def check_process_files():
-    if taskStatus["transcript"] and taskStatus["face_emotion"] and taskStatus["eye"]:
-        combine_transcript_emotion_eye()
+def checkProcessFiles():
+    if taskStatus["transcript"] and taskStatus["faceEmotion"] and taskStatus["eye"]:
+        combineTranscriptEmotionEye()
 
         return True
     else:
+        print("Not all files are processed yet")
         return False
 
 # ----------------------- Interview Session Finish -----------------------
 @app.post("/ai-interview/session/end")
 async def finish_interview(BackgroundTasks: BackgroundTasks):
-    while True:
-        if check_process_files():
-            break
-        else:
-            continue
+    time.sleep(5)   # Wait for the last process to finish
 
-    concat_result = concat_user_transcript()
-    BackgroundTasks.add_task(generate_report, concat_result)
+    concatResult = concat_user_transcript()
+    BackgroundTasks.add_task(generateReport, concatResult)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
 def concat_user_transcript():
-    conversationLog = mongoDB.get_data_with_uniqueSessionID("conversationLog", uniqueSessionID)
+    conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
         if log['user'] == "applicant":
@@ -335,14 +310,14 @@ def concat_user_transcript():
         
     return log_full
 
-def generate_report(concat_result: str):
-    to_store_json = {
-        "email": str,
-        "concat_result": concat_result,
+def generateReport(concatResult: str):
+    toStoreJson = {
+        "email": None,
+        "concatResult": concatResult,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
-        "aiDetection": None,  # Dict
+        "aiDetector": None,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
@@ -350,8 +325,11 @@ def generate_report(concat_result: str):
         "HiringIndex": None
     }
     # @ An Ning, @ Chen Ming
-    to_store_json['aiDetection'] = plagiarism.main(to_store_json)
+    toStoreJson['disfluencies'] = disfluency.main(concatResult)
+    toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     #* to process MBTI, disfluency, behavioral analysis at here
+
+    print(mongoDB.postData("reportData", toStoreJson))
 
     return {"status": 200, "message": "Report generated successfully"}
 
