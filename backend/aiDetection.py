@@ -61,6 +61,5 @@ def main(text):
     return json_data
     # return jsonify({'result': result, 'probability1': str(probability_human), 'probability2': str(probability_ai)})
 
-main()
 
 
