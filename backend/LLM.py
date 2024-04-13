@@ -123,13 +123,7 @@ def detect_sentence(text, prompt_parts):
 
 #function to generate the interview questions by connecting to the Gen AI model
 def generate_general_interview_questions(text):
-    # prompt = f"""Generate brief, one or two-sentence responses for common job interview questions.
-    # The responses should succinctly demonstrate a candidate's understanding of the job, their motivations,
-    # professional traits, and alignment with company culture. The questions include: 'Tell me about yourself',
-    # 'Why do you want to work here', 'What are your strengths and weaknesses', 'How would you describe yourself',
-    # 'What do you know about our company', 'Why should we hire you', 'What does work-life balance mean to you',
-    # and 'What kind of personality you are?'. The answers should be concise, articulate, and reflective of a well-rounded candidate
-    # Previous answer:{text} """
+
     prompt = f"""Generate brief, one or two-sentence responses for common job interview questions, please only generate the question only
       Generated question dont be too similar to all previous responses:{text} 
     """
