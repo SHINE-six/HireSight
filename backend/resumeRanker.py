@@ -69,17 +69,18 @@ def rankingOneResume(resumePathForRanking, jobTitleForRanking, jobDescriptionFor
 
     # Rank resumes based on similarity
     resumeText = extractTextFromPDF(resumePathForRanking)
-    resumeVector = tfidfVectorizer.transform([resumeText])
+    resumeVector = tfidfVectorizer.fit_transform([resumeText])
 
     rankedJobDescription = []
     for jobTitle, jobDescription in zip(jobTitleForRanking, jobDescriptionForRanking):
         jobDescriptionVector = tfidfVectorizer.transform([jobDescription])
-        similarity = cosine_similarity(jobDescriptionVector, resumeVector)[0][0]
-        rankedJobDescription.append({"jobTitle": jobTitle, "jobDescription": jobDescription, "similarity": similarity})
+        similarity = cosine_similarity(resumeVector, jobDescriptionVector)[0][0]
+        rankedJobDescription.append({"jobTitle": jobTitle, "similarity": similarity})
 
     rankedJobDescription.sort(key=lambda x: x["similarity"], reverse=True)
 
-    # jsonFilename = "ranked_resumes_test.json"
-    # with open(jsonFilename, "w") as jsonfile:
-    #     json.dump(rankedJobDescription, jsonfile, indent=4)
-    return json.dump(rankedJobDescription, indent=4)
+    jsonFilename = "rankedOneResumesTest.json"
+    with open(jsonFilename, "w") as jsonfile:
+        json.dump(rankedJobDescription, jsonfile, indent=4)
+
+    return rankedJobDescription
