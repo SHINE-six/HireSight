@@ -7,6 +7,9 @@ import json
 import os
 import random
 import string
+import base64
+import mongoDB
+import io
 
 # Extract text from PDFs
 def extractTextFromPDF(pdfPath):
@@ -17,32 +20,37 @@ def extractTextFromPDF(pdfPath):
             text += page.extract_text()
         return text
 
+def extractTextFromPDFMongoDB(pdf_data):
+    # Create a BytesIO object from the binary data
+    pdf_stream = io.BytesIO(pdf_data)
+    
+    # Open the PDF file using PyPDF2
+    pdfReader = PyPDF2.PdfReader(pdf_stream)
+    
+    # Extract text from each page
+    text = ""
+    for page in pdfReader.pages:
+        text += page.extract_text()
+    
+    return text
+
 def generateRandomID(length):
     characters = string.ascii_uppercase + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
 
-def oneJobDescriptionToAllResume(pdfDirectoryFromUser, jobDescriptionFromUser):
-    pdfDirectory = pdfDirectoryFromUser
+def oneJobDescriptionToAllResume(jobDescriptionFromUser, jsonFileName):
+    # Get all resumes from the database
+    data = mongoDB.getAllDataFromCollection("resumeDatabase")
+    resumePaths = convertPDFFromBinary(data)
 
-    pdfFiles = os.listdir(pdfDirectory)
-
-    resumePaths=[]
-
-    for filename in pdfFiles:
-        fullpath = os.path.join(pdfDirectory, filename)
-        resumePaths.append(fullpath)
-
-    # Sample job description
-    jobDescription = jobDescriptionFromUser
-
-    result = rankingAllResume(resumePaths, jobDescription)
+    result = rankingAllResume(resumePaths, jobDescriptionFromUser, jsonFileName)
     return result
 
 def allJobDescriptionsToOneResume(resumeFromUser, jobTitleFromUser, jobDescriptionFromUser):
     result = rankingOneResume(resumeFromUser, jobTitleFromUser, jobDescriptionFromUser)
     return result
 
-def rankingAllResume(resumePathsForRanking, jobDescriptionForRanking):
+def rankingAllResume(resumePathsForRanking, jobDescriptionForRanking, jsonFileName):
     # Extract job description features using TF-IDF
     tfidfVectorizer = TfidfVectorizer()
     jobDescVector = tfidfVectorizer.fit_transform([jobDescriptionForRanking])
@@ -50,7 +58,7 @@ def rankingAllResume(resumePathsForRanking, jobDescriptionForRanking):
     # Rank resumes based on similarity
     rankedResumes = []
     for resumePath in resumePathsForRanking:
-        resumeText = extractTextFromPDF(resumePath)
+        resumeText = extractTextFromPDFMongoDB(resumePath)
         resumeVector = tfidfVectorizer.transform([resumeText])
         similarity = cosine_similarity(jobDescVector, resumeVector)[0][0]
         rankedResumes.append((similarity))
@@ -58,7 +66,7 @@ def rankingAllResume(resumePathsForRanking, jobDescriptionForRanking):
     rankedResumes.sort(reverse=True)
     
     dictRankedResumes = [{"rank": rank, "id":generateRandomID(6), "similarity": similarity} for rank, (similarity) in enumerate(rankedResumes, start=1)]
-    jsonFilename = "ranked_resumes_test.json"
+    jsonFilename = jsonFileName
     with open(jsonFilename, "w") as jsonfile:
         json.dump(dictRankedResumes, jsonfile, indent=4)
     return dictRankedResumes
@@ -79,8 +87,42 @@ def rankingOneResume(resumePathForRanking, jobTitleForRanking, jobDescriptionFor
 
     rankedJobDescription.sort(key=lambda x: x["similarity"], reverse=True)
 
+    top3RankedJobDescription = rankedJobDescription[:3]
+
     jsonFilename = "rankedOneResumesTest.json"
     with open(jsonFilename, "w") as jsonfile:
-        json.dump(rankedJobDescription, jsonfile, indent=4)
+        json.dump(top3RankedJobDescription, jsonfile, indent=4)
 
-    return rankedJobDescription
+    return top3RankedJobDescription
+
+def convertPDFFromBinary(data):
+    resume_paths = []
+    for item in data:
+        pdf_data_bytes = item["pdf_data"]
+        resume_paths.append(pdf_data_bytes)
+        
+    return resume_paths
+
+def postDataTOCollection(resumeFile):
+    if resumeFile.filename.endswith(".pdf"):  # Check if the uploaded file is a PDF
+        # Read the uploaded PDF file as binary data
+        pdf_data = resumeFile.file.read()
+        
+        # Construct data object to post to the collection
+        resume_data = {
+            "filename": resumeFile.filename,
+            "pdf_data": pdf_data
+        }
+        
+        # Post the resume data to the collection
+        response = mongoDB.postData("resumeDatabase", resume_data)
+        
+        return response  # Return the response from the MongoDB operation
+    
+def getConcatenatedText(jobTitle, data):
+    for category in data:
+        for job in category["availableJobs"]:
+            if job["jobTitle"] == jobTitle:
+                concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
+                return concatenated_text
+    return None  # Return None if job title is not found
