@@ -1,4 +1,7 @@
 import resumeRanker as rr
+import os
+import mongoDB as mdb
+from bson import Binary
 
 data = [
 {
@@ -88,19 +91,49 @@ data = [
 }
 ]
 
-jobDesctiptionArray = []
-jobTitleArray = []
+# jobDesctiptionArray = []
+# jobTitleArray = []
 
+# for category in data:
+#     for job in category["availableJobs"]:
+#         jobTitleArray.append(job["jobTitle"])
+#         concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
+#         jobDesctiptionArray.append(concatenated_text)
+
+# #Await for testing
+# resumePath = "C:\\Users\\YC PUAH\\OneDrive - Asia Pacific University\\Puah Yi Kai\\Resume Ranking\\resume-ranker\\Resume_Sample\\Abiral_Pandey_Fullstack_Java.pdf"
+# result = rr.allJobDescriptionsToOneResume(resumePath, jobTitleArray, jobDesctiptionArray)
+
+# print(result)
+
+#________________________________________________________________________________________________________________________________________________________________
+# folder_path = "C:\\Users\\YC PUAH\\OneDrive - Asia Pacific University\\Puah Yi Kai\\Resume_Sample_Five_Test"
+
+# for filename in os.listdir(folder_path):
+#     if filename.endswith(".pdf"):  # Assuming all files are PDFs
+#         # Construct the full path to the PDF file
+#         file_path = os.path.join(folder_path, filename)
+        
+#         # Read the PDF file as binary data
+#         with open(file_path, "rb") as file:
+#             pdf_data = file.read()
+        
+#         # Construct data object to post to the collection
+#         resume_data = {
+#             "filename": filename,
+#             "pdf_data": pdf_data
+#         }
+        
+#         # Post the resume data to the collection
+#         response = mdb.postData("resumeDatabase", resume_data)
+#________________________________________________________________________________________________________________________________________________________________
+
+# #Mongo DB Test all pdf
 for category in data:
     for job in category["availableJobs"]:
-        jobTitleArray.append(job["jobTitle"])
         concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
-        jobDesctiptionArray.append(concatenated_text)
+        break
+    break
 
-#Await for testing
-resumePath = "C:\\Users\\YC PUAH\\OneDrive - Asia Pacific University\\Puah Yi Kai\\Resume Ranking\\resume-ranker\\Resume_Sample\\Abiral_Pandey_Fullstack_Java.pdf"
-result = rr.allJobDescriptionsToOneResume(resumePath, jobTitleArray, jobDesctiptionArray)
-
-print(result)
-
+rr.oneJobDescriptionToAllResume(concatenated_text)
 
