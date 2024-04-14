@@ -83,10 +83,11 @@ data = [
                                     "Commitment to continuous learning and development, both for self and team"]
                 },
                 {
-                    "jobId": "4a",
-                    "jobTitle": "Business Analyst",
-                    "jobDescription": "Scrum Master is responsible for ensuring that the team follows the rules of Scrum, and helps the team to continuously improve their process.",
-                    "jobSkills": ["Scrum", "Agile", "Kanban", "Jira"]
+                    "jobId": "WD-0027891",
+                    "jobTitle": "IT Business Analyst Salesforce",
+                    "jobDescription": "As a Business Analyst in Hilti's Systematic Account Development program, you'll focus on enhancing Customer Relationship Management through Salesforce Sales Cloud. This role involves understanding business requirements, designing solution proposals, and supporting their implementation within Salesforce to optimize sales processes. You'll work within an international scrum team, using agile methodologies to deliver significant customer impact. While Salesforce Sales Cloud is your primary technology focus, you'll also engage with SAP S4 HANA, Salesforce Service Cloud, and AWS Microservices among others. This position plays a crucial role in providing transparency on sales opportunities and enabling effective use of Hilti products on job sites.",
+                    "jobSkills": ["Bachelor’s degree in computer science, software engineering, information technology, or related fields","Over 5 years of experience with cloud software (preferably Salesforce), business process management, and agile methodologies","Excellent communication and interpersonal skills, fluent in English for effective stakeholder management in a global matrix environment",
+                                  "Passion for marketing, sales, and service business process design with a keen interest in CRM software","Strong willingness and capacity to learn."]
                 }
             ]
         },
@@ -119,11 +120,11 @@ data = [
                           "Skilled in analyzing test results and reporting with defined KPIs","Experience in agile environments and understanding of CI/CD processes; fluent in English."]
         },
         {
-            "jobId": "WD-0028144",
-            "jobTitle": "Cloud QA Automation Engineer",
-            "jobDescription": "As a Cloud QA Automation Engineer at Hilti, you will focus on defining and executing test cases, approaches, automation, and documentation within the Sales Core IT area. Your main goal is to ensure business requirements are accurately met through meticulous testing methods for complex software applications. Daily responsibilities include integrating with product or project teams to deliver high-quality software, thoroughly testing changes before production, and utilizing automation test suites. Additionally, you will continually seek to implement cutting-edge technologies to enhance IT QA processes at Hilti.",
-            "jobSkills": ["Bachelor's or Master's in Information Systems, Computer Science, or related fields with a CGPA > 3.0","4+ years QA Engineer experience in the IT sector","Expertise in test automation tools like Cucumber, BDD, Gherkin, JMeter, and Postman","Familiarity with AWS products and navigating the AWS console",
-                          "Skilled in analyzing test results and reporting with defined KPIs","Experience in agile environments and understanding of CI/CD processes; fluent in English."]
+            "jobId": "WD-0027424",
+            "jobTitle": "Process Expert - Procurement IT",
+            "jobDescription": "As a Procurement Support Specialist at Hilti, you will assist and guide Procurement Managers through the sourcing process to ensure compliance and high quality. You'll gain expertise in drafting Requests for Proposal, setting up auctions, and forming contracts, while also managing supplier data and leading system improvement projects. This role offers a comprehensive introduction to Hilti's business operations and involvement in a global team.",
+            "jobSkills": ["Bachelor’s degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
+                          "Good analytical abilities with a strong affinity for IT systems","Excellent communication and presentation skills in English; additional languages beneficial."]
         },
     ]
 },
