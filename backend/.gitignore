@@ -1,6 +1,5 @@
 eenv
 venv
-eenv
 .dockerignore
 Dockerfile
 __pycache__/
