@@ -3,9 +3,11 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from joblib import load
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet
 from xgboost import XGBClassifier
 from sklearn.preprocessing import LabelEncoder
 import sklearn
+nltk.download('wordnet')
 
 nltk.download('stopwords')
 
@@ -74,8 +76,8 @@ class Lemmatizer(object):
 
 def main():
     # Load your model and other necessary components
-    model_xgb = load('/kaggle/input/mbti-train/model_xgb.joblib')
-    vectorizer = load('/kaggle/input/mbti-train/tfidf_vectorizer.joblib')
+    model_xgb = load('backend/model_xgb.joblib')
+    vectorizer = load('backend/tfidf_vectorizer.joblib')
 
     # Process your input data
     # Assume 'sentence' is the text input you are classifying
