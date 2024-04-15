@@ -251,7 +251,7 @@ async def create_session(sessionJson: Request):
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
     outputText = LLM.main(userTranscript)
-    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText}, uniqueSessionID))
+    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply']}, uniqueSessionID))
     tts.main(outputText)
     wavspeech_to_json.main()
     print("Text, TTS, and WAV to JSON conversion completed")
