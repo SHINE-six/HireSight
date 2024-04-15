@@ -15,7 +15,6 @@ import disfluency
 import plagiarism
 import aiDetection
 # import mbti
-# import ai_detection
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -45,9 +44,9 @@ taskStatus: Dict[str, bool] = {"transcript": False, "faceEmotion": False, "eye":
 # sample data
 data = [
 {
-    "id": 1,
+    "categoryId": 1,
     "jobCategory": "IT, Software & Digital",
-    "jobCategoryDescription": "Delivering exciting, innovative, complex, and technical projects.",
+    "jobCategoryDescription": "This division is responsible for spearheading innovative and complex technical projects, with a focus on information technology and digital transformation within the organization.",
     "subCategories": [
         {
             "subCategoryId": "1A",
@@ -130,7 +129,7 @@ data = [
     ]
 },
 {
-    "id": 2,
+    "categoryId": 2,
     "jobCategory": "Engineering",
     "jobCategoryDescription": "A core unit that drives the development of new products and services, ensuring the company stays at the forefront of engineering innovation and advancement.",
     "availableJobs": [
@@ -151,7 +150,7 @@ data = [
     ]
 },
 {
-    "id": 3,
+    "categoryId": 3,
     "jobCategory": "Sales",
     "jobCategoryDescription": "A dynamic sector tasked with driving growth and revenue through strategic sales initiatives, combining deep technical knowledge with market acumen.",
     "availableJobs": [
@@ -172,7 +171,7 @@ data = [
     ]
 },
 {
-    "id": 4,
+    "categoryId": 4,
     "jobCategory": "Human Resources",
     "jobCategoryDescription": "This team focuses on optimizing talent acquisition and management, particularly for roles that support the company's digital and technological initiatives.",
     "availableJobs": [
@@ -187,7 +186,7 @@ data = [
 }
 ]
 
-@app.post("/")
+@app.get("/")
 async def readRoot():
     print("Welcome to the Job Portal!")
     return {"message": "Welcome to the Job Portal!"}
@@ -196,12 +195,25 @@ async def readRoot():
 async def readRoot():
     return data
 
-@app.get("/jobopenings/{job_id}")
+@app.get("/jobopenings/{category_id}")
+async def readCategory(category_id: int):
+    for category in data:
+        if category["categoryId"] == category_id:
+            return category
+    return {"message": "Category not found"}
+
+@app.get("/jobopenings/job/{job_id}")
 async def readJob(job_id: str):
     for category in data:
-        for job in category["availableJobs"]:
-            if job["jobId"] == job_id:
-                return job
+        if 'subCategories' in category:
+            for subCategory in category["subCategories"]:
+                for job in subCategory["availableJobs"]:
+                    if job["jobId"] == job_id:
+                        return job
+        if 'availableJobs' in category:
+            for job in category["availableJobs"]:
+                if job["jobId"] == job_id:
+                    return job
     return {"message": "Job not found"}
 
 # changes ^^^
