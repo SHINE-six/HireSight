@@ -13,6 +13,7 @@ import wavspeech_to_json
 import mongoDB
 import disfluency
 import plagiarism
+import aiDetection
 # import mbti
 # import ai_detection
 from fastapi.middleware.cors import CORSMiddleware
@@ -398,6 +399,7 @@ def generateReport(concatResult: str):
     # @ An Ning, @ Chen Ming
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
+    toStoreJson['aiDetector'] = aiDetection.main(concatResult)
     #* to process MBTI, disfluency, behavioral analysis at here
 
     print(mongoDB.postData("reportData", toStoreJson))
