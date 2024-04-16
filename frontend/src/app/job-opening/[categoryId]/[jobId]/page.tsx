@@ -1,17 +1,22 @@
-import { Job } from "../indiJobCategory";
+'use client';
 
+import { Job } from "../../indiJobCategory";
 
-async function getJobDetail(JobId: any) {
-    const res = await fetch(`http://localhost:8000/jobopenings/${JobId}`, 
-        {
-            next: { revalidate: 10 },
-        }
-    );
-    const data = await res.json();
-    return data;
+async function getJobDetail(JobId: string) {
+    console.log(JobId)
+    const res = await fetch(`http://localhost:8000/jobopenings/job/${JobId}`)
+    const data = await res.json()
+    // const data = {
+    //     "jobId": "1A_a",
+    //     "jobTitle": "IT Business Analyst – SAP FICO",
+    //     "jobDescription": "This is an IT Business Analyst role focused on the financial aspects of software sales, including subscriptions, rentals, leasing, and usage concepts for Hilti tools. You will bridge the gap between business needs and SAP FICO implementations, working on global projects, daily support, and compliance initiatives.",
+    //     "jobSkills": ["SAP FICO consultant background (3+ years experience)", "Experience with SAP ERP 6.0 / S/4HANA in finance (General Ledger, AR, AA)", 
+    //                     "Understanding of business processes in finance, controlling, sales & distribution", "Ability to handle complex projects and implement IFRS standards","Strong communication, problem-solving, and teamwork skills","Experience in international/virtual teams"]
+    // }
+
+    return data
+
 }
-
-
 export default async function jobOpeningPage({ params }: any) {
     let thisJob: Job;
     thisJob = await getJobDetail(params.jobId);
