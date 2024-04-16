@@ -47,7 +47,4 @@ def main(text):
     }
     json_data = json.dumps(data)
     return json_data
-    # return jsonify({'result': result, 'probability1': str(probability_human), 'probability2': str(probability_ai)})
-
-
 

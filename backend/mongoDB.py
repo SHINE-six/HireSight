@@ -8,7 +8,7 @@ load_dotenv()
 MONGODB_URI = os.getenv('MONGODB_URI')
 client = MongoClient(MONGODB_URI)
 db = client['HireSight']
-print(db.list_collection_names())
+print("Connected to MongoDB Atlas!")
 
 
 # ----------------- Foundation Functions ----------------- #
@@ -30,11 +30,6 @@ def postData(collection, data):
     collection.insert_one(data)
     return {"status": 200, "message": "Data posted successfully!"}
 
-def deleteData(collection, data):
-    collection = db[collection]
-    collection.delete_one(data)
-    return {"status": 200, "message": "Data deleted successfully!"}
-
 def updateData(collection, data):
     collection = db[collection]
     collection.update_one(data)
@@ -52,3 +47,11 @@ def appendDataToDocument(collection, data: dict, uniqueSessionID: str):
     return {"status": 200, "message": "Data appended successfully!"}
 
 # ----------------- Specific Functions ----------------- #
+#! For maintenance only, should not be connected to server
+def deleteFirstTenData(collection):
+    collection = db[collection]
+    documents = collection.find().limit(10)    
+    ids = [doc['_id'] for doc in documents]
+    collection.delete_many({'_id': {'$in': ids}})
+    return {"status": 200, "message": "Data deleted successfully!"}
+
