@@ -10,8 +10,8 @@ nltk.download('punkt')
 nltk.download('words')
 
 def predict_text(df):
-    model = joblib.load('ai_text_detector/app/model/gb_model_v1.pkl')
-    pca = joblib.load('ai_text_detector/app/model/pca_v5.pkl')
+    model = joblib.load('model/gb_model_v1.pkl')
+    pca = joblib.load('model/pca_v5.pkl')
     
 
     X = df.drop(['normal_text', 'cleaned_text'], axis=1)
@@ -23,19 +23,7 @@ def predict_text(df):
     return prediction, prediction_proba
 
 
-def main():
-    text = """
-ETL, which stands for Extract, Transform, Load, is a fundamental process in data management and analytics used to consolidate 
-and organize data from various sources into a unified format for analysis, reporting, and decision-making purposes. The process begins with extraction, 
-where data is gathered from disparate sources such as databases, applications, files, or even streaming platforms. This extraction phase involves 
-identifying relevant data and retrieving it in its raw form. Once extracted, the data undergoes transformation, which encompasses several operations 
-including cleaning, filtering, aggregating, and structuring the data to conform to a predefined schema or data model. Transformation may also involve 
-enriching the data by integrating it with supplementary sources, performing calculations, or applying business rules to ensure consistency and accuracy.
- Finally, the transformed data is loaded into a target database, data warehouse, or analytical platform where it can be accessed, queried, and analyzed 
- by users or applications. ETL processes are essential for maintaining data integrity, improving data quality, and enabling organizations to derive 
- valuable insights from their data assets. Additionally, ETL pipelines can be automated and scheduled to ensure the timely and efficient processing 
- of data, facilitating real-time analytics and decision-making.
-#     """ # This is the data i need put text here
+def main(text):
 
     process_data = preprocess_text(text)
 
@@ -59,7 +47,4 @@ enriching the data by integrating it with supplementary sources, performing calc
     }
     json_data = json.dumps(data)
     return json_data
-    # return jsonify({'result': result, 'probability1': str(probability_human), 'probability2': str(probability_ai)})
-
-print(main())
 
