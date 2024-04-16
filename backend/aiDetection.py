@@ -48,3 +48,25 @@ def main(text):
     json_data = json.dumps(data)
     return json_data
 
+def main_HR(text):
+    process_data = preprocess_text(text)
+
+    feature_df = feature_extraction(process_data)
+
+    result_df = postprocess_text(feature_df)
+
+    prediction, prediction_proba = predict_text(result_df)
+
+    probability_ai = round(prediction_proba[0][1] * 100, 2)
+    
+    if prediction == 0:
+        result = "human"
+    else:
+        result = "ai"
+    data = {
+    "probability_ai": str(probability_ai)
+    }
+    json_data = json.dumps(data)
+    return json_data
+    
+
