@@ -3,3 +3,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.animate-expand {
+    transition: max-height 0.5s ease-in-out;
+    max-height: 10rem;
+}
+  
+.animate-expand.active {
+    max-height: 50rem;
+    opacity: 1;
+}

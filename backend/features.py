@@ -8,13 +8,12 @@ import textstat
 from language_tool_python import LanguageTool
 import joblib
 
+count_vectorizer = joblib.load('model/count_vectorizer_50k.pkl')
+bigram_vectorizer = joblib.load('model/bigram_vectorizer_50k.pkl')
+trigram_vectorizer = joblib.load('model/trigram_vectorizer_50k.pkl')
+bitri_vectorizer = joblib.load('model/bitri_vectorizer_50k.pkl')
+
 def feature_extraction(df):
-
-    count_vectorizer = joblib.load('ai_text_detector/app/tools/count_vectorizer_50k.pkl')
-    bigram_vectorizer = joblib.load('ai_text_detector/app/tools/bigram_vectorizer_50k.pkl')
-    trigram_vectorizer = joblib.load('ai_text_detector/app/tools/trigram_vectorizer_50k.pkl')
-    bitri_vectorizer = joblib.load('ai_text_detector/app/tools/bitri_vectorizer_50k.pkl')
-
     # Basic NLP ------------------------------------------------
 
     df['char_count'] = df['cleaned_text'].apply(len)
