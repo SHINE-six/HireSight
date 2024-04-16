@@ -14,6 +14,7 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
+import mbti_test
 # import mbti
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
@@ -412,6 +413,7 @@ def generateReport(concatResult: str):
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatResult)
+    toStoreJson['mbti'] = mbti_test.main(concatResult)
     #* to process MBTI, disfluency, behavioral analysis at here
 
     print(mongoDB.postData("reportData", toStoreJson))
