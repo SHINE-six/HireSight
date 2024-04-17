@@ -1,6 +1,6 @@
 import resumeRanker as rr
 import os
-import mongoDB as mdb
+#import mongoDB as mdb
 from bson import Binary
 
 data = [
@@ -147,26 +147,26 @@ data = [
 }
 ]
 
-jobDesctiptionArray = []
-jobTitleArray = []
+# jobDesctiptionArray = []
+# jobTitleArray = []
 
-for category in data:
-    if "availableJobs" in category:
-        for job in category["availableJobs"]:
-            jobTitleArray.append(job["jobTitle"])
-            concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
-            jobDesctiptionArray.append(concatenated_text)
+# for category in data:
+#     if "availableJobs" in category:
+#         for job in category["availableJobs"]:
+#             jobTitleArray.append(job["jobTitle"])
+#             concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
+#             jobDesctiptionArray.append(concatenated_text)
     
-    if "subCategories" in category:
-        for sub_category in category["subCategories"]:
-            if "availableJobs" in sub_category:
-                for job in sub_category["availableJobs"]:
-                    jobTitleArray.append(job["jobTitle"])
-                    concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
-                    jobDesctiptionArray.append(concatenated_text)
+#     if "subCategories" in category:
+#         for sub_category in category["subCategories"]:
+#             if "availableJobs" in sub_category:
+#                 for job in sub_category["availableJobs"]:
+#                     jobTitleArray.append(job["jobTitle"])
+#                     concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
+#                     jobDesctiptionArray.append(concatenated_text)
 
-print('\n'.join(jobTitleArray))
-print('\n'.join(jobDesctiptionArray))
+# print('\n'.join(jobTitleArray))
+# print('\n'.join(jobDesctiptionArray))
 
 # #Await for testing
 # resumePath = "C:\\Users\\YC PUAH\\OneDrive - Asia Pacific University\\Puah Yi Kai\\Resume Ranking\\resume-ranker\\Resume_Sample\\Abiral_Pandey_Fullstack_Java.pdf"
@@ -204,3 +204,9 @@ print('\n'.join(jobDesctiptionArray))
 #     break
 
 # rr.oneJobDescriptionToAllResume(concatenated_text)
+
+jd = "This is an IT Business Analyst role focused on the financial aspects of software sales, including subscriptions, rentals, leasing, and usage concepts for Hilti tools. You will bridge the gap between business needs and SAP FICO implementations, working on global projects, daily support, and compliance initiatives.\nSAP FICO consultant background (3+ years experience)\nExperience with SAP ERP 6.0 / S/4HANA in finance (General Ledger, AR, AA)\nUnderstanding of business processes in finance, controlling, sales & distribution\nAbility to handle complex projects and implement IFRS standards\nStrong communication, problem-solving, and teamwork skills\nExperience in international/virtual teams"
+resumePath = "C:\\Users\\YC PUAH\\OneDrive - Asia Pacific University\\Puah Yi Kai\\Resume Ranking\\resume-ranker\\Resume_Sample\\Abiral_Pandey_Fullstack_Java.pdf"
+
+result = rr.extractTextFromPDF(resumePath)
+print(result)
