@@ -11,7 +11,6 @@ const ApplicantDetailPage = async () => {
     const resumeRanking:any[] = await fetchResumeRanking();
     
 
-
     return (
         <div className="mt-[2rem] mx-[3rem]">
             <div className="flex flex-row items-center">

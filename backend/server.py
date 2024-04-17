@@ -55,10 +55,10 @@ data = [
             "availableJobs": [
                 {
                     "jobId": "1A_a",
-                    "jobTitle": "IT Business Analyst – SAP FICO",
-                    "jobDescription": "This is an IT Business Analyst role focused on the financial aspects of software sales, including subscriptions, rentals, leasing, and usage concepts for Hilti tools. You will bridge the gap between business needs and SAP FICO implementations, working on global projects, daily support, and compliance initiatives.",
-                    "jobSkills": ["SAP FICO consultant background (3+ years experience)", "Experience with SAP ERP 6.0 / S/4HANA in finance (General Ledger, AR, AA)", 
-                                    "Understanding of business processes in finance, controlling, sales & distribution", "Ability to handle complex projects and implement IFRS standards","Strong communication, problem-solving, and teamwork skills","Experience in international/virtual teams"]
+                    "jobTitle": "IT BUSINESS ANALYST (SUSTAINABILITY)- Fresh Graduates",
+                    "jobDescription": "As an IT Business Analyst, you will collaborate with the IT Product Owner and work with Global Sustainability Business Teams on key areas like Innovation, Compliance, Operation Excellence, Digitalization, and Automation. Your primary focus will be on the ERP systems SAP S/4HANA and SAP Business ByDesign, including implementing modules like the Sustainability Control Tower to meet compliance and enhance reporting. You'll be tasked with learning business processes, supporting the design and implementation of solutions, and interacting with third-party applications. Additionally, you will define processes, develop system requirements, and assist in designing and testing custom solutions. You will also handle daily operational issues through the ServiceNow ticketing platform, working alongside the Corporate Functions IT team to deliver effective business solutions.",
+                    "jobSkills": ["Possess a Bachelor’s or Master’s degree in IT, Computer Science, or a related field with a CGPA of 3.5 or higherFluent in English with a willingness to work in a multicultural environment","Keen interest in ERP solutions, especially SAP S/4HANA, and system functionalities",
+                                  "Eager to work on defining and coding business processes in sustainability domains","High willingness to learn and self-develop within the domain","Excellent communication skills, proactive approach, and a strong commitment to success."]
                 },
                 {
                     "jobId": "1A_b",
@@ -243,9 +243,19 @@ async def uploadResume(resume: UploadFile = File(...)):
     return {"status": 200, "message": "Resume uploaded successfully"}
 
 @app.get("/resume-ranking")
-async def getResumeRanking():
+async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai detection
     filePath = "resume/resume_ranking.json"
     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+
+# @app.get("/resume-ranking")
+# async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend suitability
+#     # fileter
+#     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+
+# @app.get("/resume-ranking")
+# async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai interview
+#     filePath = "resume/resume_ranking.json"
+#     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
@@ -263,8 +273,9 @@ async def create_session(sessionJson: Request):
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
     outputText = LLM.main(userTranscript)
-    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply']}, uniqueSessionID))
-    tts.main(outputText)
+    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply'], "flag": outputText['flag']}, uniqueSessionID))
+    print(outputText)
+    tts.main(outputText['reply'])
     wavspeech_to_json.main()
     print("Text, TTS, and WAV to JSON conversion completed")
     taskStatus["text_LLM_tts_wavToJson"] = True
@@ -359,8 +370,7 @@ def combineTranscriptEmotionEye():
     combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
     combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
     # combinedJsonData = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
-    # combinedJsonData = plagiarism.main(combinedJsonData)   # await cleanup, deadline 14/4
-    #* to process plagiarism, disfluency, behavioral analysis at here
+    #* to process, behavioral analysis at here
 
     print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
 
@@ -394,6 +404,10 @@ def concat_user_transcript():
         
     return log_full
 
+# def concat_user_eva_transcript():
+
+# def concat_user_answering(flag):
+
 def generateReport(concatResult: str):
     toStoreJson = {
         "email": None,
@@ -406,13 +420,15 @@ def generateReport(concatResult: str):
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
         # "personalityAnalysis": None,   # Dict
-        "HiringIndex": None
+        "hiringIndex": None
     }
     # @ An Ning, @ Chen Ming
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    #* to process MBTI, disfluency, behavioral analysis at here
+    # toStoreJson['mbti'] = mbti.main(concatResult)   #! @chenming
+    # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
+    #* to process MBTI, tone, companySpecificSuitability  at here
 
     print(mongoDB.postData("reportData", toStoreJson))
 
