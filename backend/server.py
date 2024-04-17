@@ -279,7 +279,7 @@ async def uploadResume(jobDetails: jobDetail, email, uniqueResumeID, resume: Upl
     # jobSuitability = resumeRanker.allJobDescriptionsToOneResume(resume.filename, jobTitleArray, jobDesctiptionArray)#Await to be use 
 
     concantenatedJobDescription = jobDetails.jobDescription + "\n" + "\n".join(jobDetails.jobSkills)
-    similarity = resumeRanker.oneJobDescriptionToOneResume(resume.filename, concantenatedJobDescription)
+    toStoreJson['similarity'] = resumeRanker.oneJobDescriptionToOneResume(resume.filename, concantenatedJobDescription)
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
