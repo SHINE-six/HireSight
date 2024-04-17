@@ -55,61 +55,34 @@ data = [
             "availableJobs": [
                 {
                     "jobId": "1A_a",
-                    "jobTitle": "IT Business Analyst – SAP FICO",
-                    "jobDescription": "This is an IT Business Analyst role focused on the financial aspects of software sales, including subscriptions, rentals, leasing, and usage concepts for Hilti tools. You will bridge the gap between business needs and SAP FICO implementations, working on global projects, daily support, and compliance initiatives.",
-                    "jobSkills": ["SAP FICO consultant background (3+ years experience)", "Experience with SAP ERP 6.0 / S/4HANA in finance (General Ledger, AR, AA)", 
-                                    "Understanding of business processes in finance, controlling, sales & distribution", "Ability to handle complex projects and implement IFRS standards","Strong communication, problem-solving, and teamwork skills","Experience in international/virtual teams"]
+                    "jobTitle": "IT BUSINESS ANALYST (SUSTAINABILITY)- Fresh Graduates",
+                    "jobDescription": "As an IT Business Analyst, you will collaborate with the IT Product Owner and work with Global Sustainability Business Teams on key areas like Innovation, Compliance, Operation Excellence, Digitalization, and Automation. Your primary focus will be on the ERP systems SAP S/4HANA and SAP Business ByDesign, including implementing modules like the Sustainability Control Tower to meet compliance and enhance reporting. You'll be tasked with learning business processes, supporting the design and implementation of solutions, and interacting with third-party applications. Additionally, you will define processes, develop system requirements, and assist in designing and testing custom solutions. You will also handle daily operational issues through the ServiceNow ticketing platform, working alongside the Corporate Functions IT team to deliver effective business solutions.",
+                    "jobSkills": ["Possess a Bachelor’s or Master’s degree in IT, Computer Science, or a related field with a CGPA of 3.5 or higherFluent in English with a willingness to work in a multicultural environment","Keen interest in ERP solutions, especially SAP S/4HANA, and system functionalities",
+                                  "Eager to work on defining and coding business processes in sustainability domains","High willingness to learn and self-develop within the domain","Excellent communication skills, proactive approach, and a strong commitment to success."]
                 },
+                
                 {
                     "jobId": "1A_b",
-                    "jobTitle": "IT Business Analyst – SAP Treasury",
-                    "jobDescription": "This is an IT Business Analyst role focused on the Treasury area. You'll collaborate with business teams on various topics (innovation, compliance) using SAP S/4HANA and Business ByDesign. You'll design, develop, test, and implement solutions for finance processes, working with both internal ERP systems and 3rd party Treasury/Banking systems. Additionally, you'll support daily operations through a ticketing platform.",
-                    "jobSkills": ["Bachelor's/Master's in IT, CS, or similar + 4+ years' experience in Treasury modules of SAP ECC 6.0/S/4HANA", "Understanding of SAP modules (GL, AR, AP, Currency Exchange, Banking & Treasury)", 
-                                    "Strong conceptual, analytical skills, and business process understanding in finance integration", "Excellent communication and adaptation skills in a multicultural environment",
-                                    "Experience implementing SAP or 3rd party solutions","Familiarity with Atlassian (JIRA/Confluence), ServiceNow, and collaboration tools"]
-                },
-                {
-                    "jobId": "1A_c",
-                    "jobTitle": "IT Business Analyst - SAP Controlling",
-                    "jobDescription": "As an IT Business Analyst specializing in Finance & Controlling, you are entrusted with leading the planning, development, and operational management of our SAP S/4HANA solutions. In this vital role, you will partner with business units to develop strategic roadmaps, enhance our SAP system landscape in alignment with our overarching IT strategy, and support our commitment to operational excellence. Your responsibilities include the full ownership of outcomes, decisions, and activities within the defined scope of your solutions, ensuring they are aligned with the Hilti Business Model and IT guidelines. By managing stakeholder relations and employing an agile approach to project delivery, you will drive rapid results while maintaining high standards in solution quality and business impact. This role demands a blend of technical expertise, strategic thinking, and a deep understanding of financial and controlling processes to effectively support and advance business goals.",
-                    "jobSkills": ["Bachelor’s, Master’s, or PhD in Information Technology, Computer Science, or related field",
-                                    "At least 5 years of experience in SAP ERP 6.0 or S/4HANA, particularly in Controlling (COPA, CO-PC, Material Ledger) and Finance (General Ledger, Fixed Assets)",
-                                    "Proficient in defining IT roadmaps and working towards strategic goals in collaboration with business teams",
-                                    "Experience in creating user stories for functional and non-functional requirements, conducting demos, and providing training",
-                                    "Strong analytical skills for effective problem-solving and decision-making",
-                                    "Excellent planning, realization, and controlling abilities",
-                                    "Effective communication skills and the ability to work in an international, geographically dispersed team",
-                                    "Agile methodology proficiency for quick and efficient project delivery",
-                                    "Commitment to continuous learning and development, both for self and team"]
-                },
-                {
-                    "jobId": "1A_d",
                     "jobTitle": "IT Business Analyst Salesforce",
                     "jobDescription": "As a Business Analyst in Hilti's Systematic Account Development program, you'll focus on enhancing Customer Relationship Management through Salesforce Sales Cloud. This role involves understanding business requirements, designing solution proposals, and supporting their implementation within Salesforce to optimize sales processes. You'll work within an international scrum team, using agile methodologies to deliver significant customer impact. While Salesforce Sales Cloud is your primary technology focus, you'll also engage with SAP S4 HANA, Salesforce Service Cloud, and AWS Microservices among others. This position plays a crucial role in providing transparency on sales opportunities and enabling effective use of Hilti products on job sites.",
                     "jobSkills": ["Bachelor’s degree in computer science, software engineering, information technology, or related fields","Over 5 years of experience with cloud software (preferably Salesforce), business process management, and agile methodologies","Excellent communication and interpersonal skills, fluent in English for effective stakeholder management in a global matrix environment",
                                   "Passion for marketing, sales, and service business process design with a keen interest in CRM software","Strong willingness and capacity to learn."]
+                },
+                {
+                    "jobId": "1A_c",
+                    "jobTitle": "Business Intelligence Analyst",
+                    "jobDescription": "As a Business Intelligence Analyst in the Global SAP Business Warehouse Team, you will enhance analytics and reporting within the Hilti organization. Your role involves collaborating with key business stakeholders to gather requirements and develop SAP BW data models to support decision-making processes. You will also advocate for the adoption of analytics, identify improvement opportunities in existing processes, and work with partners to implement new data models. Additionally, you will support and maintain these data models, driving change and leveraging data to inform strategic and tactical business decisions.",
+                    "jobSkills": ["Bachelor's degree in Computer Science, IT, or Engineering required; Master's degree preferred","Minimum 2 years of experience with SAP Business Warehouse","Proficient in Business Intelligence, Data Warehousing, Data Modeling, SAP BW/4HANA, SAP BW on HANA, and ABAP",
+                                  "Entrepreneurial, team-oriented, with strong problem-solving skills and an interest in technical leadership","Fluent in English with excellent communication skills."]
+                },
+                {
+                    "jobId": "1A_d",
+                    "jobTitle": "Internship - IT Business Analyst",
+                    "jobDescription": "Join our IT team as an Intern and work as an IT Business Analyst on global IT projects. In this role, you will bridge the gap between business and IT, providing advice on incidents, and turning business requirements into practical solutions. You will help build and operate digital solutions that include mobile apps, cloud-based services, and backend systems based on our ERP solutions. This internship, lasting 4-6 months and starting flexibly based on your availability, offers hands-on experience in solution management and the opportunity to develop new product features in collaboration with product managers and technical staff.",
+                    "jobSkills": ["Enrolled in Bachelor's/Master's in IT, Software Engineering, Data Science, or related fields","Strategic thinker with excellent problem-solving skills","Proactive and hands-on mentality","Strong communication and interpersonal abilities","Fluent in written and spoken English","Eager to learn and embrace challenges."]
                 }
             ]
-        },
-        {
-            "subCategoryId": "1B",
-            "subCategoryName": "Internship",
-            "subCategoryDescription": "Focused on leveraging business analytics tools and methodologies to improve decision-making and business practices within IT, Software & Digital projects.",
-            "availableJobs": [
-                {
-                    "jobId": "1B_a",
-                    "jobTitle": "Internship - DevOps Engineer",
-                    "jobDescription": "Join our IT team as a DevOps Engineer Intern and engage in exciting projects, gaining practical expertise and solving real-world challenges in a global setting. You will partner with stakeholders to translate requirements into technical designs, improve CI/CD toolchains, drive lifecycle activities, and enhance IT systems with new technologies. You'll also provide advanced support to both business and IT teams. This internship offers flexible start dates and lasts 4-6 months, providing a comprehensive experience in cloud product management and operations.",
-                    "jobSkills": ["Enrolled in Bachelor's/Master's in IT, Software Engineering, Data Science, or related fields","Strategic thinker with excellent problem-solving skills","Proactive and hands-on mentality","Strong communication and interpersonal abilities","Fluent in written and spoken English","Eager to learn and embrace challenges."]
-                },
-                {
-                    "jobId": "1B_b",
-                    "jobTitle": "Internship - IT Quality Assurance Analyst",
-                    "jobDescription": "Join our IT team as an IT Quality Assurance Analyst Intern on a variety of exciting projects. This internship offers a flexible start and lasts 4-6 months, where you'll enhance your skills in global IT project management and solution delivery. You will be involved in refining QA processes, designing and reviewing test cases, and working within the software development lifecycle to ensure functionality, performance, security, and user experience standards are met. Additionally, you will monitor software development stages to manage malfunctions and continuously improve quality standards.",
-                    "jobSkills": ["Enrolled in Bachelor's/Master's in IT, Software Engineering, Data Science, or related fields","Strategic thinker with excellent problem-solving skills","Proactive and hands-on mentality","Strong communication and interpersonal abilities","Fluent in written and spoken English","Eager to learn and embrace challenges."]
-                },
-            ]
-        } 
+        }
     ],
     "availableJobs": [
         {
@@ -202,34 +175,19 @@ async def readCategory(category_id: int):
             return category
     return {"message": "Category not found"}
 
-@app.get("/jobopenings/job/{job_id}")
-async def readJob(job_id: str):
+@app.get("/jobopenings/{job_id}")
+async def read_job(job_id: str):
     for category in data:
         if 'subCategories' in category:
             for subCategory in category["subCategories"]:
                 for job in subCategory["availableJobs"]:
                     if job["jobId"] == job_id:
                         return job
-        if 'availableJobs' in category:
+        elif 'availableJobs' in category:
             for job in category["availableJobs"]:
                 if job["jobId"] == job_id:
                     return job
     return {"message": "Job not found"}
-
-# changes ^^^
-# @app.get("/jobopenings/{job_id}")
-# async def read_job(job_id: str):
-#     for category in data:
-#         if 'subCategories' in category:
-#             for subCategory in category["subCategories"]:
-#                 for job in subCategory["availableJobs"]:
-#                     if job["jobId"] == job_id:
-#                         return job
-#         elif 'availableJobs' in category:
-#             for job in category["availableJobs"]:
-#                 if job["jobId"] == job_id:
-#                     return job
-#     return {"message": "Job not found"}
 
 @app.post("/resume")
 async def uploadResume(resume: UploadFile = File(...)):
