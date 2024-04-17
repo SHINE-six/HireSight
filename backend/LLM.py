@@ -240,6 +240,7 @@ def main(text):
         data["flag"] = "4"
         return data
 
+
 # text = """In my experience, some of the most crucial skills for a business analyst revolve around problem-solving, data analysis, and communication. 
 # Problem-solving is essential because it enables a business analyst to identify challenges within an organization and devise strategic solutions. 
 # Data analysis is also vital as it allows for understanding trends, deriving insights from complex datasets, 
