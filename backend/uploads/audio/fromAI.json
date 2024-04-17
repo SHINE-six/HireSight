@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "soundFile": "C:\\Users\\TUF\\Documents\\HireSight\\backend\\uploads\\audio\\fromAI.wav",
+    "duration": 2.10
+  },
+  "mouthCues": [
+    { "start": 0.00, "end": 0.04, "value": "X" },
+    { "start": 0.04, "end": 0.08, "value": "F" },
+    { "start": 0.08, "end": 0.12, "value": "B" },
+    { "start": 0.12, "end": 0.19, "value": "D" },
+    { "start": 0.19, "end": 0.26, "value": "B" },
+    { "start": 0.26, "end": 0.33, "value": "C" },
+    { "start": 0.33, "end": 0.40, "value": "E" },
+    { "start": 0.40, "end": 0.61, "value": "B" },
+    { "start": 0.61, "end": 0.75, "value": "C" },
+    { "start": 0.75, "end": 1.17, "value": "B" },
+    { "start": 1.17, "end": 1.24, "value": "F" },
+    { "start": 1.24, "end": 1.31, "value": "B" },
+    { "start": 1.31, "end": 1.59, "value": "C" },
+    { "start": 1.59, "end": 1.94, "value": "B" },
+    { "start": 1.94, "end": 2.10, "value": "X" }
+  ]
+}
