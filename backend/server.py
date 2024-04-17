@@ -1,6 +1,6 @@
 import shutil
 import time
-from fastapi import FastAPI, File, Request, UploadFile, BackgroundTasks, WebSocket
+from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, WebSocket
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
@@ -15,12 +15,12 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
-# import mbti
+import mbti_test
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
 import json
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 app = FastAPI()
@@ -218,68 +218,56 @@ async def readJob(job_id: str):
                     return job
     return {"message": "Job not found"}
 
-# changes ^^^
-# @app.get("/jobopenings/{job_id}")
-# async def read_job(job_id: str):
-#     for category in data:
-#         if 'subCategories' in category:
-#             for subCategory in category["subCategories"]:
-#                 for job in subCategory["availableJobs"]:
-#                     if job["jobId"] == job_id:
-#                         return job
-#         elif 'availableJobs' in category:
-#             for job in category["availableJobs"]:
-#                 if job["jobId"] == job_id:
-#                     return job
-#     return {"message": "Job not found"}
-def resumeParseBinary(resumeFile):
+def formatResumeIntoJson(resumeFile):
     if resumeFile.filename.endswith(".pdf"):  # Check if the uploaded file is a PDF
         # Read the uploaded PDF file as binary data
-        pdf_data = resumeFile.file.read()
+        pdfData = resumeFile.file.read()
         
         # Construct data object to post to the collection
         resume_data = {
             "filename": resumeFile.filename,
-            "pdf_data": pdf_data
+            "pdfData": pdfData
         }
         
         return resume_data
 
 class jobDetail(BaseModel):
-    jobPosition: str
+    jobId: str
+    jobTitle: str
     jobDescription: str
     jobSkills: list
 
 @app.post("/resume")
-async def uploadResume(jobDetails: jobDetail, email, uniqueResumeID, resume: UploadFile = File(...)):
-    #Read job data
-    # jobDesctiptionArray = []
-    # jobTitleArray = []
+async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqueResumeID: str = Form(...), resume: UploadFile = File(...)):
+    print("Received and processing resume...")
+    
+    jobDetails_dict = json.loads(jobDetails)
+    jobDetails_dict = jobDetail(**jobDetails_dict)
 
-    # for category in data:
-    #     if "availableJobs" in category:
-    #         for job in category["availableJobs"]:
-    #             jobTitleArray.append(job["jobTitle"])
-    #             concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
-    #             jobDesctiptionArray.append(concatenated_text)
-        
-    #     if "subCategories" in category:
-    #         for sub_category in category["subCategories"]:
-    #             if "availableJobs" in sub_category:
-    #                 for job in sub_category["availableJobs"]:
-    #                     jobTitleArray.append(job["jobTitle"])
-    #                     concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
-    #                     jobDesctiptionArray.append(concatenated_text)
+    # mongoDB.postData("resumeDatabase", resumeRanker.postDataTOCollection(resume))
+    toStoreJson = {
+        "filename": None,
+        "email": email,
+        "uniqueResumeId": uniqueResumeID,
+        "jobPostitionApply": jobDetails_dict.jobTitle,
+        "AiDetection": None,
+        "plagiarism": None,
+        "suitability": None,
+        "stage": "Ai detection",
+        "pdfData": {}
+    }
+    parsedBinaryResume = formatResumeIntoJson(resume)
+    toStoreJson['filename'] = parsedBinaryResume['filename']
+    toStoreJson['pdfData'] = parsedBinaryResume['pdfData']
 
-    # resumeData = resume_parser.main(resume.filename) (Unused)
-    # Use case 1: Once candidate upload resume, resume will be stored into MongoDB
-    # response = resumeRanker.postDataTOCollection(resume)
+    parsedPdfToText:str = resumeRanker.main_PdfToText(parsedBinaryResume['pdfData'])
 
-    # Use case 2: Once candidate upload resume, suitability for all job will be calculated, and retrieve top 3 job as a json to be stored in MongoDB
-    # jobSuitability = resumeRanker.allJobDescriptionsToOneResume(resume.filename, jobTitleArray, jobDesctiptionArray)#Await to be use 
+    toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
+    toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
+    toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
-    concantenatedJobDescription = jobDetails.jobDescription + "\n" + "\n".join(jobDetails.jobSkills)
-    toStoreJson['similarity'] = resumeRanker.oneJobDescriptionToOneResume(resume.filename, concantenatedJobDescription)
+    print(mongoDB.postData("resumeDatabase", toStoreJson))
+
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
@@ -290,9 +278,9 @@ async def getResumeRanking():
     # Get resume from MongoDB
     # Get job title to pull relative job description
     filePath = "resume/resume_ranking.json"
-    jobTitle = "Application Engineer" # Should be flexible to get from frontend
-    jobDescription = resumeRanker.getConcatenatedText(jobTitle, data)
-    resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
+    # jobTitle = "Application Engineer" # Should be flexible to get from frontend
+    # jobDescription = resumeRanker.getConcatenatedText(jobTitle, data)
+    # resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 # @app.get("/resume-ranking")
@@ -474,7 +462,7 @@ def generateReport(concatResult: str):
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    # toStoreJson['mbti'] = mbti.main(concatResult)   #! @chenming
+    # toStoreJson['mbti'] = mbti_test.main(concatResult)   #! @chenming
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
     #* to process MBTI, tone, companySpecificSuitability  at here
 

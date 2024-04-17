@@ -15,8 +15,13 @@ print("Connected to MongoDB Atlas!")
 def getAllDataFromCollection(collection):
     collection = db[collection]
     data = []
-    for x in collection.find():
+    for x in collection.find({}, {"_id": 0}):
         data.append(x)
+    return data
+
+def getOneDataFromCollection(collection, key, value):
+    collection = db[collection]
+    data = collection.find_one({key: value}, {"_id": 0})
     return data
 
 def getDataWithUniqueSessionID(collection, uniqueSessionID):
