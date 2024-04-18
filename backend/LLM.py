@@ -46,7 +46,7 @@ model = genai.GenerativeModel(model_name="gemini-1.0-pro",
 
 
 prompt_parts = [
-  "You are an Interviewer, EVA from WPH, you should only generate responses as a recruiter view. And in one or two sentences like how an actual interviewer talks and tells them you will be taking the job. \nYou should first greet the interviewee and brief what is the job scope.\nThen the interview session start and the conversation goes\nAt last the interview section ends you should thank the interviewee and ask him to wait for the next step.\nJob Title: Business AnalystOverview:\nAs a Business Analyst, your primary responsibility is to bridge the gap between the business needs and the solutions provided by information technology. You will analyze business processes, systems, and data to identify opportunities for improvement and propose innovative solutions to enhance efficiency, productivity, and profitability.\nKey Responsibilities:\nRequirement Gathering and Analysis: Collaborate with stakeholders to elicit, document, and prioritize business requirements. Analyze and evaluate business processes, workflows, and systems to identify areas for improvement. Translate business requirements into clear and actionable specifications for IT development teams.\nData Analysis and Interpretation: Collect and analyze data from various sources to identify trends, patterns, and insights. Develop reports, dashboards, and visualizations to communicate findings to stakeholders. Make data-driven recommendations to support strategic decision-making.\nSolution Design and Evaluation: Work closely with IT teams to design solutions that meet business requirements and objectives. Evaluate alternative solutions and assess their feasibility, risks, and benefits. Facilitate discussions and workshops to gather feedback and iterate on solution designs.\nStakeholder Management: Build and maintain relationships with stakeholders at all levels of the organization. Communicate effectively to ensure alignment between business needs and IT solutions. Manage expectations and provide regular updates on project status and progress.\nProcess Improvement and Change Management: Identify opportunities for process optimization and automation to drive operational efficiency. Develop and implement change management strategies to ensure successful adoption of new solutions. Monitor and evaluate the impact of changes to measure effectiveness and identify areas for further improvement.\nQualifications and Skills: Bachelor's degree in Business Administration, Computer Science, Information Systems, or related field. Proven experience as a Business Analyst or similar role in a corporate environment. Strong analytical and problem-solving skills with the ability to think critically and strategically. Excellent communication and interpersonal skills with the ability to collaborate effectively with cross-functional teams. Proficiency in data analysis tools and techniques, such as SQL, Excel, and data visualization tools. Knowledge of business process modeling, requirements elicitation, and solution design methodologies. Familiarity with Agile and Waterfall project management methodologies.\nConclusion:\nAs a Business Analyst, you play a crucial role in driving business transformation and enabling organizational success through the effective alignment of business needs and technology solutions. Your analytical mindset, communication skills, and domain expertise are essential for delivering value and driving continuous improvement within the organization.",
+  "Role: You are an Interviewer, EVA from HILTI, you should only generate responses as a recruiter view. And in one or two sentences like how an actual interviewer talks and tells them you will be taking the job. \nYou should first greet the interviewee and brief what is the job scope.\nThen the interview session start and the conversation goes\nAt last the interview section ends you should thank the interviewee and ask him to wait for the next step.",
   "input: Thank you i have no question to ask",
   "output: Thank you for your time today. You've performed admirably in the interview, and your input is valued. The details of our discussion will be documented for HR review. Kindly await further communication via email. Have a wonderful day!",
   "input: Thank you, that is all my question",
@@ -124,9 +124,9 @@ def detect_sentence(text, prompt_parts):
 #function to generate the interview questions by connecting to the Gen AI model
 def generate_general_interview_questions(text,previous_reply):
 
-    prompt = f"""Generate brief, one or two-sentence responses for only one general introduction interview question not need to related to business analyst, 
+    prompt = f"""Generate one or two-sentence responses for only one general interview question just liek a HR recruiter view., 
     please only generate the question only, do not add extra things like label or newline.
-      New generated question must not be too similar to previous answer:{text}, previous_question:{previous_reply}
+      New generated question must not similar to current reply:{text} and previous_question:{previous_reply}
     """
 
     response = model.generate_content(prompt)
@@ -137,9 +137,9 @@ def generate_general_interview_questions(text,previous_reply):
     return generated_questions
 
 #function to generate the interview questions by connecting to the Gen AI model
-def generate_technical_interview_questions(text):
-    prompt = f"""praise the user then generate strictly one business analysis position related interview question, 
-    the one question should not be similar to previous question:{text}. Please only make in a sentence do not add extra things like label or newline.
+def generate_technical_interview_questions(text,previous_reply):
+    prompt = f"""praise the user then generate strictly one business analysis position related interview question especially ERP solutions (SAP S/4HANA) or sustainablilty business, please only make in a sentence do not add extra things like label or newline.
+    the one question should not be similar to previous question:{text}. and previous question:{previous_reply}
     """
 
     response = model.generate_content(prompt)
@@ -217,14 +217,14 @@ def main(text):
          data["flag"] = "2"
          return data
     if flag == "3":
-        if generalQuestion < 2:
+        if generalQuestion < 1:
             data["reply"] = generate_general_interview_questions(text,previous_reply)
             previous_reply = data["reply"]
             data["flag"] = "3"
             generalQuestion += 1
             return data
-        elif generalQuestion >= 2 and technicalQuestion < 4:
-            data["reply"] = generate_technical_interview_questions(previous_reply)
+        elif generalQuestion >= 1 and technicalQuestion < 3:
+            data["reply"] = generate_technical_interview_questions(text,previous_reply)
             previous_reply = data["reply"]
             data["flag"] = "3"
             technicalQuestion += 1
@@ -239,12 +239,6 @@ def main(text):
         previous_reply = data["reply"]
         data["flag"] = "4"
         return data
-
-
-# text = """In my experience, some of the most crucial skills for a business analyst revolve around problem-solving, data analysis, and communication. 
-# Problem-solving is essential because it enables a business analyst to identify challenges within an organization and devise strategic solutions. 
-# Data analysis is also vital as it allows for understanding trends, deriving insights from complex datasets, 
-# and making data-driven decisions which are fundamental in shaping any business strategy."""
 
     
 
