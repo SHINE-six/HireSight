@@ -93,6 +93,3 @@ def main():
     # Translate the numeric prediction to MBTI type
     predicted_mbti = translate_prediction_to_mbti(predicted_class, mbti_mapping)
     print("Predicted MBTI type:", predicted_mbti)
-
-if __name__ == "__main__":
-    main()
