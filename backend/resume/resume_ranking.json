@@ -2,481 +2,769 @@
     {
         "rank": 1,
         "id": "SLWII1",
-        "similarity": 0.6168759041682887
+        "timestamp": "2024-04-10 10:00:00",
+        "ai_probability": 0.95,
+        "plagiarism": 0.1,
+        "similarity": 0.9991687590416829
     },
     {
         "rank": 2,
         "id": "7ZTLGK",
+        "timestamp": "2024-04-17 14:30:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.2,
         "similarity": 0.6138542165772838
     },
     {
         "rank": 3,
         "id": "HUOLJX",
+        "timestamp": "2024-04-16 10:45:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.15,
         "similarity": 0.6008952614261992
     },
     {
         "rank": 4,
         "id": "ZSV2KM",
+        "timestamp": "2024-04-15 16:20:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.599406156349545
     },
     {
         "rank": 5,
         "id": "U3ZVJP",
+        "timestamp": "2024-04-14 09:10:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.11,
         "similarity": 0.5948595919380927
     },
     {
         "rank": 6,
         "id": "PDPWYK",
+        "timestamp": "2024-04-13 21:05:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.18,
         "similarity": 0.5947894095664604
     },
     {
         "rank": 7,
         "id": "FF51L7",
+        "timestamp": "2024-04-12 11:55:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5887654322796473
     },
     {
         "rank": 8,
         "id": "FS0F7M",
+        "timestamp": "2024-04-18 19:40:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5867925608395755
     },
     {
         "rank": 9,
         "id": "2EEWHU",
+        "timestamp": "2024-04-10 08:25:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5851047199951827
     },
     {
         "rank": 10,
         "id": "VATJZD",
+        "timestamp": "2024-04-09 13:15:00",
+        "ai_probability": 0.85,
+        "plagiarism": 0.17,
         "similarity": 0.5840007846830118
     },
     {
         "rank": 11,
         "id": "1ERFN2",
+        "timestamp": "2024-04-08 17:50:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.1,
         "similarity": 0.5823160422173962
     },
     {
         "rank": 12,
         "id": "WGXJIR",
+        "timestamp": "2024-04-07 22:30:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.5741268508475181
     },
     {
         "rank": 13,
         "id": "27DHKN",
+        "timestamp": "2024-04-06 18:15:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.11,
         "similarity": 0.5673235167208174
     },
     {
         "rank": 14,
         "id": "106RB0",
+        "timestamp": "2024-04-05 14:00:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.5638996384957308
     },
     {
         "rank": 15,
         "id": "Y5A72T",
+        "timestamp": "2024-04-04 09:45:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5622278216047442
     },
     {
         "rank": 16,
         "id": "ZWBEEP",
+        "timestamp": "2024-04-03 15:30:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5574163984876735
     },
     {
         "rank": 17,
         "id": "MWBVTB",
+        "timestamp": "2024-04-02 12:20:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.554946490478913
     },
     {
         "rank": 18,
         "id": "LSTIKK",
+        "timestamp": "2024-04-01 16:10:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.16,
         "similarity": 0.5511415848635375
     },
     {
         "rank": 19,
         "id": "F63522",
+        "timestamp": "2024-03-31 20:00:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.5490216365086522
     },
     {
         "rank": 20,
         "id": "ZOOAXC",
+        "timestamp": "2024-03-30 10:55:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.5486423038309528
     },
     {
         "rank": 21,
         "id": "BJP75U",
+        "timestamp": "2024-03-29 14:45:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5472394190906361
     },
     {
         "rank": 22,
         "id": "WM0D6W",
+        "timestamp": "2024-03-28 18:30:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.17,
         "similarity": 0.5466164455137825
     },
     {
         "rank": 23,
         "id": "GAEBPL",
+        "timestamp": "2024-03-27 22:15:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.1,
         "similarity": 0.5455461779119479
     },
     {
         "rank": 24,
         "id": "GK7GNF",
+        "timestamp": "2024-03-26 10:10:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.13,
         "similarity": 0.5449871326698882
     },
     {
         "rank": 25,
         "id": "2YLROD",
+        "timestamp": "2024-03-25 14:00:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.11,
         "similarity": 0.5441437741865124
     },
     {
         "rank": 26,
         "id": "RXHUXK",
+        "timestamp": "2024-03-24 17:45:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.16,
         "similarity": 0.5436225732994332
     },
     {
         "rank": 27,
         "id": "EC3Q6T",
+        "timestamp": "2024-03-23 21:30:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.1,
         "similarity": 0.5431724780353498
     },
     {
         "rank": 28,
         "id": "9FTWUZ",
+        "timestamp": "2024-03-22 09:25:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5412743457061199
     },
     {
         "rank": 29,
         "id": "MK5DVV",
+        "timestamp": "2024-03-18 13:15:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5406491687377096
     },
     {
         "rank": 30,
         "id": "KAP24G",
+        "timestamp": "2024-04-18 17:00:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.17,
         "similarity": 0.5391340146622059
     },
     {
         "rank": 31,
         "id": "RH01Z0",
+        "timestamp": "2024-03-19 20:45:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5383977995189224
     },
     {
         "rank": 32,
         "id": "NT8ZFY",
+        "timestamp": "2024-03-18 08:40:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.5368934267682606
     },
     {
         "rank": 33,
         "id": "H9YTV5",
+        "timestamp": "2024-03-17 12:30:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.1,
         "similarity": 0.5362990569245231
     },
     {
         "rank": 34,
         "id": "8WBMA5",
+        "timestamp": "2024-04-18 16:15:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.533679553054493
     },
     {
         "rank": 35,
         "id": "JYXJMH",
+        "timestamp": "2024-03-15 20:00:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.5329341050520037
     },
     {
         "rank": 36,
         "id": "HIC6M6",
+        "timestamp": "2024-03-15 09:55:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5316846443300026
     },
     {
         "rank": 37,
         "id": "YBGOKQ",
+        "timestamp": "2024-03-13 13:45:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5314756111399397
     },
     {
         "rank": 38,
         "id": "OS29LY",
+        "timestamp": "2024-03-12 17:30:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.5304395155852226
     },
     {
         "rank": 39,
         "id": "HOYSS5",
+        "timestamp": "2024-03-11 21:15:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.530034213568525
     },
     {
         "rank": 40,
         "id": "AXIZ40",
+        "timestamp": "2024-03-10 08:10:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.5297028636169197
     },
     {
         "rank": 41,
         "id": "R1GBYY",
+        "timestamp": "2024-03-09 12:00:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.1,
         "similarity": 0.5280293878252025
     },
     {
         "rank": 42,
         "id": "UIR7PR",
+        "timestamp": "2024-03-08 15:45:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.5277317393364456
     },
     {
         "rank": 43,
         "id": "I5PNN7",
+        "timestamp": "2024-03-07 19:30:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.5261036110820125
     },
     {
         "rank": 44,
         "id": "SBYFU9",
+        "timestamp": "2024-03-06 08:25:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5230364839388177
     },
     {
         "rank": 45,
         "id": "VICPJI",
+        "timestamp": "2024-03-05 12:15:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5224732596708728
     },
     {
         "rank": 46,
         "id": "1AK6SU",
+        "timestamp": "2024-03-04 16:00:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.5203180274936144
     },
     {
         "rank": 47,
         "id": "S9FG36",
+        "timestamp": "2024-03-03 19:45:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5196525924348796
     },
     {
         "rank": 48,
         "id": "1P2R7K",
+        "timestamp": "2024-03-02 08:40:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.5195231536636815
     },
     {
         "rank": 49,
         "id": "NIFSSA",
+        "timestamp": "2024-03-01 12:30:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.1,
         "similarity": 0.5181362501341207
     },
     {
         "rank": 50,
         "id": "VWCND1",
+        "timestamp": "2024-02-29 16:15:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.5168469415372423
     },
     {
         "rank": 51,
         "id": "F2EOIM",
+        "timestamp": "2024-02-28 20:00:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.5160713046621946
     },
     {
         "rank": 52,
         "id": "WKZ2LP",
+        "timestamp": "2024-02-27 09:55:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5156310481989417
     },
     {
         "rank": 53,
         "id": "OKH8SZ",
+        "timestamp": "2024-02-26 13:45:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5155779818551739
     },
     {
         "rank": 54,
         "id": "SU0S0Y",
+        "timestamp": "2024-02-25 17:30:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.5155779818551739
     },
     {
         "rank": 55,
         "id": "0YJTC1",
+        "timestamp": "2024-02-24 21:15:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5148017175464363
     },
     {
         "rank": 56,
         "id": "AE0XBW",
+        "timestamp": "2024-04-18 08:10:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
         "similarity": 0.5106564328441627
     },
     {
         "rank": 57,
         "id": "7X8V3S",
+        "timestamp": "2024-04-15 12:00:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.1,
         "similarity": 0.5091251634753787
     },
     {
         "rank": 58,
         "id": "F7MFUG",
+        "timestamp": "2024-02-21 15:45:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.5068067869406125
     },
     {
         "rank": 59,
         "id": "TATS37",
+        "timestamp": "2024-02-20 19:30:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.5066677094541048
     },
     {
         "rank": 60,
         "id": "68483S",
+        "timestamp": "2024-02-19 08:25:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5063276245124373
     },
     {
         "rank": 61,
         "id": "2O2TJM",
+        "timestamp": "2024-02-18 12:15:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5061179212489222
     },
     {
         "rank": 62,
         "id": "1MGD69",
+        "timestamp": "2024-02-17 16:00:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.5056465395085658
     },
     {
         "rank": 63,
         "id": "W26R0T",
+        "timestamp": "2024-02-16 19:45:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5048777661570752
     },
     {
         "rank": 64,
         "id": "THF3OG",
+        "timestamp": "2024-02-15 23:30:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.5043343302213819
     },
     {
         "rank": 65,
         "id": "GBLPTT",
+        "timestamp": "2024-02-14 10:25:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.5023190511385165
     },
     {
         "rank": 66,
         "id": "KQ54TC",
+        "timestamp": "2024-02-13 14:15:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.5019253104096375
     },
     {
         "rank": 67,
         "id": "DP7PHJ",
+        "timestamp": "2024-02-12 18:00:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.5017270377151863
     },
     {
         "rank": 68,
         "id": "5LUNRA",
+        "timestamp": "2024-02-11 21:45:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.5005812691692771
     },
     {
         "rank": 69,
         "id": "EADCKW",
+        "timestamp": "2024-02-10 09:40:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.5004213844182906
     },
     {
         "rank": 70,
         "id": "T3G16S",
+        "timestamp": "2024-02-09 13:30:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.4986468253710891
     },
     {
         "rank": 71,
         "id": "MUGCUQ",
+        "timestamp": "2024-02-08 17:15:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.4984870593751541
     },
     {
         "rank": 72,
         "id": "TVY7ZK",
+        "timestamp": "2024-02-07 21:00:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.4977164851600068
     },
     {
         "rank": 73,
         "id": "HWN6W3",
+        "timestamp": "2024-02-06 08:55:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.49715414903537625
     },
     {
         "rank": 74,
         "id": "3PNU7U",
+        "timestamp": "2024-02-05 12:45:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
         "similarity": 0.4969923875831902
     },
     {
         "rank": 75,
         "id": "4M43IQ",
+        "timestamp": "2024-02-04 16:30:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
         "similarity": 0.49425005212971934
     },
     {
         "rank": 76,
         "id": "IM8PHV",
+        "timestamp": "2024-02-03 20:15:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
         "similarity": 0.49383537418935775
     },
     {
         "rank": 77,
         "id": "0S1I70",
+        "timestamp": "2024-02-02 08:10:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
         "similarity": 0.49366090403603213
     },
     {
         "rank": 78,
         "id": "0KFVGV",
+        "timestamp": "2024-02-01 12:00:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
         "similarity": 0.49343528969683986
     },
     {
         "rank": 79,
         "id": "QK5ZD9",
+        "timestamp": "2024-01-31 15:45:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
         "similarity": 0.49315114763687284
     },
     {
         "rank": 80,
         "id": "MRC227",
-        "similarity": 0.49260459746853963
+        "timestamp": "2024-01-30 19:30:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
+        "similarity": 0.49315114763687284
     },
     {
         "rank": 81,
-        "id": "X6NGXX",
-        "similarity": 0.4922878341967698
+        "id": "RQPT6K",
+        "timestamp": "2024-01-29 08:25:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
+        "similarity": 0.49271507105360564
     },
     {
         "rank": 82,
-        "id": "44KZP9",
-        "similarity": 0.4921710942156528
+        "id": "2GT78S",
+        "timestamp": "2024-01-28 12:15:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
+        "similarity": 0.4912113200546569
     },
     {
         "rank": 83,
-        "id": "63V7SC",
-        "similarity": 0.48922314944361484
+        "id": "0H4QKY",
+        "timestamp": "2024-01-27 16:00:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.1,
+        "similarity": 0.4892761914175739
     },
     {
         "rank": 84,
-        "id": "V99I4Z",
-        "similarity": 0.4885126705607571
+        "id": "PGXOTG",
+        "timestamp": "2024-01-26 19:45:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
+        "similarity": 0.48901712721044026
     },
     {
         "rank": 85,
-        "id": "XLUQ57",
-        "similarity": 0.48695991785986237
+        "id": "H27AM1",
+        "timestamp": "2024-01-25 23:30:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
+        "similarity": 0.4876500143122109
     },
     {
         "rank": 86,
-        "id": "W376ZN",
-        "similarity": 0.48692149533417134
+        "id": "WVPDF3",
+        "timestamp": "2024-01-24 10:25:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
+        "similarity": 0.4872531569353122
     },
     {
         "rank": 87,
-        "id": "1SVQY6",
-        "similarity": 0.4868338247675282
+        "id": "OXLWGO",
+        "timestamp": "2024-01-23 14:15:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
+        "similarity": 0.4872011414016715
     },
     {
         "rank": 88,
-        "id": "QFYGP5",
-        "similarity": 0.48637404443826104
+        "id": "ZS0UYU",
+        "timestamp": "2024-01-22 18:00:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
+        "similarity": 0.4866690419394669
     },
     {
         "rank": 89,
-        "id": "OXUREW",
-        "similarity": 0.4863481591690837
+        "id": "F8ZI5N",
+        "timestamp": "2024-01-21 21:45:00",
+        "ai_probability": 0.91,
+        "plagiarism": 0.14,
+        "similarity": 0.4861198241217518
     },
     {
         "rank": 90,
-        "id": "0YJF0R",
-        "similarity": 0.4861505770157806
+        "id": "1H1E05",
+        "timestamp": "2024-01-20 08:40:00",
+        "ai_probability": 0.88,
+        "plagiarism": 0.12,
+        "similarity": 0.4846209141986671
     },
     {
         "rank": 91,
-        "id": "TATYFU",
-        "similarity": 0.4861124059405755
+        "id": "PTMHRF",
+        "timestamp": "2024-01-19 12:30:00",
+        "ai_probability": 0.93,
+        "plagiarism": 0.1,
+        "similarity": 0.4841435543980386
     },
     {
         "rank": 92,
-        "id": "FNE4ZH",
-        "similarity": 0.4854504012585794
+        "id": "F5FWCJ",
+        "timestamp": "2024-01-18 16:15:00",
+        "ai_probability": 0.87,
+        "plagiarism": 0.15,
+        "similarity": 0.4834400722092031
     },
     {
         "rank": 93,
-        "id": "3YR9XB",
-        "similarity": 0.4848502105305109
+        "id": "WCSJGL",
+        "timestamp": "2024-01-17 20:00:00",
+        "ai_probability": 0.92,
+        "plagiarism": 0.11,
+        "similarity": 0.4819582782740496
     },
     {
         "rank": 94,
-        "id": "YLTH8A",
-        "similarity": 0.4837996208263951
+        "id": "YV94NR",
+        "timestamp": "2024-01-16 09:55:00",
+        "ai_probability": 0.89,
+        "plagiarism": 0.13,
+        "similarity": 0.4815334817982644
     },
     {
         "rank": 95,
-        "id": "HXOEBU",
-        "similarity": 0.4832800436942773
+        "id": "9U6RBG",
+        "timestamp": "2024-01-15 13:45:00",
+        "ai_probability": 0.94,
+        "plagiarism": 0.09,
+        "similarity": 0.4813684672559943
     },
     {
         "rank": 96,
-        "id": "8JKFRT",
-        "similarity": 0.4832593482165274
-    }
+        "id": "DZ6XUA",
+        "timestamp": "2024-01-14 17:30:00",
+        "ai_probability": 0.86,
+        "plagiarism": 0.16,
+        "similarity": 0.480849422101963
+    }    
 ]

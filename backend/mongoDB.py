@@ -19,6 +19,12 @@ def getAllDataFromCollection(collection):
         data.append(x)
     return data
 
+def getDataWithResume(collection, job_position):
+    collection = db[collection]
+    data = collection.find_one({"jobPositionApply": job_position})
+    
+    return data
+
 def getDataWithUniqueSessionID(collection, uniqueSessionID):
     collection = db[collection]
     data = collection.find_one({"uniqueSessionID": uniqueSessionID}, {"_id": 0})
