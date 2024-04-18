@@ -10,6 +10,7 @@ async function fetchResumeRanking() {
 const ApplicantDetailPage = async () => {
     const resumeRanking:any[] = await fetchResumeRanking();
     
+    const displayedResumes = resumeRanking.slice(0, 10);
 
     return (
         <div className="mt-[2rem] mx-[3rem]">
@@ -20,7 +21,7 @@ const ApplicantDetailPage = async () => {
                 <div className="py-[1rem] px-[4rem] text-2xl font-bold border-b-[0.1rem] border-gray-300">AI interviewing</div>
                 <div className='w-[14rem] bg-white rounded-xl text-xl justify-between flex flex-row py-[0.5rem] px-[1rem] border-b-[0.1rem] border-gray-300 shadow-md font-semibold'>
                     <div>Applicant:</div> 
-                    <div className='text-red-700'>17</div>
+                    <div className='text-red-700'>10</div>
                 </div>
             </div>
             <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
@@ -28,7 +29,7 @@ const ApplicantDetailPage = async () => {
                     <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">ID</div>
                     <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Interview Score</div>
                 </div>
-                {resumeRanking.map((resume) => {
+                {displayedResumes.map((resume) => {
                     return (
                         <div key={resume.id} className="w-3/5 bg-gray-200 rounded-md shadow-md shadow-black mb-[1rem] flex flex-row justify-around p-[0.5rem] items-center">
                             <div>{resume.id}</div>
