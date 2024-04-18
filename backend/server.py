@@ -3,7 +3,8 @@ import time
 from fastapi import FastAPI, File, Request, UploadFile, BackgroundTasks, WebSocket
 from fastapi.responses import FileResponse
 import uvicorn
-import resume_parser
+# import resume_parser
+import resumeRanker
 import speech_to_text
 import facial_prediction
 import eye_tracking
@@ -14,11 +15,13 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
+import mbti_test
 # import mbti
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
 import json
+from pydantic import BaseModel, Field
 
 
 app = FastAPI()
@@ -189,20 +192,81 @@ async def read_job(job_id: str):
                     return job
     return {"message": "Job not found"}
 
+# changes ^^^
+# @app.get("/jobopenings/{job_id}")
+# async def read_job(job_id: str):
+#     for category in data:
+#         if 'subCategories' in category:
+#             for subCategory in category["subCategories"]:
+#                 for job in subCategory["availableJobs"]:
+#                     if job["jobId"] == job_id:
+#                         return job
+#         elif 'availableJobs' in category:
+#             for job in category["availableJobs"]:
+#                 if job["jobId"] == job_id:
+#                     return job
+#     return {"message": "Job not found"}
+def resumeParseBinary(resumeFile):
+    if resumeFile.filename.endswith(".pdf"):  # Check if the uploaded file is a PDF
+        # Read the uploaded PDF file as binary data
+        pdf_data = resumeFile.file.read()
+        
+        # Construct data object to post to the collection
+        resume_data = {
+            "filename": resumeFile.filename,
+            "pdf_data": pdf_data
+        }
+        
+        return resume_data
+
+class jobDetail(BaseModel):
+    jobPosition: str
+    jobDescription: str
+    jobSkills: list
+
 @app.post("/resume")
-async def uploadResume(resume: UploadFile = File(...)):
-    with open(f"resume/resume_in/{resume.filename}", "wb") as buffer:
-        shutil.copyfileobj(resume.file, buffer)
-        resumeData = resume_parser.main(resume.filename)
+async def uploadResume(jobDetails: jobDetail, email, uniqueResumeID, resume: UploadFile = File(...)):
+    #Read job data
+    # jobDesctiptionArray = []
+    # jobTitleArray = []
+
+    # for category in data:
+    #     if "availableJobs" in category:
+    #         for job in category["availableJobs"]:
+    #             jobTitleArray.append(job["jobTitle"])
+    #             concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
+    #             jobDesctiptionArray.append(concatenated_text)
         
-        
-    
+    #     if "subCategories" in category:
+    #         for sub_category in category["subCategories"]:
+    #             if "availableJobs" in sub_category:
+    #                 for job in sub_category["availableJobs"]:
+    #                     jobTitleArray.append(job["jobTitle"])
+    #                     concatenated_text = job["jobDescription"] + "\n" + "\n".join(job["jobSkills"])
+    #                     jobDesctiptionArray.append(concatenated_text)
+
+    # resumeData = resume_parser.main(resume.filename) (Unused)
+    # Use case 1: Once candidate upload resume, resume will be stored into MongoDB
+    # response = resumeRanker.postDataTOCollection(resume)
+
+    # Use case 2: Once candidate upload resume, suitability for all job will be calculated, and retrieve top 3 job as a json to be stored in MongoDB
+    # jobSuitability = resumeRanker.allJobDescriptionsToOneResume(resume.filename, jobTitleArray, jobDesctiptionArray)#Await to be use 
+
+    concantenatedJobDescription = jobDetails.jobDescription + "\n" + "\n".join(jobDetails.jobSkills)
+    toStoreJson['similarity'] = resumeRanker.oneJobDescriptionToOneResume(resume.filename, concantenatedJobDescription)
 
     return {"status": 200, "message": "Resume uploaded successfully"}
 
+
 @app.get("/resume-ranking")
 async def getResumeRanking():
+    # Once HR select to view resume ranking
+    # Get resume from MongoDB
+    # Get job title to pull relative job description
     filePath = "resume/resume_ranking.json"
+    jobTitle = "Application Engineer" # Should be flexible to get from frontend
+    jobDescription = resumeRanker.getConcatenatedText(jobTitle, data)
+    resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 # -------------------- Initialize the session --------------------
@@ -370,6 +434,7 @@ def generateReport(concatResult: str):
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatResult)
+    toStoreJson['mbti'] = mbti_test.main(concatResult)
     #* to process MBTI, disfluency, behavioral analysis at here
 
     print(mongoDB.postData("reportData", toStoreJson))
