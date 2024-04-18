@@ -5,6 +5,8 @@ from joblib import load
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet
 from xgboost import XGBClassifier
+# pip install xgboost==1.4.0
+
 from sklearn.preprocessing import LabelEncoder
 import sklearn
 nltk.download('wordnet')
