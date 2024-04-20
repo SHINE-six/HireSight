@@ -124,7 +124,7 @@ def detect_sentence(text, prompt_parts):
 #function to generate the interview questions by connecting to the Gen AI model
 def generate_general_interview_questions(text,previous_reply):
 
-    prompt = f"""Generate one or two-sentence responses for only one general interview question just liek a HR recruiter view., 
+    prompt = f"""Generate one or two-sentence responses for only one general interview question just like a HR recruiter view., 
     please only generate the question only, do not add extra things like label or newline.
       New generated question must not similar to current reply:{text} and previous_question:{previous_reply}
     """
