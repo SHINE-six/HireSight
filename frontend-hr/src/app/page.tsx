@@ -14,7 +14,7 @@ const App = () => {
 					<div className='w-[14rem] bg-gray-400 h-[0.1rem]'></div>
 					<div className='w-[14rem] bg-white rounded-md mt-[3rem] text-xl justify-between flex flex-row py-[0.5rem] px-[1rem] font-semibold shadow-sm shadow-black'>
 						<div>Applicant:</div> 
-						<div className='text-red-700'>98</div>
+						<div className='text-red-700'>96</div>
 					</div>
 					<Link href='/applicant-detail'><div className='mt-[3rem] w-[14rem] bg-red-700 text-xl px-[1rem] py-[0.25rem] rounded-lg text-white font-semibold'>View Applicant Detail</div></Link>
 				</div>
@@ -27,7 +27,7 @@ const App = () => {
 					<div className='w-[14rem] bg-gray-400 h-[0.1rem]'></div>
 					<div className='w-[14rem] bg-white rounded-md mt-[3rem] text-xl justify-between flex flex-row py-[0.5rem] px-[1rem] font-semibold shadow-sm shadow-black'>
 						<div>Applicant:</div> 
-						<div className='text-red-700'>32</div>
+						<div className='text-red-700'>33</div>
 					</div>
 					<Link href='/suitability-ranking'><div className='mt-[3rem] w-[14rem] bg-red-700 text-xl px-[1rem] py-[0.25rem] rounded-lg text-white font-semibold'>View Suitability Ranking</div></Link>
 				</div>
