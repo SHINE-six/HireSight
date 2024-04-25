@@ -20,6 +20,7 @@ language-tool-python==2.7.1
 gensim==4.3.2 
 #spicy==1.12.0  # this important, 1.13.0 will give error
 scikit-learn==1.2.2 # this important, because the gb_model_v1.pkl model is trained with this version
+xgboost==1.4.0
 # for ffmpeg-python, need to install ffmpeg first, download from https://ffmpeg.org/download.html, then add to PATH, tutorial: https://phoenixnap.com/kb/ffmpeg-windows
 
 # # spaCy
