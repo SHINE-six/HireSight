@@ -1,8 +1,8 @@
 {
-  "blink episode": 1,
+  "blink episode": 0,
   "gaze": {
     "RIGHT": 0,
-    "CENTER": 68,
-    "LEFT": 1
+    "CENTER": 0,
+    "LEFT": 12
   }
 }

@@ -94,8 +94,3 @@ def main(text):
     predicted_mbti = translate_prediction_to_mbti(predicted_class, mbti_mapping)
     print("Predicted MBTI type:", predicted_mbti)
 
-
-text = """In moments of reflection, I often ponder the profound interconnectedness of our experiences and the threads of commonality that weave through our diverse narratives. It's fascinating, isn't it, how our individual journeys, each so uniquely sculpted by our dreams and struggles, somehow converge in shared moments of understanding? I believe that each interaction holds the potential for transformative insight, not just about the world around us but also the landscapes within us. This belief compels me to seek out authenticity in all my encounters, urging a deeper connection that transcends the superficial layers of conversation. It’s about nurturing a space where vulnerability meets acceptance, where we can be unapologetically ourselves and encourage others to do the same. In this space, we don’t just exchange words; we share parts of our soul, hoping to resonate, to understand, and to be understood. In doing so, we not only find others but rediscover ourselves, over and over, in every heartfelt exchange"""
-
-main(text)
-
