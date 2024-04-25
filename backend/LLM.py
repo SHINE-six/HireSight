@@ -2,7 +2,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 
-
+#  set GOOGLE_APPLICATION_CREDENTIALS= C:\HireMeModel\HireSight\backend\GOOGLE_APPLICATION_CRED.json changign to the vertex ai
 load_dotenv()
  
 
@@ -240,6 +240,5 @@ def main(text):
         data["flag"] = "4"
         return data
 
-    
 
 
