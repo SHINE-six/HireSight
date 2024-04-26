@@ -4,7 +4,7 @@ import subprocess
 
 def convert_webm_to_wav(input_file, output_file):
     command = [
-        "C:/ffmpeg/bin/ffmpeg.exe",      # "C:/ffmpeg/bin/ffmpeg.exe" for Windows, "/usr/bin/ffmpegthis current is for docker
+        "C:/ffmpeg/ffmpeg/bin/ffmpeg.exe",      # "C:/ffmpeg/bin/ffmpeg.exe" for Windows, "/usr/bin/ffmpegthis current is for docker
         '-y',  # Always overwrite output file
         '-i', input_file,  # Input file
         '-vn',  # No video

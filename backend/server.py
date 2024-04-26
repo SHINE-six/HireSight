@@ -9,7 +9,7 @@ import speech_to_text
 import facial_prediction
 import eye_tracking
 import LLM
-import tts
+# import tts
 import LLM_copy
 import googleTTS
 import wavspeech_to_json
@@ -17,13 +17,13 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
-# import mbti_test
+import mbti_test
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
 import json
 from pydantic import BaseModel
-
+from googleTTS import main as googleTTS
 
 app = FastAPI()
 
@@ -436,7 +436,7 @@ def generateReport(concatResult: str):
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    # toStoreJson['mbti'] = mbti_test.main(concatResult)   #! @chenming
+    toStoreJson['mbti'] = mbti_test.main(concatResult)   #! @chenming
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
     #* to process MBTI, tone, companySpecificSuitability  at here
 
