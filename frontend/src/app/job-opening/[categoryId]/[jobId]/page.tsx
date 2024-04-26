@@ -15,11 +15,39 @@ async function getJobDetail(JobId: string) {
     // }
 
     return data
-
 }
+
+
+
 export default async function jobOpeningPage({ params }: any) {
     let thisJob: Job;
     thisJob = await getJobDetail(params.jobId);
+
+    const postResume = async (e: any) => {
+        e.preventDefault();
+        console.log("postResume");
+        
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        const formData = new FormData();
+        
+        // 6 characters random string
+        const uniqueResumeID = Math.random().toString(36).substring(2, 8);
+        
+        if (fileInput && fileInput.files && fileInput.files.length > 0) {
+            formData.append('resume', fileInput.files[0]);
+            formData.append('jobDetails', JSON.stringify(thisJob));
+            formData.append('email', 'user@example.com');
+            formData.append('uniqueResumeID', uniqueResumeID);
+
+            const res = await fetch('http://localhost:8000/resume', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            console.log(data);
+        }
+    }
+
 
     return (
         <div className="m-20 mb-0">
@@ -39,7 +67,7 @@ export default async function jobOpeningPage({ params }: any) {
             <br /> <hr /> <br />
             <div className="text-2xl font-bold">Apply for this job</div>
             <br />
-            <form action="http://localhost:8000/resume" method="post" encType="multipart/form-data" target="form_target" className="space-y-5">
+            <form onSubmit={postResume} className="space-y-5">
                 <div className="flex flex-row justify-start">
                     <div className="w-[20rem] flex items-center justify-center h-12 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                         <div>Upload a file</div>
