@@ -265,6 +265,11 @@ async def getResumeRanking():
 #     filePath = "resume/resume_ranking.json"
 #     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
+@app.get("/login")
+async def login():
+    mongoDB.getAllDataFromCollection("Users")
+    return {"status": 200, "message": "Login successful"}
+
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
 uniqueSessionID = ""

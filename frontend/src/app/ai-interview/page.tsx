@@ -62,7 +62,6 @@ export default function AiInterviewPage() {
 
     useEffect(() => {
         if (!isLogin.current) {
-            console.log("FFFFFFFFFFFFFFF");
             const postUniqueSessionID = async () => {
                 const uniqueSessionID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
                 const response = await fetch('http://localhost:8000/ai-interview/session/start', {
