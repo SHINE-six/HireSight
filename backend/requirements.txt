@@ -1,7 +1,7 @@
 fastapi[all]==0.109.0
 uvicorn[standard]==0.27.0
 python-multipart==0.0.9
-#pydparser==1.0.4
+# pydparser==1.0.4
 tensorflow==2.16.1
 opencv-python==4.9.0.80
 SpeechRecognition==3.10.1
@@ -18,8 +18,9 @@ textstat==0.7.3
 Werkzeug==3.0.2
 language-tool-python==2.7.1
 gensim==4.3.2 
-#spicy==1.12.0  # this important, 1.13.0 will give error
+# spicy==1.12.0  # this important, 1.13.0 will give error
 scikit-learn==1.2.2 # this important, because the gb_model_v1.pkl model is trained with this version
+PyPDF2==3.0.1
 xgboost==1.4.0
 google-cloud-aiplatform>=0.8.0
 google-cloud-texttospeech
