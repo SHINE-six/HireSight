@@ -70,7 +70,6 @@ def clear_text(data):
         cleaned_text.append(sentence)
     return cleaned_text,data_length
 
-
 class Lemmatizer(object):
     def __init__(self):
         self.lemmatizer = WordNetLemmatizer()
@@ -78,24 +77,21 @@ class Lemmatizer(object):
         return [self.lemmatizer.lemmatize(word) for word in sentence.split() if len(word)>2]
     
 
-def main(text):
-    # Load your model and other necessary components
-    model_xgb = load('C:\\hilti\\HireSight\\backend\\model\\model_xgb.joblib')
-    vectorizer = load('C:\\hilti\\HireSight\\backend\\model\\tfidf_vectorizer.joblib')
 
-    # Process your input data
-    # Assume 'sentence' is the text input you are classifying
-    preprocessed_text = pre_process_sentence(text)
-    vectorized_text = vectorizer.transform([preprocessed_text])
+text = "i am introvert and i like to read books and play games. i am a software engineer"
+# Load your model and other necessary components
+model_xgb = load('C:\\hilti\\HireSight\\backend\\model\\model_xgb.joblib')
+vectorizer = load('C:\\hilti\\HireSight\\backend\\model\\tfidf_vectorizer.joblib')
 
-    # Make a prediction
-    predicted_class = model_xgb.predict(vectorized_text)
+# Process your input data
+# Assume 'sentence' is the text input you are classifying
+preprocessed_text = pre_process_sentence(text)
+vectorized_text = vectorizer.transform([preprocessed_text])
 
-    # Translate the numeric prediction to MBTI type
-    predicted_mbti = translate_prediction_to_mbti(predicted_class, mbti_mapping)
-    print("Predicted MBTI type:", predicted_mbti)
-    return predicted_mbti
+# Make a prediction
+predicted_class = model_xgb.predict(vectorized_text)
 
-if __name__ == "__main__":
-    text="I am introvert and I like to read books and play games. I am a software engineer."
-    main(text)
+# Translate the numeric prediction to MBTI type
+predicted_mbti = translate_prediction_to_mbti(predicted_class, mbti_mapping)
+print("Predicted MBTI type:", predicted_mbti)
+
