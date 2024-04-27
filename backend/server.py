@@ -10,6 +10,8 @@ import facial_prediction
 import eye_tracking
 import LLM
 import tts
+import LLM_copy
+import googleTTS
 import wavspeech_to_json
 import mongoDB
 import disfluency
@@ -285,10 +287,9 @@ async def create_session(sessionJson: Request):
 
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
-    outputText = LLM.main(userTranscript)
-    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply'], "flag": outputText['flag']}, uniqueSessionID))
-    print(outputText)  # to remove
-    tts.main(outputText['reply'])
+    outputText = LLM_copy.main(userTranscript)
+    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply']}, uniqueSessionID))
+    googleTTS.main(outputText)
     wavspeech_to_json.main()
     print("Text, TTS, and WAV to JSON conversion completed")
     taskStatus["text_LLM_tts_wavToJson"] = True

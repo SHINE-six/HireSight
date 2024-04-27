@@ -2,7 +2,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 
-
+#  set GOOGLE_APPLICATION_CREDENTIALS= C:\HireMeModel\HireSight\backend\GOOGLE_APPLICATION_CRED.json changign to the vertex ai
 load_dotenv()
  
 
@@ -124,7 +124,7 @@ def detect_sentence(text, prompt_parts):
 #function to generate the interview questions by connecting to the Gen AI model
 def generate_general_interview_questions(text,previous_reply):
 
-    prompt = f"""Generate one or two-sentence responses for only one general interview question just liek a HR recruiter view., 
+    prompt = f"""Generate one or two-sentence responses for only one general interview question just like a HR recruiter view., 
     please only generate the question only, do not add extra things like label or newline.
       New generated question must not similar to current reply:{text} and previous_question:{previous_reply}
     """
@@ -240,6 +240,5 @@ def main(text):
         data["flag"] = "4"
         return data
 
-    
 
 
