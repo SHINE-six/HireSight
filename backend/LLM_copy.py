@@ -1,10 +1,9 @@
-# GOOGLE_APPLICATION_CREDENTIALS= "C:\\HireMeModel\\HireSight\\backend\\GOOGLE_APPLICATION_CRED.json";
-
 import os
-import base64
 import vertexai
 from vertexai.generative_models import GenerativeModel
 import vertexai.preview.generative_models as generative_models
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".\GOOGLE_APPLICATION_CRED.json"
 
 vertexai.init(project="civic-surge-420016", location="asia-southeast1")
 
@@ -240,4 +239,3 @@ def llm_process(text):
 def main(text):
     data = llm_process(text)
     return data
-

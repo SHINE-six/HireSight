@@ -8,6 +8,7 @@ import Experience from "@/components/Experience";
 import { CiMicrophoneOn, CiMicrophoneOff } from "react-icons/ci";
 import { Canvas } from "@react-three/fiber";
 import { useRouter } from 'next/navigation';
+import { useUserInfoStore } from '@/stores/userInfoStore';
 
 const firstJsonResponse = require('../../../public/audios/fromAI.json');
 
@@ -17,6 +18,7 @@ export default function AiInterviewPage() {
     const [audioUrl, setAudioUrl] = useState<string | null>('/audios/fromAI.wav');
     const [jsonData, setJsonData] = useState<any | null>(firstJsonResponse);
     const [loading, setLoading] = useState(false);
+    const { email } = useUserInfoStore();
     const router = useRouter();
 
     // const wav_file = ['/audios/fromAI(1).wav', '/audios/fromAI(1r).wav', '/audios/fromAI(2).wav', '/audios/fromAI(3).wav', '/audios/fromAI(4).wav', '/audios/fromAI(5).wav', '/audios/fromAI(6).wav', '/audios/fromAI(7).wav', '/audios/fromAI(8).wav'];
@@ -62,14 +64,13 @@ export default function AiInterviewPage() {
 
     useEffect(() => {
         if (!isLogin.current) {
-            console.log("FFFFFFFFFFFFFFF");
             const postUniqueSessionID = async () => {
                 const uniqueSessionID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
                 const response = await fetch('http://localhost:8000/ai-interview/session/start', {
                     method: 'POST',
-                    body: JSON.stringify({ uniqueSessionID }),
+                    body: JSON.stringify({ uniqueSessionID, email }),
                 })
-                console.log(JSON.stringify({ uniqueSessionID }));
+                console.log(JSON.stringify({ uniqueSessionID, email }));
                 console.log(response);
             }
             postUniqueSessionID();
