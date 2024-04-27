@@ -1,18 +1,15 @@
 'use client';
 
 import { Job } from "../../indiJobCategory";
+import { useUserInfoStore } from "@/stores/userInfoStore";
+import LoginPopup from "@/components/Login";
+import { useState } from "react";
 
 async function getJobDetail(JobId: string) {
     console.log(JobId)
     const res = await fetch(`http://localhost:8000/jobopenings/job/${JobId}`)
     const data = await res.json()
-    // const data = {
-    //     "jobId": "1A_a",
-    //     "jobTitle": "IT Business Analyst – SAP FICO",
-    //     "jobDescription": "This is an IT Business Analyst role focused on the financial aspects of software sales, including subscriptions, rentals, leasing, and usage concepts for Hilti tools. You will bridge the gap between business needs and SAP FICO implementations, working on global projects, daily support, and compliance initiatives.",
-    //     "jobSkills": ["SAP FICO consultant background (3+ years experience)", "Experience with SAP ERP 6.0 / S/4HANA in finance (General Ledger, AR, AA)", 
-    //                     "Understanding of business processes in finance, controlling, sales & distribution", "Ability to handle complex projects and implement IFRS standards","Strong communication, problem-solving, and teamwork skills","Experience in international/virtual teams"]
-    // }
+
 
     return data
 }
@@ -20,31 +17,38 @@ async function getJobDetail(JobId: string) {
 
 
 export default async function jobOpeningPage({ params }: any) {
+    const [showLogin, setShowLogin] = useState(false);
+    const { email } = useUserInfoStore();
     let thisJob: Job;
     thisJob = await getJobDetail(params.jobId);
 
     const postResume = async (e: any) => {
         e.preventDefault();
-        console.log("postResume");
-        
-        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        const formData = new FormData();
-        
-        // 6 characters random string
-        const uniqueResumeID = Math.random().toString(36).substring(2, 8);
-        
-        if (fileInput && fileInput.files && fileInput.files.length > 0) {
-            formData.append('resume', fileInput.files[0]);
-            formData.append('jobDetails', JSON.stringify(thisJob));
-            formData.append('email', 'user@example.com');
-            formData.append('uniqueResumeID', uniqueResumeID);
+        if (email != "") {
+            
+            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+            const formData = new FormData();
+            
+            // 6 characters random string
+            const uniqueResumeID = Math.random().toString(36).substring(2, 8);
+            
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                formData.append('resume', fileInput.files[0]);
+                formData.append('jobDetails', JSON.stringify(thisJob));
+                formData.append('email', email);
+                formData.append('uniqueResumeID', uniqueResumeID);
 
-            const res = await fetch('http://localhost:8000/resume', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
-            console.log(data);
+                const res = await fetch('http://localhost:8000/resume', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                console.log(data);
+            }
+        }
+        else {
+            console.log("Login first");
+            setShowLogin(true);
         }
     }
 
@@ -74,11 +78,11 @@ export default async function jobOpeningPage({ params }: any) {
                         <input type="file" accept=".pdf" name="resume" className="border-2 absolute h-12 w-[20rem] opacity-0"/>
                     </div>
                     <button type="submit" className="ml-8 flex items-center justify-center w-[6rem] py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                        Submit
+                        {email ? '✅': 'Submit'}
                     </button>
                 </div>
             </form>
-            <iframe name="form_target" style={{display: 'none'}}></iframe>
+            {showLogin && (email == "") && <LoginPopup />}
         </div>
     );
 }
