@@ -2,6 +2,8 @@ import React, { Key } from 'react';
 import Link from 'next/link';
 
 const IndiJobCategory = ({ jobCat }: { jobCat: JobCatType}) => {
+
+
     return (
         <Link href={`/job-opening/${jobCat.categoryId}`}>
             <div className='flex flex-col bg-white w-[35rem] h-[15rem] px-[2rem] py-[1.2rem] place-content-between justify-self-center rounded-md shadow-lg'>

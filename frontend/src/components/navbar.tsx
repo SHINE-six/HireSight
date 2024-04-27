@@ -1,7 +1,21 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useUserInfoStore } from '@/stores/userInfoStore';
+import LoginPopup from './Login';
+
 
 const Navbar: React.FC = () => {
+    const { email, aiStage } = useUserInfoStore();
+    const [showLogin, setShowLogin] = useState(false);
+
+    useEffect(() => {
+        if (email != "") {
+            setShowLogin(false);
+        }
+    }, [email]);
+
     return (
         <nav>
             <div className='flex justify-between items-center mx-[3rem]'>
@@ -10,8 +24,10 @@ const Navbar: React.FC = () => {
                 </div>
                 <div className='flex flex-row space-x-12 text-xl'>
                     <Link href="/">Home</Link>
-                    <Link href="/job-opening">Job Opening</Link>
-                    <Link href="/ai-interview">Ai Interview</Link>
+                    <Link href={`/job-opening`}>Job Opening</Link>
+                    {email && aiStage && <Link href={`/ai-interview`}>Ai Interview</Link>}
+                    {(email=="") && <div onClick={()=>setShowLogin(true)}>Login</div>}
+                    {showLogin && <LoginPopup />}
                 </div>
             </div>
         </nav>

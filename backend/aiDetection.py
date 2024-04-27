@@ -40,13 +40,12 @@ def main(text):
         result = "human"
     else:
         result = "ai"
-    data = {
+    toReturnJson = {
     "final_result": result,
     "probability_human": str(probability_human),
     "probability_ai": str(probability_ai)
     }
-    json_data = json.dumps(data)
-    return json_data
+    return toReturnJson
 
     
 
