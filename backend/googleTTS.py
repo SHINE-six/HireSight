@@ -37,5 +37,3 @@ def main(output_text):
     return "Audio file created at: " + audio_paths
 
 
-
-main("Hi Chenming 7 7 7 welcome to Hilti AI interview session I'm your AI interviewer EVA, and today I will be interviewing you on business analyst specialize on sustainability. Before we start, please introduce yourself")

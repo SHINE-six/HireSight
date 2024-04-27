@@ -282,6 +282,7 @@ async def create_session(sessionJson: Request):
 
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
+    googleTTS.main(outputText['reply'])
     outputText = LLM_copy.main(userTranscript)
     print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply']}, uniqueSessionID))
     googleTTS.main(outputText)

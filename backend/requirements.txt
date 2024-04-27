@@ -24,6 +24,7 @@ PyPDF2==3.0.1
 xgboost==1.4.0
 google-cloud-aiplatform>=0.8.0
 google-cloud-texttospeech
+vertexai==1.48.0
 
 # for ffmpeg-python, need to install ffmpeg first, download from https://ffmpeg.org/download.html, then add to PATH, tutorial: https://phoenixnap.com/kb/ffmpeg-windows
 
