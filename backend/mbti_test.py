@@ -1,15 +1,10 @@
 import re
 import nltk
 from tqdm import tqdm
-from nltk.stem import WordNetLemmatizer
+from Lemmatizer import Lemmatizer
 from joblib import load
 from nltk.corpus import stopwords
-from nltk.corpus import wordnet
-from xgboost import XGBClassifier
-# pip install xgboost==1.4.0
 
-from sklearn.preprocessing import LabelEncoder
-import sklearn
 nltk.download('wordnet')
 
 nltk.download('stopwords')
@@ -28,7 +23,6 @@ def translate_prediction_to_mbti(prediction, mapping):
     return mapping[prediction[0]]
 
 # Initialize the lemmatizer and stopwords list once to optimize performance
-lemmatizer = WordNetLemmatizer()
 useless_words = stopwords.words("english")
 unique_type_list = [x.lower() for x in ['INFJ', 'ENTP', 'INTP', 'INTJ', 'ENTJ', 'ENFJ', 'INFP', 'ENFP',
                                         'ISFP', 'ISTP', 'ISFJ', 'ISTJ', 'ESTP', 'ESFP', 'ESTJ', 'ESFJ']]
@@ -44,7 +38,7 @@ def pre_process_sentence(sentence, remove_stop_words=True, remove_mbti_profiles=
     words = sentence.split()
     if remove_stop_words:
         words = [word for word in words if word not in useless_words]
-    words = [lemmatizer.lemmatize(word) for word in words]
+    words = [Lemmatizer.lemmatize(word) for word in words]
     sentence = ' '.join(words)
     # Remove MBTI personality words if required
     if remove_mbti_profiles:
@@ -54,7 +48,6 @@ def pre_process_sentence(sentence, remove_stop_words=True, remove_mbti_profiles=
 
 def clear_text(data):
     data_length=[]
-    lemmatizer=WordNetLemmatizer()
     cleaned_text=[]
     for sentence in tqdm(data.posts):
         sentence=sentence.lower()
@@ -70,11 +63,6 @@ def clear_text(data):
         cleaned_text.append(sentence)
     return cleaned_text,data_length
 
-class Lemmatizer(object):
-    def __init__(self):
-        self.lemmatizer = WordNetLemmatizer()
-    def __call__(self, sentence):
-        return [self.lemmatizer.lemmatize(word) for word in sentence.split() if len(word)>2]
     
 
 def main(text):
@@ -92,10 +80,7 @@ def main(text):
 
     # Translate the numeric prediction to MBTI type
     predicted_mbti = translate_prediction_to_mbti(predicted_class, mbti_mapping)
-    print("Predicted MBTI type:", predicted_mbti)
+    return "Predicted MBTI type:" + predicted_mbti
 
-
-text = """In moments of reflection, I often ponder the profound interconnectedness of our experiences and the threads of commonality that weave through our diverse narratives. It's fascinating, isn't it, how our individual journeys, each so uniquely sculpted by our dreams and struggles, somehow converge in shared moments of understanding? I believe that each interaction holds the potential for transformative insight, not just about the world around us but also the landscapes within us. This belief compels me to seek out authenticity in all my encounters, urging a deeper connection that transcends the superficial layers of conversation. It’s about nurturing a space where vulnerability meets acceptance, where we can be unapologetically ourselves and encourage others to do the same. In this space, we don’t just exchange words; we share parts of our soul, hoping to resonate, to understand, and to be understood. In doing so, we not only find others but rediscover ourselves, over and over, in every heartfelt exchange"""
-
-main(text)
+# if __name__ == "__main__":
 
