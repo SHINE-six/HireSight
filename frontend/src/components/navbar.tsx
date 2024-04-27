@@ -1,16 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useUserInfoStore } from '@/stores/userInfoStore';
 import LoginPopup from './Login';
 
 
 const Navbar: React.FC = () => {
-    const [login, setLogin] = useState(false);
+    const { email, aiStage } = useUserInfoStore();
+    const [showLogin, setShowLogin] = useState(false);
 
-    function handleLogin() {
-        setLogin(true);
-    }
+    useEffect(() => {
+        if (email != "") {
+            setShowLogin(false);
+        }
+    }, [email]);
 
     return (
         <nav>
@@ -20,11 +24,12 @@ const Navbar: React.FC = () => {
                 </div>
                 <div className='flex flex-row space-x-12 text-xl'>
                     <Link href="/">Home</Link>
-                    <Link href="/job-opening">Job Opening</Link>
-                    {login && <Link href="/ai-interview">Ai Interview</Link>}
+                    <Link href={`/job-opening`}>Job Opening</Link>
+                    {email && aiStage && <Link href={`/ai-interview`}>Ai Interview</Link>}
+                    {(email=="") && <div onClick={()=>setShowLogin(true)}>Login</div>}
+                    {showLogin && <LoginPopup />}
                 </div>
             </div>
-            {!login && <LoginPopup handleLogin={handleLogin}/>}
         </nav>
     );
 };

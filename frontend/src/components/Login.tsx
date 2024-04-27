@@ -1,11 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-// import { handleSubmit } from './LoginClass';
+import { useUserInfoStore } from '@/stores/userInfoStore';
 
-interface LoginPopupProps {
-    handleLogin: () => void;
-}
 
 const PostLoginInfo = async (formData: FormData) => {
     const res = await fetch('http://localhost:8000/login', {
@@ -14,19 +11,27 @@ const PostLoginInfo = async (formData: FormData) => {
     });
     const data = await res.json();
     console.log(data);
+    return data;
 }
 
-const LoginPopup:React.FC<LoginPopupProps> = ({ handleLogin }) => {
-    const [email, setEmail] = useState('');
+const LoginPopup = () => {
+    const [email, setLocalEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { setEmail, setAiStage } = useUserInfoStore();
 
-    function handleLocalSubmit(e: React.FormEvent) {
+    async function handleLocalSubmit(e: React.FormEvent) {
         e.preventDefault();
         const formData = new FormData();
         formData.append('email', email);
         formData.append('password', password);
-        PostLoginInfo(formData);
-        handleLogin();
+        const response = await PostLoginInfo(formData); // Await the response
+        if (response.status === 200) { // Access the status property
+            setEmail(email);
+            setAiStage(response.aiStage);
+        }
+        else {
+            console.log('Login failed');
+        }
     }
     
     return (
@@ -35,7 +40,7 @@ const LoginPopup:React.FC<LoginPopupProps> = ({ handleLogin }) => {
                 <div className="text-2xl font-bold text-red-700">Login</div>
                 <form className="mt-[1rem]" onSubmit={(e)=>handleLocalSubmit(e)}>
                     <div className="flex flex-col space-y-4">
-                        <input className="border border-gray-300 p-[0.5rem] rounded-md" type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+                        <input className="border border-gray-300 p-[0.5rem] rounded-md" type="text" placeholder="Email" onChange={(e) => setLocalEmail(e.target.value)} />
                         <input className="border border-gray-300 p-[0.5rem] rounded-md" type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                         <button className="bg-red-700 text-white p-[0.5rem] rounded-md" type='submit'>Login</button>
                     </div>
