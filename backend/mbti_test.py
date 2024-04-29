@@ -66,7 +66,6 @@ def clear_text(data):
     
 
 def main(text):
-def main(text):
     # Load your model and other necessary components
     model_xgb = load('model/model_xgb.joblib')
     vectorizer = load('model/tfidf_vectorizer.joblib')

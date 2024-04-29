@@ -59,4 +59,3 @@ def deleteFirstTenData(collection):
     ids = [doc['_id'] for doc in documents]
     collection.delete_many({'_id': {'$in': ids}})
     return {"status": 200, "message": "Data deleted successfully!"}
-
