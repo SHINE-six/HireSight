@@ -8,8 +8,8 @@ import resumeRanker
 import speech_to_text
 import facial_prediction
 import eye_tracking
-import LLM
-import tts
+# import LLM
+# import tts
 import LLM_copy
 import googleTTS
 import wavspeech_to_json
@@ -267,6 +267,19 @@ async def getResumeRanking():
 #     filePath = "resume/resume_ranking.json"
 #     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
+@app.post("/login")
+async def login(email: str = Form(...), password: str = Form(...)):
+    foundUser = mongoDB.getOneDataFromCollection("Users", "email", email)
+    if foundUser:
+        if foundUser['password'] == password:
+            return {"status": 200, "message": "Login successful", "aiStage": foundUser['aiStage']}
+        else:
+            return {"status": 401, "message": "Incorrect password"}
+        
+    elif (not foundUser):
+        mongoDB.postData("Users", {"email": email, "password": password, "aiStage": False})
+        return {"status": 200, "message": "Sign up successful", "aiStage": False}
+
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
 uniqueSessionID = ""
@@ -282,10 +295,10 @@ async def create_session(sessionJson: Request):
 
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
-    googleTTS.main(outputText['reply'])
-    outputText = LLM_copy.main(userTranscript)
-    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply']}, uniqueSessionID))
-    googleTTS.main(outputText)
+    outputText = LLM.main(userTranscript)
+    print(mongoDB.appendDataToDocument("conversationLog", {"user": "Ai - EVA", "text": outputText['reply'], "flag": outputText['flag']}, uniqueSessionID))
+    print(outputText)  # to remove
+    tts.main(outputText['reply'])
     wavspeech_to_json.main()
     print("Text, TTS, and WAV to JSON conversion completed")
     taskStatus["text_LLM_tts_wavToJson"] = True

@@ -66,12 +66,16 @@ def clear_text(data):
     
 
 def main(text):
+def main(text):
     # Load your model and other necessary components
+    model_xgb = load('model/model_xgb.joblib')
+    vectorizer = load('model/tfidf_vectorizer.joblib')
     model_xgb = load('model/model_xgb.joblib')
     vectorizer = load('model/tfidf_vectorizer.joblib')
 
     # Process your input data
     # Assume 'sentence' is the text input you are classifying
+    preprocessed_text = pre_process_sentence(text)
     preprocessed_text = pre_process_sentence(text)
     vectorized_text = vectorizer.transform([preprocessed_text])
 
