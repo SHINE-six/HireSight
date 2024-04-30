@@ -58,11 +58,7 @@ def generate():
   response_str = response_str.strip()
   print(response_str)
 
-  #return response_str
-    # generated_answers = response.text.replace("*", "")
-    # generated_answers = generated_answers.replace("#", "")
-    # generated_answers = generated_answers.strip()
-    # print(response.text, end="")
+
 generate()
 
 
