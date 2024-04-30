@@ -18,6 +18,7 @@ import disfluency
 import plagiarism
 import aiDetection
 # import mbti_test
+import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -383,19 +384,33 @@ def checkProcessFiles():
 async def finish_interview(BackgroundTasks: BackgroundTasks):
     time.sleep(5)   # Wait for the last process to finish
 
-    concatResult = concat_user_transcript()
+    concatResult = concat_applicant_transcript()
+    
     BackgroundTasks.add_task(generateReport, concatResult)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
 
 
-def concat_user_transcript():
+def concat_applicant_transcript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
         if log['user'] == "applicant":
             log_full += log['text'] + ". "
+        
+    return log_full
+
+def concat_all_transcript():
+    conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
+    log_full = ""
+    for log in conversationLog['log']:
+        if log['user'] == "applicant":
+            log_format = "Candidate: " + log['text'] + ". "
+            log_full += log_format
+        elif log['user'] == "Ai - EVA":
+            log_format = "HR: " + log['text'] + ". "
+            log_full += log_format
         
     return log_full
 
