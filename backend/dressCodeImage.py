@@ -2,7 +2,7 @@ import base64
 import vertexai
 from vertexai.generative_models import GenerativeModel, Part
 import vertexai.preview.generative_models as generative_models
-
+# detect the image and text
 generation_config = {
     "max_output_tokens": 328,
     "temperature": 1,
