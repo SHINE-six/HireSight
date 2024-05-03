@@ -1,8 +1,8 @@
 import mongoDB
+import LLM_report_2
 import LLM_report
 import time  
 from datetime import datetime
-import json
 
 global uniqueSessionID
 uniqueSessionID = "y6iet1gmocedfdphuolx68"
@@ -33,12 +33,18 @@ toStoreJson = {
 }
 
 try:
-    ai_report = LLM_report.main(concatTranscript, mbti_type)
-    # print(ai_report)
+    ai_report = None
+    if ai_report == None:
+        # Vertex Ai    
+        ai_report = LLM_report_2.main(concatTranscript, mbti_type)
+        # Genmini Ai
+        # ai_report = LLM_report.main(concatTranscript, mbti_type)
+
+    toStoreJson["ai_report"] = ai_report
+
 except Exception as e:
     print(f"An error occurred: {e}")
     print("Retrying in 5 seconds...")
     time.sleep(5)
 
-toStoreJson["ai_report"] = ai_report
 print(mongoDB.postData("reportInfo", toStoreJson))
