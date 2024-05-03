@@ -32,14 +32,12 @@ toStoreJson = {
 }
 
 try:
-    report_data = LLM_report.main(concatTranscript, mbti_type)
-    # print(report_data)
-    toStoreJson["reportData"] = report_data
+    ai_report = LLM_report.main(concatTranscript, mbti_type)
+    # print(ai_report)
 except Exception as e:
     print(f"An error occurred: {e}")
     print("Retrying in 5 seconds...")
     time.sleep(5)
-
-json_data = json.dumps(toStoreJson, indent=4)
-print(json_data)
-print(mongoDB.postData("reportInfo", report_data))
+    
+toStoreJson["reportData"] = ai_report
+print(mongoDB.postData("reportInfo", toStoreJson))

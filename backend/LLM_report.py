@@ -47,6 +47,7 @@ def generate_technical(text):
     TechnicalSkill Content:
     1. Rate the Technical Skills Rating 1 to 5 marks with one decimal.
     2. Generate a fifty words assessment summary about Tehcnical Skills of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    3. TechnicalSkillScore and TechnicalSkillSummary should not be empty.
     "TechnicalSkillScore": ,  
     "TechnicalSkillSummary": ""
     """
@@ -69,21 +70,17 @@ def generate_preparation(text):
     2. Rate the Knowledge of the Company, Role, and Industry 1 to 5 marks by evaluate how well the candidate understands the company's mission, the specifics of the role, and industry dynamics.
     3. Rate the Quality of Questions for the Interviewer 1 to 5 marks by evaluate the depth and relevance of the questions asked by the candidate, indicating their engagement and preparation. If the candidate have not ask any question will be 0.
     4. Rate the Alignment of Skills and Experiences with Job Requirements 1 to 5 marks by evaluate the candidate's ability to articulate how their background aligns with the role's requirements. 
-    5. Rate the Formal and Appropriate Attire 1 to 5 marks by evaluate the candidate's effort to dress formally and appropriately for the interview context. 
-    6. Rate the Grooming and Tidiness 1 to 5 marks by evaluate the candidate's attention to personal grooming and tidiness, reflects their professionalism. 
-    7. Only the PreparationScore with one decimal. The Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer, Alignment of Skills and Experiences with Job Requirements, Formal and Appropriate Attire and Grooming and Tidiness are integer.
-    8. Generate a fifty words assessment summary for Soft Skills of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    5. Only the PreparationScore with one decimal. The Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer, Alignment of Skills and Experiences with Job Requirements, Formal and Appropriate Attire and Grooming and Tidiness are integer.
+    6. Generate a fifty words assessment summary for Soft Skills of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    7. PreparationScore, Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer,Alignment of Skills and Experiences with Job Requirements, PreparationSummary should not be empty.
     "PreparationScore": ,
     "Knowledge of the Company, Role, and Industry": ,
     "Quality of Questions for the Interviewer": ,
     "Alignment of Skills and Experiences with Job Requirements": ,
-    "Formal and Appropriate Attire": ,
-    "Grooming and Tidiness": ,
     "PreparationSummary": ""
     """
     summary = model.generate_content(prompt)
     # print(summary)
-    # formatting the output to make it look cleaner
     preparation_skill = summary.text
     # print(preparation_skill)
     match3 = re.search(r'"PreparationScore": (\d+(\.\d+)?)', preparation_skill)
@@ -97,12 +94,12 @@ def generate_preparation(text):
     match6 = re.search(r'"Alignment of Skills and Experiences with Job Requirements": (\d+(\.\d+)?)', preparation_skill)
     if match6:
         alignment_with_job_requirements = match6.group(1)
-    match7 = re.search(r'"Formal and Appropriate Attire": (\d+(\.\d+)?)', preparation_skill)
-    if match7:
-        formal_attire = match7.group(1)
-    match8 = re.search(r'"Grooming and Tidiness": (\d+(\.\d+)?)', preparation_skill)
-    if match8:
-        grooming_tidiness = match8.group(1)
+    # match7 = re.search(r'"Formal and Appropriate Attire": (\d+(\.\d+)?)', preparation_skill)
+    # if match7:
+    #     formal_attire = match7.group(1)
+    # match8 = re.search(r'"Grooming and Tidiness": (\d+(\.\d+)?)', preparation_skill)
+    # if match8:
+    #     grooming_tidiness = match8.group(1)
     match9 = re.search(r'"PreparationSummary": "([^"]+)"', preparation_skill)
     if match9:
         preparation_summary = match9.group(1)
@@ -113,7 +110,7 @@ def generate_preparation(text):
     # print("Formal and Appropriate Attire:", formal_attire)
     # print("Grooming and Tidiness:", grooming_tidiness)
     # print("Preparation Summary:", preparation_summary)
-    return preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, formal_attire, grooming_tidiness, preparation_summary
+    return preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary
 
 def generate_culturalfit(text):
     prompt = f"""
@@ -126,7 +123,7 @@ def generate_culturalfit(text):
     6. Generate the Problem-Solving and Decision-Making Style Ranking 1 to 5 marks by assessing problem-solving approach, creativity, critical thinking, and conflict resolution.
     7. Only the CulturalFitScore with one decimal. The Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style are integer.
     8. Generate a fifty words assessment summary for Cultural Fit of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
-    9. Format
+    9. CulturalFitScore, Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style should not be empty.
     "CulturalFitScore": ,
     "Alignment with Core Company Values" : ,
     "Professionalism and Work Ethic" : ,
@@ -138,7 +135,7 @@ def generate_culturalfit(text):
     summary = model.generate_content(prompt)
     # print(summary)
     culturalfit_skill = summary.text
-    # print(culturalfit_skill)
+    print(culturalfit_skill)
     cultural_score = None
     alignment_with_company_values = None
     professionalism_work_ethic = None
@@ -180,6 +177,7 @@ def generate_attitude(text):
     5. Generate the Motivation and Work Ethic Ranking 1 to 5 marks by evaluate the candidate’s eagerness to contribute to the team and company, as evidenced by their energy levels, commitment to achieving goals, and feedback from references. 
     6. Only the AtitudeScore with one decimal. The Professionalism, Positivity and Enthusiasm, Resilience and Response to Challenges and Motivation and Work Ethic are integer.
     7. Generate a fifty words assessment summary for Attitude of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    8. AtitudeScore, Professionalism, Positivity and Enthusiasm, Resilience and Response to Challenges and Motivation and Work Ethicshould not be empty.
     "AtitudeScore": ,
     "Professionalism": ,
     "Positivity and Enthusiasm": ,
@@ -190,6 +188,7 @@ def generate_attitude(text):
     summary = model.generate_content(prompt)
     # print(summary)
     attitude_skill = summary.text
+    # print(attitude_skill)
     attitude_score = None
     professionalism = None
     positivity_enthusiasm = None
@@ -226,6 +225,7 @@ def generate_communicationskill(text):
     5. Generate the Non-verbal communication Ranking 1 to 5 marks by evaluate the use of non-verbal cues, such as eye contact, gestures, and facial expressions, to complement verbal communication and enhance understanding. 
     6. Only the Communication Skill Mark with one decimal. The Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication are integer.
     7. Generate a fifty words assessment summary for Communication Skill of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    8. CommunicationSkillScore, Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication should not be empty.
     "CommunicationSkillScore": ,
     "Clarity, Coherence, and Conciseness of Responses": ,
     "Listening and Engagement in Dialogue": ,
@@ -270,8 +270,9 @@ def generate_adaptability(text):
     3. Generate the Responses to Hypothetical Scenarios Ranking 1 to 5 marks by evaluates the candidate's creativity and problem-solving abilities when confronted with hypothetical scenarios involving change or unexpected challenges. 
     4. Generate the Learning and Applying Feedback Ranking 1 to 5 marks by evaluates the candidate's openness to feedback and their capacity to incorporate this feedback into personal growth and improvement. 
     5. Generate the Feedback from References on Adaptability and Problem-solving Ranking 1 to 5 marks by evaluate external perspectives on the candidate's adaptability and problem-solving skills in previous roles or projects, as provided by references. 
-    6. Only the AdaptabilityScore with one decimal. The Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solvin are integer.
+    6. Only the AdaptabilityScore with one decimal. The Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solving are integer.
     7. Generate a fifty words assessment summary for Adaptability of the following interview conversation: {text}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    8. AdaptabilityScore, Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solvin should not be empty.
     "AdaptabilityScore": ,
     "Successful Adaptation to Change": ,
     "Responses to Hypothetical Scenarios": ,
@@ -282,6 +283,7 @@ def generate_adaptability(text):
     summary = model.generate_content(prompt)
     # print(summary)
     adaptability_skill = summary.text
+    print(adaptability_skill)
     adaptability_score = None
     successful_adaptation = None
     responses_to_scenarios = None
@@ -313,6 +315,7 @@ def generate_mbti(mbti_type):
     Generate MBTISummary.
     MBTISummary Content:
     1. Generate a ninety words summary of the candidate's predicted mbti type: {mbti_type} characteristics in the workplace. Highlight their thoughtful and strategic approach, strong intuition, organizational skills, focus on positive change and sustainability, empathetic nature, and ability to foster collaboration and effective leadership.The summary only can write pronoun as 'the applicant' and 'his/her'.
+    2. All Contents should not be null.
     """
     summary = model.generate_content(prompt)
     # print(summary)
@@ -330,6 +333,7 @@ def generate_feedback_for_candidate(text):
     6. Generate the list of the candidate's weaknesses and areas for improvement as demonstrated in the following interview conversation: {text}. 
     7. Generate the list of the candidate's other recommended job position as demonstrated in the following interview conversation: {text}. 
     8. The Strength, Weakness and Areas For Improvement, Other Recommended Job Position should not be blank. They should more than one.
+    9. All Contents should not be null.
     "Strength": {{
         "Strength 1": "",
         "Strength 2": "",
@@ -363,6 +367,7 @@ def generate_overall_evaluation_N_recommendation(text):
     OverallEvaluationAndRecommendation Content:
     1. Generate a 80 words Summary of the candidate in all aspect like the soft skill and tech skill using following interview conversation: {text}. Integrate insights from each section to highlight the candidate’s overall strengths and how they align with the role's requirements and the company's culture. Identify any potential areas for growth or concerns that emerged during the evaluation. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     2. Based on the comprehensive assessment, generate a 40 words recommendation whether to proceed to the next round of interviews, be offered the position, consider the candidate for a different job position, or fail. Just to give suggestions that the actual HR will take the decision. 
+    3. All Contents should not be null.
     "Summary":"",
     "Recommendation":""
     """
@@ -381,7 +386,7 @@ def generate_overall_evaluation_N_recommendation(text):
 
 def main(concatTranscript, mbti_type):
     TechnicalSkillScore, TechnicalSkillSummary = generate_technical(concatTranscript)
-    preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, formal_attire, grooming_tidiness, preparation_summary = generate_preparation(concatTranscript)
+    preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary = generate_preparation(concatTranscript)
     cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary = generate_culturalfit(concatTranscript)
     attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary = generate_attitude(concatTranscript)
     communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary = generate_communicationskill(concatTranscript)
@@ -389,7 +394,7 @@ def main(concatTranscript, mbti_type):
     mbti_summary = generate_mbti(mbti_type)
     strengths, weaknesses, job_positions = generate_feedback_for_candidate(concatTranscript)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
-    data={
+    ai_report={
     "TechnicalSkill":{
         "TechnicalSkillScore": TechnicalSkillScore,
         "TechnicalSkillSummary": TechnicalSkillSummary,
@@ -401,8 +406,8 @@ def main(concatTranscript, mbti_type):
                     "Knowledge of the Company, Role, and Industry": knowledge_company_role_industry,
                     "Quality of Questions for the Interviewer": quality_of_questions,
                     "Alignment of Skills and Experiences with Job Requirements": alignment_with_job_requirements,
-                    "Formal and Appropriate Attire": formal_attire,
-                    "Grooming and Tidiness": grooming_tidiness,
+                    "Formal and Appropriate Attire": 4,
+                    "Grooming and Tidiness": 4,
             },
             "PreparationSummary": preparation_summary,
         },
@@ -459,8 +464,8 @@ def main(concatTranscript, mbti_type):
         "Recommendation": recommendation,
     },
     }
-    json_data = json.dumps(data, indent=4)
-    return json_data
+    # ai_report = json.dumps(ai_report, indent=4)
+    return ai_report
 
 # concatTranscript = """
 # HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
@@ -477,6 +482,6 @@ def main(concatTranscript, mbti_type):
 # """
 # mbti_type = "intj"
 
-# json_data = main(concatTranscript, mbti_type)
-# print(json_data)
+# ai_report = main(concatTranscript, mbti_type)
+# print(ai_report)
 
