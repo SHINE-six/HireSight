@@ -29,6 +29,7 @@ toStoreJson = {
     "InterviewPosition": "IT BUSINESS ANALYST (SUSTAINABILITY)- Fresh Graduates",
     "InterviewDate": interviewDate,
     "RadarChartSummary": "The candidate demonstrated strong technical expertise in ERP systems and toStoreJson analysis, particularly with tools like SAP S/4HANA, Power BI, and SQL. They were exceptionally prepared, showing a thorough understanding of our company's challenges and the wider industry. Their effective communication and collaborative skills, coupled with their adaptability and professionalism, make them a standout candidate and a potential asset to our team.",
+    "ai_report": None
 }
 
 try:
@@ -38,6 +39,6 @@ except Exception as e:
     print(f"An error occurred: {e}")
     print("Retrying in 5 seconds...")
     time.sleep(5)
-    
-toStoreJson["reportData"] = ai_report
+
+toStoreJson["ai_report"] = ai_report
 print(mongoDB.postData("reportInfo", toStoreJson))
