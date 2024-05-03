@@ -2,8 +2,6 @@ import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { useFrame, useLoader } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 
-import * as THREE from "three";
-
 
 const corresponding = {
   A: "viseme_PP",

@@ -316,7 +316,7 @@ def generate_mbti(mbti_type):
     """
     summary = model.generate_content(prompt)
     # print(summary)
-    mbti_summary = '"' + summary.text + '"'
+    mbti_summary = summary.text
     return mbti_summary
 
 def generate_feedback_for_candidate(text):
@@ -462,21 +462,21 @@ def main(concatTranscript, mbti_type):
     json_data = json.dumps(data, indent=4)
     return json_data
 
-concatTranscript = """
-HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
-Candidate: Good morning! Thank you for having me. From my research, I understand that your company has implemented various sustainability initiatives, such as reducing carbon emissions in your operations and promoting renewable energy use. Additionally, you've integrated sustainability goals into your business strategies, aiming for long-term environmental and social impact.
-HR: That's correct. Now, moving on to technical aspects, could you describe your experience with data analysis tools and techniques relevant to sustainability reporting?
-Candidate: Certainly. During my internship, I gained proficiency in utilizing tools like Excel and Tableau for data visualization and analysis. I've also worked with SQL databases to extract and manipulate large datasets for sustainability performance tracking. Additionally, I'm familiar with sustainability reporting frameworks such as GRI and CDP, which involve collecting, analyzing, and disclosing environmental and social data.
-HR: Great to hear. Let's switch back to general questions. How do you envision the role of an IT Business Analyst contributing to our sustainability objectives?
-Candidate: As an IT Business Analyst focused on sustainability, I see myself playing a crucial role in leveraging technology to optimize processes and enhance data-driven decision-making. By collaborating with cross-functional teams, I aim to identify areas where IT solutions can streamline sustainability reporting, improve data accuracy, and facilitate continuous improvement in environmental performance. Ultimately, my goal would be to align IT initiatives with the company's broader sustainability goals, driving efficiency and innovation.
-HR: Excellent perspective. Now, for a technical question, could you provide an example of a sustainability-related project you've worked on where you had to analyze complex datasets to identify trends or patterns?
-Candidate: Certainly. In a recent project, I was tasked with analyzing energy consumption data across multiple facilities to identify opportunities for efficiency improvements. I utilized statistical analysis techniques to identify outliers and trends, which helped prioritize areas for intervention. By combining this data with external factors such as weather patterns and production schedules, we were able to develop targeted strategies for reducing energy waste and optimizing resource usage, resulting in significant cost savings and environmental benefits.
-HR: Impressive. Finally, let's wrap up with a general question. How do you stay updated on developments in sustainability practices and technologies within the IT industry?
-Candidate: I'm passionate about sustainability and technology, so I regularly engage in professional development activities such as attending webinars, participating in industry forums, and reading research papers and articles from reputable sources. I also actively seek out networking opportunities with professionals in both fields to exchange ideas and stay informed about emerging trends and best practices. Additionally, I'm open to pursuing relevant certifications or additional coursework to deepen my expertise in this area.
-HR: Thank you for sharing your insights. That concludes our interview for today. 
-"""
-mbti_type = "intj"
+# concatTranscript = """
+# HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
+# Candidate: Good morning! Thank you for having me. From my research, I understand that your company has implemented various sustainability initiatives, such as reducing carbon emissions in your operations and promoting renewable energy use. Additionally, you've integrated sustainability goals into your business strategies, aiming for long-term environmental and social impact.
+# HR: That's correct. Now, moving on to technical aspects, could you describe your experience with data analysis tools and techniques relevant to sustainability reporting?
+# Candidate: Certainly. During my internship, I gained proficiency in utilizing tools like Excel and Tableau for data visualization and analysis. I've also worked with SQL databases to extract and manipulate large datasets for sustainability performance tracking. Additionally, I'm familiar with sustainability reporting frameworks such as GRI and CDP, which involve collecting, analyzing, and disclosing environmental and social data.
+# HR: Great to hear. Let's switch back to general questions. How do you envision the role of an IT Business Analyst contributing to our sustainability objectives?
+# Candidate: As an IT Business Analyst focused on sustainability, I see myself playing a crucial role in leveraging technology to optimize processes and enhance data-driven decision-making. By collaborating with cross-functional teams, I aim to identify areas where IT solutions can streamline sustainability reporting, improve data accuracy, and facilitate continuous improvement in environmental performance. Ultimately, my goal would be to align IT initiatives with the company's broader sustainability goals, driving efficiency and innovation.
+# HR: Excellent perspective. Now, for a technical question, could you provide an example of a sustainability-related project you've worked on where you had to analyze complex datasets to identify trends or patterns?
+# Candidate: Certainly. In a recent project, I was tasked with analyzing energy consumption data across multiple facilities to identify opportunities for efficiency improvements. I utilized statistical analysis techniques to identify outliers and trends, which helped prioritize areas for intervention. By combining this data with external factors such as weather patterns and production schedules, we were able to develop targeted strategies for reducing energy waste and optimizing resource usage, resulting in significant cost savings and environmental benefits.
+# HR: Impressive. Finally, let's wrap up with a general question. How do you stay updated on developments in sustainability practices and technologies within the IT industry?
+# Candidate: I'm passionate about sustainability and technology, so I regularly engage in professional development activities such as attending webinars, participating in industry forums, and reading research papers and articles from reputable sources. I also actively seek out networking opportunities with professionals in both fields to exchange ideas and stay informed about emerging trends and best practices. Additionally, I'm open to pursuing relevant certifications or additional coursework to deepen my expertise in this area.
+# HR: Thank you for sharing your insights. That concludes our interview for today. 
+# """
+# mbti_type = "intj"
 
-json_data = main(concatTranscript, mbti_type)
-print(json_data)
+# json_data = main(concatTranscript, mbti_type)
+# print(json_data)
 
