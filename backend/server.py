@@ -8,6 +8,7 @@ import resumeRanker
 import speech_to_text
 import facial_prediction
 import eye_tracking
+import behavioralAnalysis
 # import LLM
 # import tts
 import LLM_copy
@@ -376,8 +377,7 @@ def combineTranscriptEmotionEye():
 
     combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
     combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
-    # combinedJsonData = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
-    #* to process, behavioral analysis at here
+    combinedJsonData["behavioralAnalysis"] = behavioralAnalysis.main(combinedJsonData)  
 
     print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
 
