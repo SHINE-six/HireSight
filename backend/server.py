@@ -17,7 +17,7 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
-# import mbti_test
+import mbti_last
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -246,16 +246,15 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
     return {"status": 200, "message": "Resume uploaded successfully"}
 
 
-@app.get("/resume-ranking")
-async def getResumeRanking():
-    # Once HR select to view resume ranking
+@app.post("/resumeRanking")
+async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False)):
     # Get resume from MongoDB
+    if onlyApplicantCount:
+        return mongoDB.getResumeCount(jobTitle)
+    else:
+        return mongoDB.getResumeDetailsNoPdf(jobTitle, "Ai detection")
     # Get job title to pull relative job description
-    filePath = "resume/resume_ranking.json"
-    # jobTitle = "Application Engineer" # Should be flexible to get from frontend
-    # jobDescription = resumeRanker.getConcatenatedText(jobTitle, data)
     # resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
-    return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 # @app.get("/resume-ranking")
 # async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend suitability
@@ -269,7 +268,7 @@ async def getResumeRanking():
 
 @app.post("/login")
 async def login(email: str = Form(...), password: str = Form(...)):
-    foundUser = mongoDB.getOneDataFromCollection("Users", "email", email)
+    foundUser = mongoDB.getOneDataFromCollection("Users", {"email": email})
     if foundUser:
         if foundUser['password'] == password:
             return {"status": 200, "message": "Login successful", "aiStage": foundUser['aiStage']}
@@ -391,7 +390,7 @@ def combineTranscriptEmotionEye():
 
     combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
     combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
-    # combinedJsonData = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
+    # combinedJsonData[behavioralAnalysis] = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
     #* to process, behavioral analysis at here
 
     print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
@@ -444,11 +443,10 @@ def generateReport(concatResult: str):
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
-    # @ An Ning, @ Chen Ming
     toStoreJson['disfluencies'] = disfluency.main(concatResult)
     toStoreJson['plagiarism'] = plagiarism.main(concatResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    # toStoreJson['mbti'] = mbti_test.main(concatResult)   #! @chenming
+    toStoreJson['mbti'] = mbti_last.main(concatResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
     #* to process MBTI, tone, companySpecificSuitability  at here
 

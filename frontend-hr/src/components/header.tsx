@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-
+import { usePageConfigStore } from '@/stores/PageConfigStore';
 
 const Header = () => {
     const runOnce = useRef(false);
@@ -11,6 +11,7 @@ const Header = () => {
     const [availableJobs, setAvailableJobs] = useState<any[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
+    const { setCurrentAvailableJob } = usePageConfigStore();
     
     const handleGetData = async () => {
         try {
@@ -18,6 +19,11 @@ const Header = () => {
             const data = await res.json();
             console.log("request data done");
             console.log(data);
+            for (let jobCat of data) {
+                if(jobCat['subCategories']) {
+                    jobCat['subCategories'].push({"subCategoryId":-1})
+                }
+            }
             setJobCategory(data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -27,22 +33,33 @@ const Header = () => {
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const category = e.target.value;
         setSelectedCategory(category);
-        console.log(category);
         const selectedCategoryData = jobCategory.find(jobCat => jobCat['jobCategory'] === category);
         if (selectedCategoryData) {
-            setSubCategories(selectedCategoryData['subCategories']);
-            setSelectedSubCategory(selectedCategoryData['subCategories'][0]['subCategoryId']);
-            setAvailableJobs(selectedCategoryData['subCategories'][0]['availableJobs']);
+            if (selectedCategoryData['subCategories']) {
+                setSubCategories(selectedCategoryData['subCategories']);
+                setSelectedSubCategory(selectedCategoryData['subCategories'][0]['subCategoryId']);
+                setAvailableJobs(selectedCategoryData['subCategories'][0]['availableJobs']);
+                setCurrentAvailableJob(selectedCategoryData['subCategories'][0]['availableJobs'][0]['jobTitle']);
+            }
+            else {
+                setSubCategories([]);
+                setAvailableJobs(selectedCategoryData['availableJobs']);
+                setCurrentAvailableJob(selectedCategoryData['availableJobs'][0]['jobTitle']);
+            }
         }
     };
 
     const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const subCategory = e.target.value;
         setSelectedSubCategory(subCategory);
-        console.log(subCategory);
         const selectedSubCategoryData = subCategories.find(subCat => subCat['subCategoryId'] === subCategory);
         if (selectedSubCategoryData) {
             setAvailableJobs(selectedSubCategoryData['availableJobs']);
+            setCurrentAvailableJob(selectedSubCategoryData['availableJobs'][0]['jobTitle']);
+        } else {
+            const availableJobs = jobCategory.find(jobCat => jobCat['jobCategory'] === selectedCategory)['availableJobs'];
+            setAvailableJobs(availableJobs);
+            setCurrentAvailableJob(availableJobs[0]['jobTitle']);
         }
     };
 
@@ -63,6 +80,7 @@ const Header = () => {
             setSubCategories(initialSubCategories);
             const initialAvailableJobs = initialSubCategories[0]['availableJobs'];
             setAvailableJobs(initialAvailableJobs);
+            setCurrentAvailableJob(initialAvailableJobs[0]['jobTitle']);
             setSelectedSubCategory(initialSubCategories[0]['subCategoryId']);
         }
     }, [jobCategory]);
@@ -72,12 +90,12 @@ const Header = () => {
             <div className='text-3xl font-bold my-[1rem]'>
                 <select value={selectedCategory} onChange={handleCategoryChange}>
                     {jobCategory.map((jobCat) => (
-                        <option key={jobCat['jobCategory']} value={jobCat['jobCategory']}>{jobCat['jobCategory']}</option>
+                        <option key={jobCat['jobCategory']} value={jobCat['jobCategory']} className='text-lg'>{jobCat['jobCategory']}</option>
                     ))}
                 </select>
             </div>
 
-            {subCategories.length > 0 && (
+            {subCategories && (subCategories.length > 0) && (
                 <div className='bg-gray-400 w-fit p-[0.5rem] rounded-md mb-4'>
                     <select className='bg-transparent font-semibold' value={selectedSubCategory} onChange={handleSubCategoryChange}>
                         {subCategories.map((subCat) => (
@@ -86,9 +104,9 @@ const Header = () => {
                     </select>
                 </div>
             )}
-            {availableJobs.length > 0 && (
+            {availableJobs && (
                 <div className='bg-gray-400 w-fit p-[0.5rem] rounded-md'>
-                    <select className='bg-transparent font-semibold'>
+                    <select className='bg-transparent font-semibold' onChange={(e) => setCurrentAvailableJob((availableJobs.find(job => job['jobId'] === e.target.value)['jobTitle']))}>
                         {availableJobs.map((job) => (
                             <option key={job['jobId']} value={job['jobId']}>{job['jobTitle']}</option>
                         ))}
