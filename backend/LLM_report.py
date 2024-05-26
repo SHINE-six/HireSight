@@ -278,7 +278,16 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
 def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score):
     prompt = f"""
     RadarChartSummary Content:
-    1. Generate a 80 words Summary of the radar chart using following interviewee's performance score: {TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    1. Generate a 80 words Summary of the radar chart content.
+    Using following Radar Chart Summary:
+       Technical Skill score: {TechnicalSkillScore},
+       SoftSkill:
+            Preparation Score: {preparation_score}, 
+            Cultural Score: {cultural_score},
+            Attitude Score: {attitude_score}, 
+            Communication Score: {communication_score}
+            Adaptability Score: {adaptability_score}. 
+       The summary only can write pronoun as 'the applicant' and 'his/her'.
     2. Output should follow Json Format:
     {{
         "RadarChartSummary":"string",
