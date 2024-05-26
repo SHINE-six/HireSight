@@ -10,6 +10,7 @@ import facial_prediction
 import eye_tracking
 # import LLM
 # import tts
+import behavioralAnalysis
 # import LLM
 # import tts
 import LLM_copy
@@ -21,6 +22,7 @@ import plagiarism
 import aiDetection
 import mbti_last
 import reportGeneration
+import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -90,22 +92,6 @@ data = [
             ]
         }
     ],
-    "availableJobs": [
-        {
-            "jobId": "1_a",
-            "jobTitle": "Cloud QA Automation Engineer",
-            "jobDescription": "As a Cloud QA Automation Engineer at Hilti, you will focus on defining and executing test cases, approaches, automation, and documentation within the Sales Core IT area. Your main goal is to ensure business requirements are accurately met through meticulous testing methods for complex software applications. Daily responsibilities include integrating with product or project teams to deliver high-quality software, thoroughly testing changes before production, and utilizing automation test suites. Additionally, you will continually seek to implement cutting-edge technologies to enhance IT QA processes at Hilti.",
-            "jobSkills": ["Bachelor's or Master's in Information Systems, Computer Science, or related fields with a CGPA > 3.0","4+ years QA Engineer experience in the IT sector","Expertise in test automation tools like Cucumber, BDD, Gherkin, JMeter, and Postman","Familiarity with AWS products and navigating the AWS console",
-                          "Skilled in analyzing test results and reporting with defined KPIs","Experience in agile environments and understanding of CI/CD processes; fluent in English."]
-        },
-        {
-            "jobId": "1_b",
-            "jobTitle": "Process Expert - Procurement IT",
-            "jobDescription": "As a Procurement Support Specialist at Hilti, you will assist and guide Procurement Managers through the sourcing process to ensure compliance and high quality. You'll gain expertise in drafting Requests for Proposal, setting up auctions, and forming contracts, while also managing supplier data and leading system improvement projects. This role offers a comprehensive introduction to Hilti's business operations and involvement in a global team.",
-            "jobSkills": ["Bachelor’s degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
-                          "Good analytical abilities with a strong affinity for IT systems","Excellent communication and presentation skills in English; additional languages beneficial."]
-        },
-    ]
 },
 {
     "categoryId": 2,
@@ -409,8 +395,7 @@ def combineTranscriptEmotionEye():
 
     combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
     combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
-    # combinedJsonData[behavioralAnalysis] = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
-    #* to process, behavioral analysis at here
+    combinedJsonData["behavioralAnalysis"] = behavioralAnalysis.main(combinedJsonData)  
 
     print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
 
@@ -430,11 +415,21 @@ def checkProcessFiles():
 async def finish_interview(BackgroundTasks: BackgroundTasks):
     time.sleep(5)   # Wait for the last process to finish
 
-    BackgroundTasks.add_task(generateReportFormat)
+    averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
+    BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
-def concat_user_transcript():
+def calculateAverageBehavioralAnalysis():
+    combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
+    totalBahavioralAnalysis = 0
+    for data in combinedData['sections']:
+        totalBahavioralAnalysis += data['behavioralAnalysis']
+
+    averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
+    return averageBehavioralAnalysis
+
+def concatUserTranscript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
@@ -443,7 +438,7 @@ def concat_user_transcript():
         
     return log_full
 
-def concat_user_eva_transcript():
+def concatUserEvaTranscript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
@@ -477,7 +472,8 @@ def generateReportFormat():
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
-        "aiDetector": None,  # Dict 
+        "aiDetector": None,  # Dict
+        "behavioralAnalysis": averageBehavioralAnalysis,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
