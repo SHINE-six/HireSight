@@ -508,6 +508,12 @@ def generateReport():
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
     toReportJson = reportGeneration.main(reportData, uniqueSessionID)
     #Overwrite whole reportdata with same uniqueSessionID
+    mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
+
+@app.get("/get-report-data")
+async def getReportData():
+    reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+    return reportData
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
