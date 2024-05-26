@@ -3,6 +3,7 @@ import os
 import re
 import json
 import time
+import radarChart
 import vertexai
 from vertexai.generative_models import GenerativeModel
 import vertexai.preview.generative_models as generative_models
@@ -289,7 +290,9 @@ def main(concatTranscript, mbti_type):
     strengths, weaknesses, job_positions = generate_feedback_for_candidate(concatTranscript)
     time.sleep(13)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
+
     ai_report={
+
     "TechnicalSkill":{
         "TechnicalSkillScore": TechnicalSkillScore,
         "TechnicalSkillSummary": TechnicalSkillSummary,
@@ -359,7 +362,8 @@ def main(concatTranscript, mbti_type):
         "Recommendation": recommendation,
     },
     }
-    return ai_report
+
+    return ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score
 
 # concatTranscript = """
 #   HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?

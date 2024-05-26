@@ -441,22 +441,39 @@ def concat_user_eva_transcript():
 
 # def concat_user_answering(flag):
 
+#Get UniqueResumeID and JobPositionApply from combinedData collecetion to be put into reportData collection
+def getJobPositionApply():
+    data = mongoDB.getDataWithUniqueSessionID("combinedData", uniqueSessionID)
+    return data['jobPostitionApply'], data['uniqueResumeID'], data['email']
+
 def generateReportFormat():
     toStoreJson = {
+        # "name": None, #reportPurpose
+        # "id": None,  #reportPurpose
+        # "overallSuitability": None, #reportPurpose
+        # "interviewDate": None, #reportPurpose
+        # "radarChartBinaryArray" : None, #reportPurpose
+        # "radarChartSummary": None, #reportPurpose
         "email": None,
+        "interviewPosition": None,
+        "uniqueResumeID": None,
         "concatAllResult": None,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
-        "aiDetector": None,  # Dict
+        "aiDetector": None,  # Dict 
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
+
     concatAllResult = concat_user_eva_transcript()
     concatApplicantResult = concat_user_transcript()
+    toStoreJson["interviewPosition"] = getJobPositionApply()[0]
+    toStoreJson["uniqueResumeID"] = getJobPositionApply()[1]
+    toStoreJson["email"] = getJobPositionApply()[2]
     toStoreJson['concatAllResult'] = concatAllResult
     toStoreJson['concatResult'] = concatApplicantResult
     toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
@@ -473,7 +490,7 @@ def generateReportFormat():
 
 def generateReport():
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    reportGeneration.main(reportData)
+    toReportJson = reportGeneration.main(reportData)
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
