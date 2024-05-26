@@ -21,14 +21,17 @@ def main(reportData):
     radarChartBinaryArray = radarChart.main(technicalScore, preparationScore, culturalScore, attitudeScore, communicationScore, adaptabilityScore)
 
     dataForReport={
-        "email": reportData.email,
-        "id": reportData.uniqueResumeID,
+        "UniqueSessionID": reportData.uniqueSessionID,
+        "InterveweeName": reportData.email,
+        "InterveweeID": reportData.uniqueResumeID,
         "InterviewPosition": reportData.interviewPosition,
         "overallSuitability": None,
-        "interviewDate": date.today(),
-        "radarChartBinaryArray" : radarChartBinaryArray,
-        "radarChartSummary": None,
-        "aiReport": aiReport
+        "InterviewDate": date.today(),
+        "RadarChartBinaryArray" : radarChartBinaryArray,
+        "RadarChartSummary": None,
+        "MBTIBinaryArray": None
     }
+
+    dataForReport.update(aiReport)
     return dataForReport
     # Add more report generation scripts here

@@ -490,7 +490,8 @@ def generateReportFormat():
 
 def generateReport():
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    toReportJson = reportGeneration.main(reportData)
+    toReportJson = reportGeneration.main(reportData, uniqueSessionID)
+    #Overwrite whole reportdata with same uniqueSessionID
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
