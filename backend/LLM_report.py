@@ -1,47 +1,24 @@
-# Genmini AI
-import google.generativeai as genai
-from dotenv import load_dotenv
+# Vertex AI
 import os
 import re
 import json
+import time
+import vertexai
+from vertexai.generative_models import GenerativeModel
+import vertexai.preview.generative_models as generative_models
 
-#  set GOOGLE_APPLICATION_CREDENTIALS= C:\HireMeModel\HireSight\backend\GOOGLE_APPLICATION_CRED.json changign to the vertex ai
-load_dotenv()
- 
-# Configure the SDK with your API key by recovering the API key from a config file
-GENAI_API_KEY = os.getenv('GENAI_API_KEY')
-genai.configure(api_key= GENAI_API_KEY)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./GOOGLE_APPLICATION_CRED.json"
+
+vertexai.init(project="civic-surge-420016", location="asia-southeast1")
  
 # Set up the model
 generation_config = {
-  "temperature": 1,
-  "top_p": 0.6,
-  "top_k": 1,
-  "max_output_tokens": 200,
+    "max_output_tokens": 500,
+    "temperature": 0.2,
+    "top_p": 0.8,
 }
 
-safety_settings = [
-  {
-    "category": "HARM_CATEGORY_HARASSMENT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-  },
-  {
-    "category": "HARM_CATEGORY_HATE_SPEECH",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-  },
-  {
-    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-  },
-  {
-    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-  },
-]
-
-model = genai.GenerativeModel(model_name="gemini-1.0-pro",
-                              generation_config=generation_config)
-                              #safety_settings=safety_settings)
+model = GenerativeModel("gemini-1.0-pro",generation_config=generation_config)
 
 def extract_data(summary, pattern):
     match = re.search(pattern, summary)
@@ -57,11 +34,14 @@ def extract_feedback_items(summary, pattern, name):
 def generate_technical(concatTranscript):
     prompt = f"""
     TechnicalSkill Content:
-    1. Rate the Technical Skills Rating 1 to 5 marks with one decimal.
+    1. Generate the Technical Skills Rating 1 to 5 marks with one decimal.
     2. Generate a fifty words assessment summary about Tehcnical Skills of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     3. TechnicalSkillScore and TechnicalSkillSummary should not be empty.
-    "TechnicalSkillScore": ,  
-    "TechnicalSkillSummary": ""
+    4. Output should follow Json Format:
+    {{
+        "TechnicalSkillScore": float,  
+        "TechnicalSkillSummary": "string"
+    }}
     """
     summary = model.generate_content(prompt)
     technical_assessment = summary.text
@@ -79,11 +59,14 @@ def generate_preparation(concatTranscript):
     5. Only the PreparationScore with one decimal. The Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer, Alignment of Skills and Experiences with Job Requirements, Formal and Appropriate Attire and Grooming and Tidiness are integer.
     6. Generate a fifty words assessment summary for Soft Skills of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     7. PreparationScore, Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer,Alignment of Skills and Experiences with Job Requirements, PreparationSummary should not be empty.
-    "PreparationScore": ,
-    "Knowledge of the Company, Role, and Industry": ,
-    "Quality of Questions for the Interviewer": ,
-    "Alignment of Skills and Experiences with Job Requirements": ,
-    "PreparationSummary": ""
+    8. Output should follow Json Format:
+    {{
+        "PreparationScore": float,
+        "Knowledge of the Company, Role, and Industry": integer,
+        "Quality of Questions for the Interviewer": integer,
+        "Alignment of Skills and Experiences with Job Requirements": integer,
+        "PreparationSummary": "string"
+    }}
     """
     summary = model.generate_content(prompt)
     preparation_skill = summary.text
@@ -106,13 +89,16 @@ def generate_culturalfit(concatTranscript):
     7. Only the CulturalFitScore with one decimal. The Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style are integer.
     8. Generate a fifty words assessment summary for Cultural Fit of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     9. CulturalFitScore, Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style should not be empty.
-    "CulturalFitScore": ,
-    "Alignment with Core Company Values" : ,
-    "Professionalism and Work Ethic" : ,
-    "Teamwork and Collaboration Style" : ,
-    "Adaptability to Work Environment Preferences" : ,
-    "Problem-Solving and Decision-Making Style" : ,
-    "CulturalFitSummary": ""
+    10. Output should follow Json Format:
+    {{
+        "CulturalFitScore": ,
+        "Alignment with Core Company Values": float,
+        "Professionalism and Work Ethic": integer,
+        "Teamwork and Collaboration Style": integer,
+        "Adaptability to Work Environment Preferences": integer,
+        "Problem-Solving and Decision-Making Style": integer,
+        "CulturalFitSummary": "string"
+    }}
     """
     summary = model.generate_content(prompt)
     culturalfit_skill = summary.text
@@ -136,12 +122,15 @@ def generate_attitude(concatTranscript):
     6. Only the AtitudeScore with one decimal. The Professionalism, Positivity and Enthusiasm, Resilience and Response to Challenges and Motivation and Work Ethic are integer.
     7. Generate a fifty words assessment summary for Attitude of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     8. AtitudeScore, Professionalism, Positivity and Enthusiasm, Resilience and Response to Challenges and Motivation and Work Ethicshould not be empty.
-    "AtitudeScore": ,
-    "Professionalism": ,
-    "Positivity and Enthusiasm": ,
-    "Resilience and Response to Challenges": ,
-    "Motivation and Work Ethic": ,
-    "AtitudeSummary": ""
+    9. Output should follow Json Format:
+    {{
+        "AtitudeScore": float,
+        "Professionalism": integer,
+        "Positivity and Enthusiasm": integer,
+        "Resilience and Response to Challenges": integer,
+        "Motivation and Work Ethic": integer,
+        "AtitudeSummary": "string"
+    }}
     """
     summary = model.generate_content(prompt)
     attitude_skill = summary.text
@@ -164,12 +153,15 @@ def generate_communicationskill(concatTranscript):
     6. Only the Communication Skill Mark with one decimal. The Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication are integer.
     7. Generate a fifty words assessment summary for Communication Skill of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     8. CommunicationSkillScore, Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication should not be empty.
-    "CommunicationSkillScore": ,
-    "Clarity, Coherence, and Conciseness of Responses": ,
-    "Listening and Engagement in Dialogue": ,
-    "Written Communication Skills": ,
-    "Non-verbal Communication": ,
-    "CommunicationSkillSummary": ""
+    9. Output should follow Json Format:
+    {{
+        "CommunicationSkillScore": float,
+        "Clarity, Coherence, and Conciseness of Responses": integer,
+        "Listening and Engagement in Dialogue": integer,
+        "Written Communication Skills": integer,
+        "Non-verbal Communication": integer,
+        "CommunicationSkillSummary": "string"
+    }}
     """
     summary = model.generate_content(prompt)
     communication_skill = summary.text
@@ -192,12 +184,15 @@ def generate_adaptability(concatTranscript):
     6. Only the AdaptabilityScore with one decimal. The Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solving are integer.
     7. Generate a fifty words assessment summary for Adaptability of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     8. AdaptabilityScore, Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solvin should not be empty.
-    "AdaptabilityScore": ,
-    "Successful Adaptation to Change": ,
-    "Responses to Hypothetical Scenarios": ,
-    "Learning and Applying Feedback": ,
-    "Feedback from References on Adaptability and Problem-solving": ,
-    "AdaptabilitySummary": "",
+    9. Output should follow Json Format:
+    {{
+        "AdaptabilityScore": float,
+        "Successful Adaptation to Change": integer,
+        "Responses to Hypothetical Scenarios": integer,
+        "Learning and Applying Feedback": integer,
+        "Feedback from References on Adaptability and Problem-solving": integer,
+        "AdaptabilitySummary": "string",
+    }}
     """
     summary = model.generate_content(prompt)
     adaptability_skill = summary.text
@@ -214,8 +209,11 @@ def generate_mbti(mbti_type):
     Generate MBTISummary.
     MBTISummary Content:
     1. Generate a ninety words summary of the candidate's predicted mbti type: {mbti_type} characteristics in the workplace. Highlight their thoughtful and strategic approach, strong intuition, organizational skills, focus on positive change and sustainability, empathetic nature, and ability to foster collaboration and effective leadership.The summary only can write pronoun as 'the applicant' and 'his/her'.
-    2. All Contents should not be null.
-    "MBTISummary":"string",
+    2. Content should not be null.
+    Output should follow Json Format:
+    {{
+        "MBTISummary": "string",
+    }}
     """
     summary = model.generate_content(prompt)
     mbti_summary = summary.text
@@ -228,25 +226,28 @@ def generate_feedback_for_candidate(concatTranscript):
     1. Strengths come from many areas such as good technical skills, excellent preparation, excellent communication skills, a good attitude and the ability to adapt. 
     2. Specific, actionable feedback can also be listed on areas where candidates demonstrate gaps or opportunities for improvement.
     3. Weaknesses and areas for improvement may include recommendations for professional development, additional training, or areas to focus on in future roles. 
-    4. Generate the list of the candidate's strengths in the following interview conversation: {concatTranscript}. 
-    5. If the candidate does not have any strengths, write the candidate did not demonstrate any significant strengths during the interview process.
-    6. Generate the list of the candidate's weaknesses and areas for improvement as demonstrated in the following interview conversation: {concatTranscript}. 
+    4. Generate the list of the candidate's 3 strengths in the following interview conversation: {concatTranscript}. 
+    5. If the candidate does not have any strength, write the candidate did not demonstrate any significant strengths during the interview process.
+    6. Generate the list of the candidate's 3 weaknesses and areas for improvement as demonstrated in the following interview conversation: {concatTranscript}. 
     7. Generate the list of the candidate's other 3 recommended job position as demonstrated in the following interview conversation: {concatTranscript}. 
-    8. The Strength, Weakness and Areas For Improvement, Other Recommended Job Position should not be blank. They should more than one.
-    "Strength": {{
-        "Strength 1": "",
-        "Strength 2": "",
-        "Strength 3": "",
-    }},
-    "WeaknessAndAreasForImprovement": {{
-        "Weakness 1": "",
-        "Weakness 2": "",
-        "Weakness 3": ""
-    }},
-    "OtherRecommendedJobPosition": {{
-        "Job Position 1": "",
-        "Job Position 2": "",
-        "Job Position 3": "",
+    8. The Strengths, Weakness and Areas For Improvement, Other Recommended Job Position should not be empty. They should more than one.
+    9. Output should follow Json Format:
+    {{
+        "Strengths": {{
+            "Strength 1": "string",
+            "Strength 2": "string",
+            "Strength 3": "string",
+        }},
+        "WeaknessAndAreasForImprovement": {{
+            "Weakness 1": "string",
+            "Weakness 2": "string",
+            "Weakness 3": "string"
+        }},
+        "OtherRecommendedJobPosition": {{
+            "Job Position 1": "string",
+            "Job Position 2": "string",
+            "Job Position 3": "string",
+        }}
     }}
     """
     summary = model.generate_content(prompt)
@@ -262,8 +263,11 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
     1. Generate a 80 words Summary of the candidate in all aspect like the soft skill and tech skill using following interview conversation: {concatTranscript}. Integrate insights from each section to highlight the candidate’s overall strengths and how they align with the role's requirements and the company's culture. Identify any potential areas for growth or concerns that emerged during the evaluation. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
     2. Based on the comprehensive assessment, generate a 40 words recommendation whether to proceed to the next round of interviews, be offered the position, consider the candidate for a different job position, or fail. Just to give suggestions that the actual HR will take the decision. 
     3. All Contents should not be null.
-    "Summary":"",
-    "Recommendation":""
+    4. Output should follow Json Format:
+    {{
+        "Summary":"string",
+        "Recommendation":"string"
+    }}
     """
     summary = model.generate_content(prompt)
     overall_evaluation_N_recommendation = summary.text
@@ -274,12 +278,16 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
 def main(concatTranscript, mbti_type):
     TechnicalSkillScore, TechnicalSkillSummary = generate_technical(concatTranscript)
     preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary = generate_preparation(concatTranscript)
+    time.sleep(20)
     cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary = generate_culturalfit(concatTranscript)
     attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary = generate_attitude(concatTranscript)
+    time.sleep(13)
     communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary = generate_communicationskill(concatTranscript)
     adaptability_score, successful_adaptation, responses_to_scenarios, learning_and_applying_feedback, feedback_from_references, adaptability_summary = generate_adaptability(concatTranscript)
+    time.sleep(13)
     mbti_summary = generate_mbti(mbti_type)
     strengths, weaknesses, job_positions = generate_feedback_for_candidate(concatTranscript)
+    time.sleep(13)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
     ai_report={
     "TechnicalSkill":{
@@ -351,24 +359,22 @@ def main(concatTranscript, mbti_type):
         "Recommendation": recommendation,
     },
     }
-    # ai_report = json.dumps(ai_report, indent=4)
     return ai_report
 
 # concatTranscript = """
-# HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
-# Candidate: Good morning! Thank you for having me. From my research, I understand that your company has implemented various sustainability initiatives, such as reducing carbon emissions in your operations and promoting renewable energy use. Additionally, you've integrated sustainability goals into your business strategies, aiming for long-term environmental and social impact.
-# HR: That's correct. Now, moving on to technical aspects, could you describe your experience with data analysis tools and techniques relevant to sustainability reporting?
-# Candidate: Certainly. During my internship, I gained proficiency in utilizing tools like Excel and Tableau for data visualization and analysis. I've also worked with SQL databases to extract and manipulate large datasets for sustainability performance tracking. Additionally, I'm familiar with sustainability reporting frameworks such as GRI and CDP, which involve collecting, analyzing, and disclosing environmental and social data.
-# HR: Great to hear. Let's switch back to general questions. How do you envision the role of an IT Business Analyst contributing to our sustainability objectives?
-# Candidate: As an IT Business Analyst focused on sustainability, I see myself playing a crucial role in leveraging technology to optimize processes and enhance data-driven decision-making. By collaborating with cross-functional teams, I aim to identify areas where IT solutions can streamline sustainability reporting, improve data accuracy, and facilitate continuous improvement in environmental performance. Ultimately, my goal would be to align IT initiatives with the company's broader sustainability goals, driving efficiency and innovation.
-# HR: Excellent perspective. Now, for a technical question, could you provide an example of a sustainability-related project you've worked on where you had to analyze complex datasets to identify trends or patterns?
-# Candidate: Certainly. In a recent project, I was tasked with analyzing energy consumption data across multiple facilities to identify opportunities for efficiency improvements. I utilized statistical analysis techniques to identify outliers and trends, which helped prioritize areas for intervention. By combining this data with external factors such as weather patterns and production schedules, we were able to develop targeted strategies for reducing energy waste and optimizing resource usage, resulting in significant cost savings and environmental benefits.
-# HR: Impressive. Finally, let's wrap up with a general question. How do you stay updated on developments in sustainability practices and technologies within the IT industry?
-# Candidate: I'm passionate about sustainability and technology, so I regularly engage in professional development activities such as attending webinars, participating in industry forums, and reading research papers and articles from reputable sources. I also actively seek out networking opportunities with professionals in both fields to exchange ideas and stay informed about emerging trends and best practices. Additionally, I'm open to pursuing relevant certifications or additional coursework to deepen my expertise in this area.
-# HR: Thank you for sharing your insights. That concludes our interview for today. 
+#   HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
+#   Candidate: Good morning! Thank you for having me. From my research, I understand that your company has implemented various sustainability initiatives, such as reducing carbon emissions in your operations and promoting renewable energy use. Additionally, you've integrated sustainability goals into your business strategies, aiming for long-term environmental and social impact.
+#   HR: That's correct. Now, moving on to technical aspects, could you describe your experience with data analysis tools and techniques relevant to sustainability reporting?
+#   Candidate: Certainly. During my internship, I gained proficiency in utilizing tools like Excel and Tableau for data visualization and analysis. I've also worked with SQL databases to extract and manipulate large datasets for sustainability performance tracking. Additionally, I'm familiar with sustainability reporting frameworks such as GRI and CDP, which involve collecting, analyzing, and disclosing environmental and social data.
+#   HR: Great to hear. Let's switch back to general questions. How do you envision the role of an IT Business Analyst contributing to our sustainability objectives?
+#   Candidate: As an IT Business Analyst focused on sustainability, I see myself playing a crucial role in leveraging technology to optimize processes and enhance data-driven decision-making. By collaborating with cross-functional teams, I aim to identify areas where IT solutions can streamline sustainability reporting, improve data accuracy, and facilitate continuous improvement in environmental performance. Ultimately, my goal would be to align IT initiatives with the company's broader sustainability goals, driving efficiency and innovation.
+#   HR: Excellent perspective. Now, for a technical question, could you provide an example of a sustainability-related project you've worked on where you had to analyze complex datasets to identify trends or patterns?
+#   Candidate: Certainly. In a recent project, I was tasked with analyzing energy consumption data across multiple facilities to identify opportunities for efficiency improvements. I utilized statistical analysis techniques to identify outliers and trends, which helped prioritize areas for intervention. By combining this data with external factors such as weather patterns and production schedules, we were able to develop targeted strategies for reducing energy waste and optimizing resource usage, resulting in significant cost savings and environmental benefits.
+#   HR: Impressive. Finally, let's wrap up with a general question. How do you stay updated on developments in sustainability practices and technologies within the IT industry?
+#   Candidate: I'm passionate about sustainability and technology, so I regularly engage in professional development activities such as attending webinars, participating in industry forums, and reading research papers and articles from reputable sources. I also actively seek out networking opportunities with professionals in both fields to exchange ideas and stay informed about emerging trends and best practices. Additionally, I'm open to pursuing relevant certifications or additional coursework to deepen my expertise in this area.
+#   HR: Thank you for sharing your insights. That concludes our interview for today. 
 # """
 # mbti_type = "intj"
 
 # ai_report = main(concatTranscript, mbti_type)
-# print(ai_report)
-
+# print(json.dumps(ai_report, indent=4))

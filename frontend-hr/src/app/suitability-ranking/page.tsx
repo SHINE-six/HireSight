@@ -27,7 +27,7 @@ const getResumeData = async (currentAvailableJob: string) => {
 	try {
 		const formData = new FormData();
 		formData.append('jobTitle', currentAvailableJob);
-        formData.append('stage', 'Interview')
+        formData.append('stage', 'Resume Suitability')
 		const res = await fetch('http://localhost:8000/resumeRanking',
 			{ 
 				method: 'POST',
@@ -85,11 +85,12 @@ const ApplicantDetailPage = () => {
                 <div className='w-[5rem] h-[5rem] rounded-full bg-white shadow-sm shadow-black flex justify-center'>
                     <img src="resume.svg" alt="resume" className='w-[3.5rem]'/>
                 </div>
-                <div className="py-[1rem] px-[4rem] text-2xl font-bold border-b-[0.1rem] border-gray-300">Interviewing</div>
+                <div className="py-[1rem] px-[4rem] text-2xl font-bold border-b-[0.1rem] border-gray-300">Resume Suitability</div>
                 <div className='w-[14rem] bg-white rounded-xl text-xl justify-between flex flex-row py-[0.5rem] px-[1rem] border-b-[0.1rem] border-gray-300 shadow-md font-semibold'>
                     <div>Applicant:</div> 
                     <div className='text-red-700'>{resumeCount['Ai_detection']}</div>
                 </div>
+                <div>End Stage</div>
             </div>
             <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
                 <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">

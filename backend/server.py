@@ -8,6 +8,8 @@ import resumeRanker
 import speech_to_text
 import facial_prediction
 import eye_tracking
+# import LLM
+# import tts
 import behavioralAnalysis
 # import LLM
 # import tts
@@ -18,7 +20,8 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
-# import mbti_test
+import mbti_last
+import reportGeneration
 import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
@@ -232,21 +235,31 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
     return {"status": 200, "message": "Resume uploaded successfully"}
 
 
-@app.get("/resume-ranking")
-async def getResumeRanking():
-    # Once HR select to view resume ranking
+@app.post("/resumeRanking")
+async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
     # Get resume from MongoDB
-    # Get job title to pull relative job description
-    filePath = "resume/resume_ranking.json"
-    # jobTitle = "Application Engineer" # Should be flexible to get from frontend
-    # jobDescription = resumeRanker.getConcatenatedText(jobTitle, data)
-    # resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
-    return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+    if onlyApplicantCount:
+        return mongoDB.getResumeCount(jobTitle)
+    else:
+        return mongoDB.getResumeDetailsNoPdf(jobTitle, stage)
 
-# @app.get("/resume-ranking")
-# async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend suitability
-#     # fileter
-#     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+
+@app.post("/updateStage")
+async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
+    # uniqueResumeId is a string mimic list, eg: "abc, def, ghi"
+    print(uniqueResumeId)
+    if "," in uniqueResumeId:
+        uniqueResumeId = uniqueResumeId.split(",")
+        for id in uniqueResumeId:
+            mongoDB.updateData("resumeDatabase", {"uniqueResumeId": id}, {"stage": stage})
+    else:
+        mongoDB.updateData("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, {"stage": stage})
+
+    if stage == "Interview":
+        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, exclude=["pdfData"])
+        mongoDB.updateData("Users", {"email": resumeData['email']}, {"aiStage": True})
+
+    return {"status": 200, "message": "Stage updated successfully"}
 
 # @app.get("/resume-ranking")
 # async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai interview
@@ -255,7 +268,7 @@ async def getResumeRanking():
 
 @app.post("/login")
 async def login(email: str = Form(...), password: str = Form(...)):
-    foundUser = mongoDB.getOneDataFromCollection("Users", "email", email)
+    foundUser = mongoDB.getOneDataFromCollection("Users", {"email": email})
     if foundUser:
         if foundUser['password'] == password:
             return {"status": 200, "message": "Login successful", "aiStage": foundUser['aiStage']}
@@ -275,9 +288,14 @@ async def create_session(sessionJson: Request):
     sessionJson = await sessionJson.json()
     global uniqueSessionID
     uniqueSessionID = sessionJson['uniqueSessionID']
+    sessionJson['jobPositionApply'], sessionJson['uniqueResumeID'] = getJobPositionApplyAndUniqueResumeID(sessionJson['email'])
     print(mongoDB.postData("combinedData", sessionJson))
     print(mongoDB.postData("conversationLog", sessionJson))
     return {"status": 200, "message": "Session created successfully"}
+
+def getJobPositionApplyAndUniqueResumeID(email: str):
+    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview"}, exclude=["pdfData"])
+    return resumeData['jobPostitionApply'], resumeData['uniqueResumeId']
 
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
@@ -397,9 +415,7 @@ def checkProcessFiles():
 async def finish_interview(BackgroundTasks: BackgroundTasks):
     time.sleep(5)   # Wait for the last process to finish
 
-    concatResult = concat_applicant_transcript()
-    
-    BackgroundTasks.add_task(generateReport, concatResult)
+    BackgroundTasks.add_task(generateReportFormat)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
@@ -414,29 +430,25 @@ def concat_applicant_transcript():
         
     return log_full
 
-def concat_all_transcript():
+def concat_user_eva_transcript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
-    log_full = ""
+    log_full:str = ""
     for log in conversationLog['log']:
         if log['user'] == "applicant":
             log_format = "Candidate: " + log['text'] + ". "
             log_full += log_format
         elif log['user'] == "Ai - EVA":
-            log_format = "HR: " + log['text'] + ". "
+            log_format = "HR: " + log['text']
             log_full += log_format
-        
-    return log_full
-
-# def concat_user_eva_transcript():
+    return log_full 
 
 # def concat_user_answering(flag):
 
-def generateReport(concatResult: str):
-    # current_timestamp = datetime.datetime.now().isoformat()
+def generateReportFormat():
     toStoreJson = {
         # "timestamp": current_timestamp,
         "email": None,
-        "concatResult": concatResult,
+        "concatAllResult": None,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
@@ -447,17 +459,25 @@ def generateReport(concatResult: str):
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
-    # @ An Ning, @ Chen Ming
-    toStoreJson['disfluencies'] = disfluency.main(concatResult)
-    toStoreJson['plagiarism'] = plagiarism.main(concatResult)
-    toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    # toStoreJson['mbti'] = mbti_test.main(concatResult)   #! @chenming
+    concatAllResult = concat_user_eva_transcript()
+    concatApplicantResult = concat_user_transcript()
+    toStoreJson['concatAllResult'] = concatAllResult
+    toStoreJson['concatResult'] = concatApplicantResult
+    toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
+    toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
+    toStoreJson['aiDetector'] = aiDetection.main(concatApplicantResult)
+    toStoreJson['mbti'] = mbti_last.main(concatApplicantResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
     #* to process MBTI, tone, companySpecificSuitability  at here
 
     print(mongoDB.postData("reportData", toStoreJson))
+    generateReport()
 
     return {"status": 200, "message": "Report generated successfully"}
+
+def generateReport():
+    reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
+    reportGeneration.main(reportData)
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
