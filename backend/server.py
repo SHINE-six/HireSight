@@ -10,6 +10,8 @@ import facial_prediction
 import eye_tracking
 # import LLM
 # import tts
+# import LLM
+# import tts
 import LLM_copy
 import googleTTS
 import wavspeech_to_json
@@ -18,6 +20,7 @@ import disfluency
 import plagiarism
 import aiDetection
 import mbti_last
+import reportGeneration
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -411,8 +414,7 @@ def checkProcessFiles():
 async def finish_interview(BackgroundTasks: BackgroundTasks):
     time.sleep(5)   # Wait for the last process to finish
 
-    concatResult = concat_user_transcript()
-    BackgroundTasks.add_task(generateReport, concatResult)
+    BackgroundTasks.add_task(generateReportFormat)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
@@ -425,14 +427,24 @@ def concat_user_transcript():
         
     return log_full
 
-# def concat_user_eva_transcript():
+def concat_user_eva_transcript():
+    conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
+    log_full:str = ""
+    for log in conversationLog['log']:
+        if log['user'] == "applicant":
+            log_format = "Candidate: " + log['text'] + ". "
+            log_full += log_format
+        elif log['user'] == "Ai - EVA":
+            log_format = "HR: " + log['text']
+            log_full += log_format
+    return log_full 
 
 # def concat_user_answering(flag):
 
-def generateReport(concatResult: str):
+def generateReportFormat():
     toStoreJson = {
         "email": None,
-        "concatResult": concatResult,
+        "concatAllResult": None,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
@@ -443,16 +455,25 @@ def generateReport(concatResult: str):
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
-    toStoreJson['disfluencies'] = disfluency.main(concatResult)
-    toStoreJson['plagiarism'] = plagiarism.main(concatResult)
-    toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    toStoreJson['mbti'] = mbti_last.main(concatResult)
+    concatAllResult = concat_user_eva_transcript()
+    concatApplicantResult = concat_user_transcript()
+    toStoreJson['concatAllResult'] = concatAllResult
+    toStoreJson['concatResult'] = concatApplicantResult
+    toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
+    toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
+    toStoreJson['aiDetector'] = aiDetection.main(concatApplicantResult)
+    toStoreJson['mbti'] = mbti_last.main(concatApplicantResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
     #* to process MBTI, tone, companySpecificSuitability  at here
 
     print(mongoDB.postData("reportData", toStoreJson))
+    generateReport()
 
     return {"status": 200, "message": "Report generated successfully"}
+
+def generateReport():
+    reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
+    reportGeneration.main(reportData)
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
