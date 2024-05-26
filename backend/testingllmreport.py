@@ -29,15 +29,14 @@ toStoreJson = {
     "OverallSuitability": 90,
     "InterviewPosition": "IT BUSINESS ANALYST (SUSTAINABILITY)- Fresh Graduates",
     "InterviewDate": interviewDate,
-    "RadarChartSummary": "The candidate demonstrated strong technical expertise in ERP systems and toStoreJson analysis, particularly with tools like SAP S/4HANA, Power BI, and SQL. They were exceptionally prepared, showing a thorough understanding of our company's challenges and the wider industry. Their effective communication and collaborative skills, coupled with their adaptability and professionalism, make them a standout candidate and a potential asset to our team.",
-    "ai_report": None
+    "ai_report": None,
 }
 # put chenming formal and tidiness combinedData and get it to main()
 try:
     ai_report = None
     if ai_report == None:
         # Vertex Ai    
-        ai_report = LLM_report_2.main(concatTranscript, mbti_type) 
+        ai_report = LLM_report.main(concatTranscript, mbti_type) 
         # Genmini Ai
         # ai_report = LLM_report.main(concatTranscript, mbti_type)
     toStoreJson["ai_report"] = ai_report

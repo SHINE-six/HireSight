@@ -421,7 +421,7 @@ async def finish_interview(BackgroundTasks: BackgroundTasks):
 
 
 
-def concat_applicant_transcript():
+def concat_user_transcript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:

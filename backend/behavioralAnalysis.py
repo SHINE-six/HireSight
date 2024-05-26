@@ -12,7 +12,7 @@ def main(combinedJsonData):
     gaze_left = eye['gaze'].get("LEFT", 0)
     eye_prob = weights['blink'] * blink + weights['gaze'] * (gaze_right + gaze_left)
 
-
+    result = emotion_prob + eye_prob
     formatted_result = "{:.2f}".format(result)
     result = {
         "Score": f"{formatted_result}%",

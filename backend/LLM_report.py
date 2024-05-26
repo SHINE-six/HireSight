@@ -275,6 +275,20 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
     recommendation = extract_data(overall_evaluation_N_recommendation, r'"Recommendation": "([^"]+)"')
     return summary, recommendation
 
+def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score):
+    prompt = f"""
+    RadarChartSummary Content:
+    1. Generate a 80 words Summary of the radar chart using following interviewee's performance score: {TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
+    2. Output should follow Json Format:
+    {{
+        "RadarChartSummary":"string",
+    }}
+    """
+    summary = model.generate_content(prompt)
+    radar_chart_summary = summary.text
+    RadarChartSummary = extract_data(radar_chart_summary, r'"RadarChartSummary": "([^"]+)"')
+    return RadarChartSummary
+
 def main(concatTranscript, mbti_type):
     TechnicalSkillScore, TechnicalSkillSummary = generate_technical(concatTranscript)
     preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary = generate_preparation(concatTranscript)
@@ -289,7 +303,9 @@ def main(concatTranscript, mbti_type):
     strengths, weaknesses, job_positions = generate_feedback_for_candidate(concatTranscript)
     time.sleep(13)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
+    RadarChartSummary = generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score)
     ai_report={
+    "RadarChartSummary": RadarChartSummary,
     "TechnicalSkill":{
         "TechnicalSkillScore": TechnicalSkillScore,
         "TechnicalSkillSummary": TechnicalSkillSummary,

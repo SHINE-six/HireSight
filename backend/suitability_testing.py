@@ -1,5 +1,5 @@
-def main(reportData,combinedJsonData):
-    behavioralAnalysis = combinedJsonData["behavioralAnalysis"]
+def main(reportData):
+    behavioralAnalysis = reportData["behavioralAnalysis"]
    
     disfluencies = reportData["disfluencies"]
     repetitionCount = disfluencies.get("repetitionCount", 0)
