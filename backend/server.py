@@ -250,19 +250,30 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
 
 @app.post("/resumeRanking")
-async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False)):
+async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
     # Get resume from MongoDB
     if onlyApplicantCount:
         return mongoDB.getResumeCount(jobTitle)
     else:
-        return mongoDB.getResumeDetailsNoPdf(jobTitle, "Ai detection")
-    # Get job title to pull relative job description
-    # resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
+        return mongoDB.getResumeDetailsNoPdf(jobTitle, stage)
 
-# @app.get("/resume-ranking")
-# async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend suitability
-#     # fileter
-#     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+
+@app.post("/updateStage")
+async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
+    # uniqueResumeId is a string mimic list, eg: "abc, def, ghi"
+    print(uniqueResumeId)
+    if "," in uniqueResumeId:
+        uniqueResumeId = uniqueResumeId.split(",")
+        for id in uniqueResumeId:
+            mongoDB.updateData("resumeDatabase", {"uniqueResumeId": id}, {"stage": stage})
+    else:
+        mongoDB.updateData("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, {"stage": stage})
+
+    if stage == "Interview":
+        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, exclude=["pdfData"])
+        mongoDB.updateData("Users", {"email": resumeData['email']}, {"aiStage": True})
+
+    return {"status": 200, "message": "Stage updated successfully"}
 
 # @app.get("/resume-ranking")
 # async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai interview
@@ -291,9 +302,14 @@ async def create_session(sessionJson: Request):
     sessionJson = await sessionJson.json()
     global uniqueSessionID
     uniqueSessionID = sessionJson['uniqueSessionID']
+    sessionJson['jobPositionApply'], sessionJson['uniqueResumeID'] = getJobPositionApplyAndUniqueResumeID(sessionJson['email'])
     print(mongoDB.postData("combinedData", sessionJson))
     print(mongoDB.postData("conversationLog", sessionJson))
     return {"status": 200, "message": "Session created successfully"}
+
+def getJobPositionApplyAndUniqueResumeID(email: str):
+    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview"}, exclude=["pdfData"])
+    return resumeData['jobPostitionApply'], resumeData['uniqueResumeId']
 
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):

@@ -1,7 +1,7 @@
 'use client';
 
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { usePageConfigStore } from '@/stores/PageConfigStore';
 
@@ -27,6 +27,7 @@ const getResumeData = async (currentAvailableJob: string) => {
 	try {
 		const formData = new FormData();
 		formData.append('jobTitle', currentAvailableJob);
+        formData.append('stage', 'Ai detection')
 		const res = await fetch('http://localhost:8000/resumeRanking',
 			{ 
 				method: 'POST',
@@ -45,6 +46,7 @@ const getResumeData = async (currentAvailableJob: string) => {
 const ApplicantDetailPage = () => {
     const { resumeCount, currentAvailableJob, setResumeCount_Ai_detection } = usePageConfigStore();
     const [ resumeDataList, setResumeDataList ] = useState<ResumeData[]>([]);
+    const topThreeRef = useRef<string[]>([]);
 
     // const resumeRanking:any[] = await fetchResumeRanking();
     // resumeRanking.sort((a, b) => {
@@ -55,6 +57,7 @@ const ApplicantDetailPage = () => {
     //     return a.id - b.id;
     // });
 	useEffect(() => {
+        topThreeRef.current = [];
 		getResumeData(currentAvailableJob)?.then((data) => {
             if (data) {
                 const sortedData = data.data.sort((a, b) => a.AiDetection - b.AiDetection);
@@ -63,6 +66,20 @@ const ApplicantDetailPage = () => {
             }
         });
 	}, [currentAvailableJob]);
+
+    const handleEndStage = () => {
+        console.log("End Stage");
+        // top three applicants stage will change to 'Resume_suitability'
+        const formData = new FormData();
+        formData.append('uniqueResumeId', topThreeRef.current.join(','));
+        formData.append('stage', 'Resume Suitability');
+        const res = fetch('http://localhost:8000/updateStage',
+            { 
+                method: 'POST',
+                body: formData
+            });
+        console.log(res);
+    }
     
 
     return (
@@ -76,28 +93,29 @@ const ApplicantDetailPage = () => {
                     <div>Applicant:</div> 
                     <div className='text-red-700'>{resumeCount['Ai_detection']}</div>
                 </div>
-                <div>End Stage</div>
+                <div onClick={handleEndStage}>End Stage</div>
             </div>
-            <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full relative">
-                <div className="flex justify-start w-full pl-[8rem]">
-                    <div className="w-full flex flex-row gap-[2rem]">
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Rank</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">ID</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI Score</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Plaigraism</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Date</div>
+            <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
+                <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
+                    <div className=" grid grid-cols-5 w-4/5">
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Name</div>
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">email</div>
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI detection</div>
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
                     </div>
                 </div>
                 {resumeDataList.map((resume, index) => {
                     let bgColor = "bg-gray-200";
                     if (index < 3) {
+                        topThreeRef.current.push(resume.uniqueResumeId);
                         bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
                     }
                     return (
                         <div key={resume.uniqueResumeId} className={`w-4/5 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-5`}>
-                            <div className="pr-2 border-2">{resume.filename}</div>
-                            <div className="pr-2 border-2">{resume.email}</div>
-                            <div className="pr-2 border-2">{(resume.AiDetection)}%</div>
+                            <div className="pr-2">{resume.filename}</div>
+                            <div className="pr-2">{resume.email}</div>
+                            <div className="pr-2">{(resume.AiDetection)}%</div>
                             {/* <div className="pr-2">{(resume.plagiarism * 100).toFixed(3)}%</div> */}
                             <div className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white">Proceed to Resume Suitability</div>
                             <div className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white">View Resume</div>

@@ -35,6 +35,7 @@ const App = () => {
 			setResumeCount_Resume_suitability(data['Resume_suitability']);
 			setResumeCount_Interview(data['Interview']);
 		});
+		console.log(resumeCount);
 	}, [currentAvailableJob]);
 
 	return (

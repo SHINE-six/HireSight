@@ -34,11 +34,15 @@ def getAllDataFromCollection(collection_name, query: dict = None, count: bool = 
             data.append(x)
         return data
 
-def getOneDataFromCollection(collection, query: dict):
+def getOneDataFromCollection(collection, query: dict, exclude: list = None):
     collection = db[collection]
     query = query or {}
+    exclude = exclude or []
 
-    data = collection.find_one(query, {"_id": 0})
+    projection = {"_id": 0}
+    for field in exclude:
+        projection[field] = 0
+    data = collection.find_one(query, projection)
     return data
 
 def getDataWithUniqueSessionID(collection, uniqueSessionID):
@@ -52,10 +56,15 @@ def postData(collection, data):
     collection.insert_one(data)
     return {"status": 200, "message": "Data posted successfully!"}
 
-def updateData(collection, data):
+def updateData(collection, query: dict, data: dict):
     collection = db[collection]
-    collection.update_one(data)
+    collection.update_one(query, {"$set": data})
     return {"status": 200, "message": "Data updated successfully!"}
+
+def overwriteDocument(collection, query, data):
+    collection = db[collection]
+    collection.replace_one(query, data)
+    return {"status": 200, "message": "Data overwritten successfully!"}
 
 def appendDataToDocument(collection, data: dict, uniqueSessionID: str):
     if (collection == 'conversationLog'):
@@ -76,11 +85,10 @@ def getResumeDetailsNoPdf(jobTitle, stage):
     }
     return toReturn
 
-
 def getResumeCount(jobTitle):
-    # possible stage : 'Ai detection', 'Resume suitability', 'Interview', 'Offer', 'Rejected'
+    # possible stage : 'Ai detection', 'Resume Suitability', 'Interview', 'Offer', 'Rejected'
     Ai_detection_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Ai detection'}, count=True)
-    Resume_suitability_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Resume suitability'}, count=True)
+    Resume_suitability_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Resume Suitability'}, count=True)
     Interview_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview'}, count=True)
 
     return {"Ai_detection": Ai_detection_count, "Resume_suitability": Resume_suitability_count, "Interview": Interview_count}
