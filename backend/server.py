@@ -430,11 +430,21 @@ def checkProcessFiles():
 async def finish_interview(BackgroundTasks: BackgroundTasks):
     time.sleep(5)   # Wait for the last process to finish
 
-    BackgroundTasks.add_task(generateReportFormat)
+    averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
+    BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
-def concat_user_transcript():
+def calculateAverageBehavioralAnalysis():
+    combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
+    totalBahavioralAnalysis = 0
+    for data in combinedData['sections']:
+        totalBahavioralAnalysis += data['behavioralAnalysis']
+
+    averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
+    return averageBehavioralAnalysis
+
+def concatUserTranscript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
@@ -443,7 +453,7 @@ def concat_user_transcript():
         
     return log_full
 
-def concat_user_eva_transcript():
+def concatUserEvaTranscript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
@@ -457,7 +467,7 @@ def concat_user_eva_transcript():
 
 # def concat_user_answering(flag):
 
-def generateReportFormat():
+def generateReportFormat(averageBehavioralAnalysis):
     toStoreJson = {
         "email": None,
         "concatAllResult": None,
@@ -465,14 +475,15 @@ def generateReportFormat():
         "disfluencies": None,
         "plagiarism": None,
         "aiDetector": None,  # Dict
+        "behavioralAnalysis": averageBehavioralAnalysis,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
-    concatAllResult = concat_user_eva_transcript()
-    concatApplicantResult = concat_user_transcript()
+    concatAllResult = concatUserEvaTranscript()
+    concatApplicantResult = concatUserTranscript()
     toStoreJson['concatAllResult'] = concatAllResult
     toStoreJson['concatResult'] = concatApplicantResult
     toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
