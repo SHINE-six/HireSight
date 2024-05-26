@@ -10,18 +10,35 @@ client = MongoClient(MONGODB_URI)
 db = client['HireSight']
 print("Connected to MongoDB Atlas!")
 
+'''
+Prepare for maintemance refactoring
+
+join getAllDataFromCollection and getOneDataFromCollection and getCollectionCount
+'''
 
 # ----------------- Foundation Functions ----------------- #
-def getAllDataFromCollection(collection):
-    collection = db[collection]
-    data = []
-    for x in collection.find({}, {"_id": 0}):
-        data.append(x)
-    return data
+def getAllDataFromCollection(collection_name, query: dict = None, count: bool = False, exclude: list = None):
+    collection = db[collection_name]
+    query = query or {}
+    exclude = exclude or []
 
-def getOneDataFromCollection(collection, key, value):
+    projection = {"_id": 0}
+    for field in exclude:
+        projection[field] = 0
+
+    if count:
+        return collection.count_documents(query)
+    else:        
+        data = []
+        for x in collection.find(query, projection):
+            data.append(x)
+        return data
+
+def getOneDataFromCollection(collection, query: dict):
     collection = db[collection]
-    data = collection.find_one({key: value}, {"_id": 0})
+    query = query or {}
+
+    data = collection.find_one(query, {"_id": 0})
     return data
 
 def getDataWithUniqueSessionID(collection, uniqueSessionID):
@@ -52,11 +69,26 @@ def appendDataToDocument(collection, data: dict, uniqueSessionID: str):
     return {"status": 200, "message": "Data appended successfully!"}
 
 # ----------------- Specific Functions ----------------- #
+def getResumeDetailsNoPdf(jobTitle, stage):
+    toReturn = {
+        "data" : getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': stage}, exclude=['pdfData']),
+        "count" : getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': stage}, count=True)
+    }
+    return toReturn
+
+
+def getResumeCount(jobTitle):
+    # possible stage : 'Ai detection', 'Resume suitability', 'Interview', 'Offer', 'Rejected'
+    Ai_detection_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Ai detection'}, count=True)
+    Resume_suitability_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Resume suitability'}, count=True)
+    Interview_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview'}, count=True)
+
+    return {"Ai_detection": Ai_detection_count, "Resume_suitability": Resume_suitability_count, "Interview": Interview_count}
+
 #! For maintenance only, should not be connected to server
 def deleteFirstTenData(collection):
     collection = db[collection]
-    documents = collection.find().limit(10)    
+    documents = collection.find().limit(22)    
     ids = [doc['_id'] for doc in documents]
     collection.delete_many({'_id': {'$in': ids}})
     return {"status": 200, "message": "Data deleted successfully!"}
-
