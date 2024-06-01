@@ -3,12 +3,11 @@ import os
 import re
 import json
 import time
-import radarChart
 import vertexai
 from vertexai.generative_models import GenerativeModel
 import vertexai.preview.generative_models as generative_models
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./GOOGLE_APPLICATION_CRED.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\annin\\OneDrive\\Desktop\\HireSight\\backend\\model\\GOOGLE_APPLICATION_CRED.json"
 
 vertexai.init(project="civic-surge-420016", location="asia-southeast1")
  
@@ -276,46 +275,21 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
     recommendation = extract_data(overall_evaluation_N_recommendation, r'"Recommendation": "([^"]+)"')
     return summary, recommendation
 
-def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score):
-    prompt = f"""
-    RadarChartSummary Content:
-    1. Generate a 80 words Summary of the radar chart content.
-    Using following Radar Chart Summary:
-       Technical Skill score: {TechnicalSkillScore},
-       SoftSkill:
-            Preparation Score: {preparation_score}, 
-            Cultural Score: {cultural_score},
-            Attitude Score: {attitude_score}, 
-            Communication Score: {communication_score}
-            Adaptability Score: {adaptability_score}. 
-       The summary only can write pronoun as 'the applicant' and 'his/her'.
-    2. Output should follow Json Format:
-    {{
-        "RadarChartSummary":"string",
-    }}
-    """
-    summary = model.generate_content(prompt)
-    radar_chart_summary = summary.text
-    RadarChartSummary = extract_data(radar_chart_summary, r'"RadarChartSummary": "([^"]+)"')
-    return RadarChartSummary
-
 def main(concatTranscript, mbti_type):
     TechnicalSkillScore, TechnicalSkillSummary = generate_technical(concatTranscript)
     preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary = generate_preparation(concatTranscript)
-    time.sleep(20)
+    time.sleep(60)
     cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary = generate_culturalfit(concatTranscript)
     attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary = generate_attitude(concatTranscript)
-    time.sleep(13)
+    time.sleep(60)
     communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary = generate_communicationskill(concatTranscript)
     adaptability_score, successful_adaptation, responses_to_scenarios, learning_and_applying_feedback, feedback_from_references, adaptability_summary = generate_adaptability(concatTranscript)
-    time.sleep(13)
+    time.sleep(60)
     mbti_summary = generate_mbti(mbti_type)
     strengths, weaknesses, job_positions = generate_feedback_for_candidate(concatTranscript)
-    time.sleep(13)
+    time.sleep(60)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
-    RadarChartSummary = generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score)
     ai_report={
-    "RadarChartSummary": RadarChartSummary,
     "TechnicalSkill":{
         "TechnicalSkillScore": TechnicalSkillScore,
         "TechnicalSkillSummary": TechnicalSkillSummary,
@@ -385,23 +359,24 @@ def main(concatTranscript, mbti_type):
         "Recommendation": recommendation,
     },
     }
-
-    return ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score
+    # ai_report = json.dumps(ai_report, indent=4)
+    return ai_report
 
 # concatTranscript = """
-#   HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
-#   Candidate: Good morning! Thank you for having me. From my research, I understand that your company has implemented various sustainability initiatives, such as reducing carbon emissions in your operations and promoting renewable energy use. Additionally, you've integrated sustainability goals into your business strategies, aiming for long-term environmental and social impact.
-#   HR: That's correct. Now, moving on to technical aspects, could you describe your experience with data analysis tools and techniques relevant to sustainability reporting?
-#   Candidate: Certainly. During my internship, I gained proficiency in utilizing tools like Excel and Tableau for data visualization and analysis. I've also worked with SQL databases to extract and manipulate large datasets for sustainability performance tracking. Additionally, I'm familiar with sustainability reporting frameworks such as GRI and CDP, which involve collecting, analyzing, and disclosing environmental and social data.
-#   HR: Great to hear. Let's switch back to general questions. How do you envision the role of an IT Business Analyst contributing to our sustainability objectives?
-#   Candidate: As an IT Business Analyst focused on sustainability, I see myself playing a crucial role in leveraging technology to optimize processes and enhance data-driven decision-making. By collaborating with cross-functional teams, I aim to identify areas where IT solutions can streamline sustainability reporting, improve data accuracy, and facilitate continuous improvement in environmental performance. Ultimately, my goal would be to align IT initiatives with the company's broader sustainability goals, driving efficiency and innovation.
-#   HR: Excellent perspective. Now, for a technical question, could you provide an example of a sustainability-related project you've worked on where you had to analyze complex datasets to identify trends or patterns?
-#   Candidate: Certainly. In a recent project, I was tasked with analyzing energy consumption data across multiple facilities to identify opportunities for efficiency improvements. I utilized statistical analysis techniques to identify outliers and trends, which helped prioritize areas for intervention. By combining this data with external factors such as weather patterns and production schedules, we were able to develop targeted strategies for reducing energy waste and optimizing resource usage, resulting in significant cost savings and environmental benefits.
-#   HR: Impressive. Finally, let's wrap up with a general question. How do you stay updated on developments in sustainability practices and technologies within the IT industry?
-#   Candidate: I'm passionate about sustainability and technology, so I regularly engage in professional development activities such as attending webinars, participating in industry forums, and reading research papers and articles from reputable sources. I also actively seek out networking opportunities with professionals in both fields to exchange ideas and stay informed about emerging trends and best practices. Additionally, I'm open to pursuing relevant certifications or additional coursework to deepen my expertise in this area.
-#   HR: Thank you for sharing your insights. That concludes our interview for today. 
+# HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?
+# Candidate: Good morning! Thank you for having me. From my research, I understand that your company has implemented various sustainability initiatives, such as reducing carbon emissions in your operations and promoting renewable energy use. Additionally, you've integrated sustainability goals into your business strategies, aiming for long-term environmental and social impact.
+# HR: That's correct. Now, moving on to technical aspects, could you describe your experience with data analysis tools and techniques relevant to sustainability reporting?
+# Candidate: Certainly. During my internship, I gained proficiency in utilizing tools like Excel and Tableau for data visualization and analysis. I've also worked with SQL databases to extract and manipulate large datasets for sustainability performance tracking. Additionally, I'm familiar with sustainability reporting frameworks such as GRI and CDP, which involve collecting, analyzing, and disclosing environmental and social data.
+# HR: Great to hear. Let's switch back to general questions. How do you envision the role of an IT Business Analyst contributing to our sustainability objectives?
+# Candidate: As an IT Business Analyst focused on sustainability, I see myself playing a crucial role in leveraging technology to optimize processes and enhance data-driven decision-making. By collaborating with cross-functional teams, I aim to identify areas where IT solutions can streamline sustainability reporting, improve data accuracy, and facilitate continuous improvement in environmental performance. Ultimately, my goal would be to align IT initiatives with the company's broader sustainability goals, driving efficiency and innovation.
+# HR: Excellent perspective. Now, for a technical question, could you provide an example of a sustainability-related project you've worked on where you had to analyze complex datasets to identify trends or patterns?
+# Candidate: Certainly. In a recent project, I was tasked with analyzing energy consumption data across multiple facilities to identify opportunities for efficiency improvements. I utilized statistical analysis techniques to identify outliers and trends, which helped prioritize areas for intervention. By combining this data with external factors such as weather patterns and production schedules, we were able to develop targeted strategies for reducing energy waste and optimizing resource usage, resulting in significant cost savings and environmental benefits.
+# HR: Impressive. Finally, let's wrap up with a general question. How do you stay updated on developments in sustainability practices and technologies within the IT industry?
+# Candidate: I'm passionate about sustainability and technology, so I regularly engage in professional development activities such as attending webinars, participating in industry forums, and reading research papers and articles from reputable sources. I also actively seek out networking opportunities with professionals in both fields to exchange ideas and stay informed about emerging trends and best practices. Additionally, I'm open to pursuing relevant certifications or additional coursework to deepen my expertise in this area.
+# HR: Thank you for sharing your insights. That concludes our interview for today. 
 # """
 # mbti_type = "intj"
 
 # ai_report = main(concatTranscript, mbti_type)
-# print(json.dumps(ai_report, indent=4))
+# print(ai_report)
+
