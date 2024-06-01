@@ -92,6 +92,22 @@ data = [
             ]
         }
     ],
+    "availableJobs": [
+        {
+            "jobId": "1_a",
+            "jobTitle": "Cloud QA Automation Engineer",
+            "jobDescription": "As a Cloud QA Automation Engineer at Hilti, you will focus on defining and executing test cases, approaches, automation, and documentation within the Sales Core IT area. Your main goal is to ensure business requirements are accurately met through meticulous testing methods for complex software applications. Daily responsibilities include integrating with product or project teams to deliver high-quality software, thoroughly testing changes before production, and utilizing automation test suites. Additionally, you will continually seek to implement cutting-edge technologies to enhance IT QA processes at Hilti.",
+            "jobSkills": ["Bachelor's or Master's in Information Systems, Computer Science, or related fields with a CGPA > 3.0","4+ years QA Engineer experience in the IT sector","Expertise in test automation tools like Cucumber, BDD, Gherkin, JMeter, and Postman","Familiarity with AWS products and navigating the AWS console",
+                          "Skilled in analyzing test results and reporting with defined KPIs","Experience in agile environments and understanding of CI/CD processes; fluent in English."]
+        },
+        {
+            "jobId": "1_b",
+            "jobTitle": "Process Expert - Procurement IT",
+            "jobDescription": "As a Procurement Support Specialist at Hilti, you will assist and guide Procurement Managers through the sourcing process to ensure compliance and high quality. You'll gain expertise in drafting Requests for Proposal, setting up auctions, and forming contracts, while also managing supplier data and leading system improvement projects. This role offers a comprehensive introduction to Hilti's business operations and involvement in a global team.",
+            "jobSkills": ["Bachelor's degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
+                          "Good analytical abilities with a strong affinity for IT systems","Excellent communication and presentation skills in English; additional languages beneficial."]
+        },
+    ],
 },
 {
     "categoryId": 2,
@@ -416,7 +432,7 @@ async def finish_interview(BackgroundTasks: BackgroundTasks):
     time.sleep(5)   # Wait for the last process to finish
 
     averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
-    BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
+    BackgroundTasks.add_task(generateReportFormat(), averageBehavioralAnalysis)
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
@@ -424,7 +440,7 @@ def calculateAverageBehavioralAnalysis():
     combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
     totalBahavioralAnalysis = 0
     for data in combinedData['sections']:
-        totalBahavioralAnalysis += data['behavioralAnalysis']
+        totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
 
     averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
     return averageBehavioralAnalysis
@@ -455,16 +471,11 @@ def concatUserEvaTranscript():
 #Get UniqueResumeID and JobPositionApply from combinedData collecetion to be put into reportData collection
 def getJobPositionApply():
     data = mongoDB.getDataWithUniqueSessionID("combinedData", uniqueSessionID)
-    return data['jobPostitionApply'], data['uniqueResumeID'], data['email']
+    return data['jobPositionApply'], data['uniqueResumeID'], data['email']
 
 def generateReportFormat():
+    ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score = LLM_report.main()
     toStoreJson = {
-        # "name": None, #reportPurpose
-        # "id": None,  #reportPurpose
-        # "overallSuitability": None, #reportPurpose
-        # "interviewDate": None, #reportPurpose
-        # "radarChartBinaryArray" : None, #reportPurpose
-        # "radarChartSummary": None, #reportPurpose
         "email": None,
         "interviewPosition": None,
         "uniqueResumeID": None,
@@ -473,7 +484,7 @@ def generateReportFormat():
         "disfluencies": None,
         "plagiarism": None,
         "aiDetector": None,  # Dict
-        "behavioralAnalysis": averageBehavioralAnalysis,  # Dict
+        "behavioralAnalysis": calculateAverageBehavioralAnalysis(),  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
@@ -481,8 +492,10 @@ def generateReportFormat():
         "hiringIndex": None
     }
 
-    concatAllResult = concat_user_eva_transcript()
-    concatApplicantResult = concat_user_transcript()
+    toStoreJson.update(ai_report)
+
+    concatAllResult = concatUserEvaTranscript()
+    concatApplicantResult = concatUserTranscript()
     toStoreJson["interviewPosition"] = getJobPositionApply()[0]
     toStoreJson["uniqueResumeID"] = getJobPositionApply()[1]
     toStoreJson["email"] = getJobPositionApply()[2]
@@ -502,7 +515,8 @@ def generateReportFormat():
 
 def generateReport():
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    toReportJson = reportGeneration.main(reportData, uniqueSessionID)
+    print(reportData)
+    toReportJson = reportGeneration.main(reportData)
     #Overwrite whole reportdata with same uniqueSessionID
     mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
 

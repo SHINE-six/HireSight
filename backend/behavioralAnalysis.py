@@ -15,7 +15,7 @@ def main(combinedJsonData):
     result = emotion_prob + eye_prob
     formatted_result = "{:.2f}".format(result)
     result = {
-        "Score": f"{formatted_result}%",
+        "Score": formatted_result,
     }
     return result
 

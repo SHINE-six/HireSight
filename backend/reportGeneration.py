@@ -9,7 +9,7 @@ def main(reportData):
     # "interviewDate": None, #reportPurpose
     # "radarChartBinaryArray" : None, #reportPurpose
     # "radarChartSummary": None, #reportPurpose
-    aiReport = LLM_report.main(reportData.concatAllResult, reportData.mbti)
+    aiReport = LLM_report.main(reportData['concatAllResult'], reportData['mbti'])
 
     technicalScore = aiReport['TechnicalSkill']['TechnicalSkillScore']
     preparationScore = aiReport['SoftSkill']['PreparationSkill']['PreparationScore']

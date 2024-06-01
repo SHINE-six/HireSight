@@ -35,3 +35,4 @@ pandas
 # # nltk
 # python -m nltk.downloader words
 # python -m nltk.downloader stopwords
+# python -m nltk.downloader wordnet #Yi Kai think should add this one
