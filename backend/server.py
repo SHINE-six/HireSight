@@ -243,7 +243,7 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
     toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
     toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
-    toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
+    # toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
     print(mongoDB.postData("resumeDatabase", toStoreJson))
 
@@ -439,7 +439,7 @@ async def finish_interview(BackgroundTasks: BackgroundTasks):
 def calculateAverageBehavioralAnalysis():
     combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
     totalBahavioralAnalysis = 0
-    for data in combinedData['sections']:
+    for data in combinedData['sections']: #Chance to get error where KeyError: 'section' in for data in combinedData['sections']
         totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
 
     averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
@@ -474,7 +474,7 @@ def getJobPositionApply():
     return data['jobPositionApply'], data['uniqueResumeID'], data['email']
 
 def generateReportFormat():
-    ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score = LLM_report.main()
+
     toStoreJson = {
         "email": None,
         "interviewPosition": None,
@@ -492,8 +492,6 @@ def generateReportFormat():
         "hiringIndex": None
     }
 
-    toStoreJson.update(ai_report)
-
     concatAllResult = concatUserEvaTranscript()
     concatApplicantResult = concatUserTranscript()
     toStoreJson["interviewPosition"] = getJobPositionApply()[0]
@@ -502,7 +500,7 @@ def generateReportFormat():
     toStoreJson['concatAllResult'] = concatAllResult
     toStoreJson['concatResult'] = concatApplicantResult
     toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
-    toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
+    # toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatApplicantResult)
     toStoreJson['mbti'] = mbti_last.main(concatApplicantResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
@@ -515,7 +513,7 @@ def generateReportFormat():
 
 def generateReport():
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    print(reportData)
+    # print(reportData)
     toReportJson = reportGeneration.main(reportData)
     #Overwrite whole reportdata with same uniqueSessionID
     mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
@@ -523,6 +521,7 @@ def generateReport():
 @app.get("/get-report-data")
 async def getReportData():
     reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+    # print(reportData)
     return reportData
 
 # @app.websocket("/ws")

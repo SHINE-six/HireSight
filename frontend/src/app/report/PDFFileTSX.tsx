@@ -185,6 +185,7 @@ const PDFFileTSX = ()  => {
         const getReportInfo = async () => {
             const response = await fetch('http://localhost:8000/get-report-data');
             const body: information = await response.json();
+            console.log(body)
             setInfo(body) // Update the type of setInfo to accept a single object instead of an array
     
             // if (response.status !== 200) {

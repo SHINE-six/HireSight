@@ -5,44 +5,45 @@ import time
 from datetime import datetime
 
 global uniqueSessionID
-uniqueSessionID = "y6iet1gmocedfdphuolx68"
+uniqueSessionID = "mc53tknse7nf4gliztva24"
 
 def concat_all_transcript():
-    conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
-    log_full = ""
-    for log in conversationLog['log']:
-        if log['user'] == "applicant":
-            log_format = "Candidate: " + log['text'] + ". "
-            log_full += log_format
-        elif log['user'] == "Ai - EVA":
-            log_format = "HR: " + log['text']
-            log_full += log_format
-    return log_full 
+    t = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+    concatAllResult = t['concatAllResult']
+    return concatAllResult 
 
 mbti_type = "intj" #get from reportData
 concatTranscript = concat_all_transcript()
 interviewDate = datetime.today().strftime('%B %d, %Y')
 
-toStoreJson = {
-    "InterveweeEmail": "Desdesdes",
-    "InterveweeID": "122ed2",
-    "OverallSuitability": 90,
-    "InterviewPosition": "IT BUSINESS ANALYST (SUSTAINABILITY)- Fresh Graduates",
-    "InterviewDate": interviewDate,
-    "ai_report": None,
+
+toStoreJson={
+    "overallSuitability": None,
+    "RadarChartBinaryArray" : None,
+    "RadarChartSummary": None,
+    "MBTIBinaryArray": None
 }
+
 # put chenming formal and tidiness combinedData and get it to main()
 try:
-    ai_report = None
-    if ai_report == None:
+    aiReport = None
+    if aiReport == None:
         # Vertex Ai    
-        ai_report = LLM_report.main(concatTranscript, mbti_type) 
+        aiReport,TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score = LLM_report.main(concatTranscript, mbti_type) 
         # Genmini Ai
         # ai_report = LLM_report.main(concatTranscript, mbti_type)
-    toStoreJson["ai_report"] = ai_report
+    toStoreJson["ai_report"] = aiReport
 except Exception as e:
     print(f"An error occurred: {e}")
     print("Retrying in 5 seconds...")
     time.sleep(5)
 
-print(mongoDB.postData("reportInfo", toStoreJson))
+print("\n\n\nAI Report: ", aiReport)
+
+print("\n\n\nDataForReport + ai report in reportgeneration: ", toStoreJson)
+
+technicalScore = toStoreJson["ai_report"]['TechnicalSkill']['TechnicalSkillScore']
+
+print("technicalScore", technicalScore)
+
+# print(mongoDB.postData("reportInfo", toStoreJson))
