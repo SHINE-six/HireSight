@@ -1,10 +1,11 @@
 def main(combinedJsonData):
     emotion = combinedJsonData["emotion"]
     anger = emotion.get("Angry", 0)
-    disgust = emotion.get("Disgust", 0)
+    # disgust = emotion.get("Disgust", 0)
     fear = emotion.get("Fear", 0)
     sad = emotion.get("Sad", 0)
-    emotion_prob = weights['anger'] * anger + weights['disgust'] * disgust + weights['fear'] * fear + weights['sad'] * sad
+    emotion_prob = weights['anger'] * anger + weights['fear'] * fear + weights['sad'] * sad
+    # emotion_prob = weights['anger'] * anger + weights['disgust'] * disgust + weights['fear'] * fear + weights['sad'] * sad
     
     eye = combinedJsonData["eye"]
     blink = eye.get("blink episode", 0)
@@ -21,7 +22,7 @@ def main(combinedJsonData):
 
 weights = {
     'anger': 0.2,
-    'disgust': 0.3,
+    # 'disgust': 0.3,
     'fear': 0.4,
     'sad': 0.3,
     'blink': 0.4,

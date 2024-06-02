@@ -1,8 +1,14 @@
 {
-  "blink episode": 1,
+  "blink episode": 0,
   "gaze": {
+<<<<<<< HEAD
     "RIGHT": 3,
     "CENTER": 3,
     "LEFT": 33
+=======
+    "RIGHT": 0,
+    "CENTER": 8,
+    "LEFT": 42
+>>>>>>> AnNing
   }
 }

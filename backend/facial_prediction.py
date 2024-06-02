@@ -28,8 +28,9 @@ def prediction(video_path: str, new_model: tf.keras.Model, faceCascade: str = fa
         exit()
 
     # Initialize variables to count emotions
-    status_dict = {0: "Angry", 1: "Disgust", 2: "Fear", 3: "Happy", 4: "Sad", 5: "Surprise", 6: "Neutral"}
-    emotion_counts = {status_dict[i]: 0 for i in range(7)}
+    status_dict = {0: "Angry", 1: "Fear", 2: "Happy", 3: "Neutral", 4: "Sad", 5: "Surprise"}
+    # status_dict = {0: "Angry", 1: "Disgust", 2: "Fear", 3: "Happy", 4: "Sad", 5: "Surprise", 6: "Neutral"}
+    emotion_counts = {status_dict[i]: 0 for i in range(6)}
 
 
 
