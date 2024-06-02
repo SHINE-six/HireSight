@@ -48,7 +48,7 @@ const SuitabilityRankingPage = () => {
     let [loading, setLoading] = useState(false);
     const { resumeCount, currentAvailableJob, setResumeCount_Resume_suitability } = usePageConfigStore();
     const [ resumeDataList, setResumeDataList ] = useState<ResumeData[]>([]);
-    // const topThreeRef = useRef<string[]>([]);
+    const topThreeRef = useRef<string[]>([]);
     const router = useRouter();
 
     // const resumeRanking:any[] = await fetchResumeRanking();
@@ -60,7 +60,7 @@ const SuitabilityRankingPage = () => {
     //     return a.id - b.id;
     // });
 	useEffect(() => {
-        // topThreeRef.current = [];
+        topThreeRef.current = [];
 		getResumeData(currentAvailableJob)?.then((data) => {
             if (data && data.data) {
                 if (data.data.length > 1) {
@@ -141,10 +141,10 @@ const SuitabilityRankingPage = () => {
                 </div>
                 {resumeDataList.map((resume, index) => {
                     let bgColor = "bg-gray-200";
-                    // if (index < 3) {
-                    //     topThreeRef.current.push(resume.uniqueResumeId);
-                    //     bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
-                    // }
+                    if (index < 3) {
+                        topThreeRef.current.push(resume.uniqueResumeId);
+                        bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
+                    }
                     return (
                         <div key={resume.uniqueResumeId} className={`w-4/5 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-5`}>
                             <div className="pr-2">{resume.filename}</div>
