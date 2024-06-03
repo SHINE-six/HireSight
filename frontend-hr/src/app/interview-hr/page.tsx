@@ -69,23 +69,23 @@ const InterviewResultPage = () => {
 	}, [currentAvailableJob]);
     
 
-    const handleProceedHr = (uniqueResumeId: string, email: string, status: string) => {
+    const handleProceedHr = (uniqueResumeId: string, email: string, stage: string) => {
         setLoading(true);
         console.log("Proceeding to HR Interviewing", uniqueResumeId);
         const formData = new FormData();
         formData.append('uniqueResumeId', uniqueResumeId);
-        formData.append('stage', status);
+        formData.append('stage', stage);
         const res = fetch('http://localhost:8000/updateStage',
             { 
                 method: 'POST',
                 body: formData
             });
         setLoading(false);
+        sendEmail(email, stage);
         window.location.reload();
-        sendEmail(email, status);
     }
 
-    const sendEmail = (email: string, status: string) => {
+    const sendEmail = (email: string, stage: string) => {
         const formData = new FormData();
         const subject = 'Opportunity at Hilti'; 
         const offermessage = `Dear Teh Chen Ming,
@@ -105,7 +105,7 @@ const InterviewResultPage = () => {
         formData.append('email_receiver', email);
         formData.append('subject', subject);
 
-        if (status === "offered") {
+        if (stage === "offered") {
             formData.append('message', offermessage);
         } else {
             formData.append('message', rejectmessage);

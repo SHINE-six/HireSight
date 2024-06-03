@@ -288,11 +288,13 @@ async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool 
 
 @app.post("/interviewRanking")
 async def getInterviewRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
-    # Get resume from MongoDB
-    if onlyApplicantCount:
-        return mongoDB.getResumeCount(jobTitle)
-    else:
-        return mongoDB.getInterviewDetails(jobTitle, stage)
+    return mongoDB.getInterviewDetails(jobTitle, stage)
+    # # Get resume from MongoDB
+    # if onlyApplicantCount:
+    #     return mongoDB.getResumeCount(jobTitle)
+    # else:
+    #     return  mongoDB.getInterviewDetails(jobTitle, stage)
+    
 
 
 @app.post("/updateStage")
@@ -346,7 +348,7 @@ async def create_session(sessionJson: Request):
     return {"status": 200, "message": "Session created successfully"}
 
 def getJobPositionApplyAndUniqueResumeID(email: str):
-    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview"}, exclude=["pdfData"])
+    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview ai"}, exclude=["pdfData"])
     return resumeData['jobPostitionApply'], resumeData['uniqueResumeId']
 
 # ----------------------- Audio thingy -----------------------

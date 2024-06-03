@@ -20,6 +20,19 @@ interface ReportDataFromServer {
     'count': number;
 }
 
+interface ResumeData {
+    'email': string;
+    'uniqueResumeId': string;
+    'jobPostitionApply': string;
+    'stage': string;
+}
+
+
+interface ResumeDataFromServer {
+    'data': ResumeData[];
+    'count': number;
+}
+
 const getReportData = async (currentAvailableJob: string) => {
 	try {
 		const formData = new FormData();
@@ -39,11 +52,30 @@ const getReportData = async (currentAvailableJob: string) => {
 	}
 }
 
+const getResumeData = async (currentAvailableJob: string) => {
+	try {
+		const formData = new FormData();
+		formData.append('jobTitle', currentAvailableJob);
+        formData.append('stage', 'Interview ai')
+		const res = await fetch('http://localhost:8000/resumeRanking',
+			{ 
+				method: 'POST',
+				body: formData
+			});
+		const data:ResumeDataFromServer = await res.json();
+		console.log("request data done");
+		console.log(currentAvailableJob, data);
+		return data;
+	} catch (error) {
+		console.error('Error fetching data:', error);
+	}
+}
 
 const InterviewResultPage = () => {
     let [loading, setLoading] = useState(false);
     const { resumeCount, currentAvailableJob, setResumeCount_Interview_Ai } = usePageConfigStore();
     const [ ReportDataList, setReportDataList ] = useState<ReportData[]>([]);
+    const [ ResumeDataList, setResumeDataList ] = useState<ResumeData[]>([]);
     const topThreeRef = useRef<string[]>([]);
     const router = useRouter();
 
@@ -57,8 +89,9 @@ const InterviewResultPage = () => {
     // });
 	useEffect(() => {
         topThreeRef.current = [];
-		getReportData(currentAvailableJob)?.then((data) => {
+        getReportData(currentAvailableJob)?.then((data) => {
             if (data && data.data) {
+                console.log("asdsad", data.data) 
                 if (data.data.length > 1) {
                     const sortedData = (data.data).sort((a, b) => a.overallSuitability - b.overallSuitability);
                     setReportDataList(sortedData);
@@ -66,32 +99,49 @@ const InterviewResultPage = () => {
                     setReportDataList(data.data); 
                 }
                 setResumeCount_Interview_Ai(data.count);
+
+                const uniqueReportIds = data.data.map(item => item.InterveweeID);
+                getResumeData(currentAvailableJob)?.then((resumeData) => {
+                    if (resumeData && resumeData.data) {
+                        const filteredResumeData = resumeData.data.filter(item => !uniqueReportIds.includes(item.uniqueResumeId));
+                        setResumeDataList(filteredResumeData);
+                        console.log(filteredResumeData);
+                    }
+                });
             }
         });
-	}, [currentAvailableJob]);
+    }, [currentAvailableJob]);
     
 
-    const handleProceedHrInterview = async (uniqueResumeId: string) => {
+    const handleProceedHrInterview = async (uniqueResumeId: string, email: string, stage: string) => {
         setLoading(true);
         console.log("Proceeding to HR Interviewing", uniqueResumeId);
         const formData = new FormData();
         formData.append('uniqueResumeId', uniqueResumeId);
-        formData.append('stage', 'Interview hr');
+        formData.append('stage', stage);
         const res = fetch('http://localhost:8000/updateStage',
             { 
                 method: 'POST',
                 body: formData
             });
         const data = await res;
-        console.log('Email sent successfully:', res);
+        console.log(res);
         setLoading(false);
-        // window.location.reload();
+        sendEmail(email, stage);
+        window.location.reload();
     }
 
-    const sendEmail = (email: string) => {
+    const sendEmail = (email: string, stage: string) => {
         const formData = new FormData();
         const subject = 'Opportunity at Hilti'; 
-        const message = `Dear Teh Chen Ming,
+        const rejectmessage = `Dear Teh Chen Ming,
+        Rejected
+        
+        Yi Kai
+        HR Team
+        Hilti`; 
+
+        const offermessage = `Dear Teh Chen Ming,
 
         I trust this email finds you in good spirits.
         
@@ -116,7 +166,13 @@ const InterviewResultPage = () => {
         Hilti`;
         formData.append('email_receiver', email);
         formData.append('subject', subject);
-        formData.append('message', message);
+
+        if (stage === "Interview hr") {
+            formData.append('message', offermessage);
+        } else {
+            formData.append('message', rejectmessage);
+        }
+
         const res = fetch('http://localhost:8000/send_email', 
             {
                 method: 'POST',
@@ -148,34 +204,60 @@ const InterviewResultPage = () => {
             </div>
             <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
                 {!loading && (
-                <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
-                <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
-                        <div className=" grid grid-cols-5 w-4/5">
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Interviewee ID</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Overall Suitability</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">View Report</div>
+                    <div className="flex w-full justify-center">
+                        <div className="flex w-full justify-between">
+                            <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-1/3">
+                                <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
+                                    <div className="grid grid-cols-2 w-full">
+                                        <div className="px-[1rem] py-[0.5rem] justify-self-center border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Interviewee ID</div>
+                                        <div className="px-[1rem] py-[0.5rem] justify-self-center border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
+                                    </div>
+                                </div>
+                                {ResumeDataList.map((resume, index) => {
+                                    return (
+                                        <div key={resume.uniqueResumeId} className={`bg-gray-200 w-full rounded-md shadow-md shadow-black mb-[1rem] py-[1.4rem] items-center grid grid-cols-2`}>
+                                            <div className="justify-self-center">{resume.uniqueResumeId}</div>
+                                            <div className="justify-self-center">{resume.email}</div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-2/3 ">
+                                <div className="flex justify-center w-5/6 p-[0.5rem] mb-[1rem]">
+                                    <div className=" grid grid-cols-6 w-full justify-items-center">
+                                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Interviewee ID</div>
+                                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
+                                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Overall Suitability</div>
+                                        <div className="px-[1rem] py-[0.5rem] col-span-2 border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
+                                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">View Report</div>
+                                    </div>
+                                </div>
+                                {ReportDataList.map((resume, index) => {
+                                    let bgColor = "bg-gray-200";
+                                    if (index < 3) {
+                                        topThreeRef.current.push(resume.InterveweeID);
+                                        bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
+                                    }
+                                    return (
+                                        <div className='mx-[2rem]'>
+                                            <div key={resume.uniqueSessionID} className={`w-full ${bgColor} rounded-md shadow-md text- smdhadow-black mb-[1rem] p-[1rem] justify-items-center items-center grid grid-cols-6`}>
+                                                <div className="pr-2">{resume.InterveweeID}</div>
+                                                <div className="pr-2">{resume.InterveweeName}</div>
+                                                <div className="pr-2">{(resume.overallSuitability)}%</div>
+                                                <div className="grid grid-cols-2 gap-[1rem] items-center col-span-2">
+                                                    <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick={() => { handleProceedHrInterview(resume.InterveweeID, resume.InterveweeName,"Interview hr"); setLoading(!loading); }}> Proceed to Hr Interview</button>
+                                                    <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700" onClick={() => { handleProceedHrInterview(resume.InterveweeID, resume.InterveweeName,"rejected"); setLoading(!loading); }}> Rejected</button>
+                                                </div>
+                                                <button className="bg-blue-700 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-blue-900 focus:outline-none focus:ring-2">View Report</button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
-                    {ReportDataList.map((resume, index) => {
-                        let bgColor = "bg-gray-200";
-                        if (index < 3) {
-                            topThreeRef.current.push(resume.InterveweeID);
-                            bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
-                        }
-                        return (
-                            <div key={resume.uniqueSessionID} className={`w-4/5 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-5`}>
-                                <div className="pr-2">{resume.InterveweeID}</div>
-                                <div className="pr-2">{resume.InterveweeName}</div>
-                                <div className="pr-2">{(resume.overallSuitability)}%</div>
-                                <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedHrInterview(resume.InterveweeID); sendEmail(resume.InterveweeName); setLoading(!loading); }}> Proceed to Hr Interviewing</button>
-                                <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Report</button>
-                            </div>
-                        );
-                        })}
-                    </div>
-                    )}
+                )}
             </div>
             <div className='flex justify-center items-center text-center'>
             <MoonLoader
