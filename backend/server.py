@@ -4,25 +4,25 @@ from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, W
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
-# import resumeRanker
-# import speech_to_text
-# import facial_prediction
-# import eye_tracking
+import resumeRanker
+import speech_to_text
+import facial_prediction
+import eye_tracking
 # import LLM
 # import tts
 import behavioralAnalysis
 # import LLM
 # import tts
-# import LLM_copy
-# import googleTTS
-# import wavspeech_to_json
+import LLM_copy
+import googleTTS
+import wavspeech_to_json
 import mongoDB
-# import disfluency
-# import plagiarism
-# import aiDetection
-# import mbti_last
-# import reportGeneration
-# import LLM_report
+import disfluency
+import plagiarism
+import aiDetection
+import mbti_last
+import reportGeneration
+import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
