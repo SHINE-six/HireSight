@@ -84,9 +84,9 @@ const ApplicantDetailPage = () => {
                 method: 'POST',
                 body: formData
             });
-        window.location.reload();
-        console.log(res);
-        setLoading(false);
+            console.log(res);
+            setLoading(false);
+            window.location.reload();
     }
 
     const handleProceedResumeSuitability = (uniqueResumeId: string) => {
@@ -100,9 +100,9 @@ const ApplicantDetailPage = () => {
                 method: 'POST',
                 body: formData
             });
-        window.location.reload();
         console.log(res);
-        setLoading(false);
+        setLoading(false)
+        window.location.reload();
     }
     
     const handleBack = () => {
@@ -128,41 +128,47 @@ const ApplicantDetailPage = () => {
                 <button onClick={handleBack} className="fixed right-0 mr-[210px] ml-4 text-2xl text-black font-bold py-2 px-4 rounded"><IoIosArrowBack /></button>
             </div>
             <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
-                <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
-                    <div className="grid grid-cols-6 w-5/6"> 
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Name</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">email</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI detection</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Plagiarism</div> 
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
-                    </div>
-                </div>
-                {resumeDataList.map((resume, index) => {
-                    let bgColor = "bg-gray-200";
-                    if (index < 3) {
-                        topThreeRef.current.push(resume.uniqueResumeId);
-                        bgColor = "bg-blue-200"; 
-                    }
-                    return (
-                        <div key={resume.uniqueResumeId} className={`w-5/6 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-6`}>
-                            <div className="pr-2">{resume.filename}</div>
-                            <div className="pr-2">{resume.email}</div>
-                            <div className="pr-2">{(resume.AiDetection)}%</div>
-                            <div className="pr-2">{(resume.plagiarism)}</div>
-                            <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedResumeSuitability(resume.uniqueResumeId); setLoading(!loading); }}> Proceed to Resume Suitability</button>
-                            <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Resume</button>
+                {!loading && (
+                <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
+                    <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
+                        <div className="grid grid-cols-6 w-5/6"> 
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume ID</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI detection</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Plagiarism</div> 
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
                         </div>
-                    );
-                })}
+                    </div>
+                    {resumeDataList.map((resume, index) => {
+                        let bgColor = "bg-gray-200";
+                        if (index < 3) {
+                            topThreeRef.current.push(resume.uniqueResumeId);
+                            bgColor = "bg-blue-200"; 
+                        }
+                        return (
+                            <div key={resume.uniqueResumeId} className={`w-5/6 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-6`}>
+                                <div className="pr-2">{resume.uniqueResumeId}</div>
+                                <div className="pr-2">{resume.email}</div>
+                                <div className="pr-2">{(resume.AiDetection)}%</div>
+                                <div className="pr-2">{(resume.plagiarism)}</div>
+                                <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedResumeSuitability(resume.uniqueResumeId); setLoading(!loading); }}> Proceed to Resume Suitability</button>
+                                <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Resume</button>
+                            </div>
+                        );
+                    })}
+                </div>
+                )}
             </div>
-            <MoonLoader
-                color="#B91C1C"  
-                loading={loading}  
-                size={150}  
-                aria-label="Loading Spinner"  
-                data-testid="loader"  
-            />
+            <div className='flex justify-center items-center text-center'>
+                <MoonLoader
+                    color="#B91C1C"  
+                    loading={loading}  
+                    size={150}  
+                    aria-label="Loading Spinner"  
+                    data-testid="loader"  
+                />
+            </div>
         </div>
     );
 }

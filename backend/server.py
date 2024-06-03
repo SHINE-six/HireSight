@@ -4,31 +4,33 @@ from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, W
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
-import resumeRanker
-import speech_to_text
-import facial_prediction
-import eye_tracking
+# import resumeRanker
+# import speech_to_text
+# import facial_prediction
+# import eye_tracking
 # import LLM
 # import tts
 import behavioralAnalysis
 # import LLM
 # import tts
-import LLM_copy
-import googleTTS
-import wavspeech_to_json
+# import LLM_copy
+# import googleTTS
+# import wavspeech_to_json
 import mongoDB
-import disfluency
-import plagiarism
-import aiDetection
-import mbti_last
-import reportGeneration
-import LLM_report
+# import disfluency
+# import plagiarism
+# import aiDetection
+# import mbti_last
+# import reportGeneration
+# import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
 import json
 from pydantic import BaseModel
-
+import smtplib
+import ssl
+from email.message import EmailMessage
 
 app = FastAPI()
 
@@ -167,6 +169,29 @@ data = [
 }
 ]
 
+@app.post("/send_email")
+async def send_email(email_receiver: str = Form(...), subject: str = Form(...), message: str = Form(...)):
+    # Email configuration
+    email_sender = "yikaipuah@gmail.com"
+    email_password = "rxrl qxfh dbjw zrbm"
+
+    # Create message
+    em = EmailMessage()
+    em['From'] = email_sender
+    em['To'] = email_receiver
+    em['Subject'] = subject
+    em.set_content(message)
+
+    # Add SSL (layer of security)
+    context = ssl.create_default_context()
+
+    # Log in and send the email
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(email_sender, email_password)
+        smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+    return {"message": "Email sent successfully"}
+
 @app.get("/")
 async def readRoot():
     print("Welcome to the Job Portal!")
@@ -254,10 +279,20 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 @app.post("/resumeRanking")
 async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
     # Get resume from MongoDB
+    print(jobTitle, onlyApplicantCount)
     if onlyApplicantCount:
         return mongoDB.getResumeCount(jobTitle)
     else:
         return mongoDB.getResumeDetailsNoPdf(jobTitle, stage)
+        
+
+@app.post("/interviewRanking")
+async def getInterviewRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
+    # Get resume from MongoDB
+    if onlyApplicantCount:
+        return mongoDB.getResumeCount(jobTitle)
+    else:
+        return mongoDB.getInterviewDetails(jobTitle, stage)
 
 
 @app.post("/updateStage")
@@ -271,11 +306,12 @@ async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
     else:
         mongoDB.updateData("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, {"stage": stage})
 
-    if stage == "Interview":
-        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, exclude=["pdfData"])
+    if stage == "Interview ai":
+        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId})
         mongoDB.updateData("Users", {"email": resumeData['email']}, {"aiStage": True})
 
     return {"status": 200, "message": "Stage updated successfully"}
+
 
 # @app.get("/resume-ranking")
 # async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai interview

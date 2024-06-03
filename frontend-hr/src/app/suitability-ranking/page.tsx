@@ -86,9 +86,9 @@ const SuitabilityRankingPage = () => {
     //             method: 'POST',
     //             body: formData
     //         });
-    //     window.location.reload();
     //     console.log(res);
     //     setLoading(false);
+    //     window.location.reload();
     // }
 
     const handleProceedAiInterview = (uniqueResumeId: string) => {
@@ -96,17 +96,54 @@ const SuitabilityRankingPage = () => {
         console.log("Proceeding to Ai Interviewing", uniqueResumeId);
         const formData = new FormData();
         formData.append('uniqueResumeId', uniqueResumeId);
-        formData.append('stage', 'Interview');
+        formData.append('stage', 'Interview ai');
         const res = fetch('http://localhost:8000/updateStage',
             { 
                 method: 'POST',
                 body: formData
             });
         console.log(res);
-        window.location.reload();
         setLoading(false);
+        window.location.reload();
     }
 
+    const sendEmail = (email: string) => {
+        const formData = new FormData();
+        const subject = 'Opportunity at Hilti'; 
+        const message = `Dear Teh Chen Ming,
+
+        I trust this email finds you in good spirits.
+        
+        I am delighted to inform you that your application for the Business Analyst position at Hilti has successfully cleared the resume screening phase. Congratulations on reaching this milestone!
+        
+        Your qualifications and experience have left a positive impression on our team, and we believe you possess the potential to make significant contributions to our organization. As the next step in our recruitment process, we would like to extend an invitation for you to participate in an AI interview session.
+        
+        The AI interview session aims to evaluate your skills, competencies, and suitability for the role in an engaging and interactive manner. It will provide you with the opportunity to demonstrate your expertise in business analysis, problem-solving capabilities, and communication skills.
+        
+        We encourage you to prepare thoroughly for the interview by revisiting your knowledge of business analysis principles, methodologies, and drawing upon relevant experiences. Should you have any inquiries or require additional information ahead of the interview, please don't hesitate to reach out to us.
+        
+        Your AI interview session can be started any time you want. Please follow this link to our AI interviewer platform when you are fully prepared, http://localhost:3000/ai-interview
+        
+        Once again, congratulations on progressing to this stage of our selection process. We eagerly anticipate the opportunity to learn more about you during the AI interview session and wish you the very best of luck!
+        
+        Your feedback is absolutely valuable for us. Please take a moment to share your thoughts through our feedback link, https://HireSight/Feedback
+        
+        Warm regards,
+        
+        Yi Kai
+        HR Team
+        Hilti`;
+        formData.append('email_receiver', email);
+        formData.append('subject', subject);
+        formData.append('message', message);
+        const res = fetch('http://localhost:8000/send_email', 
+            {
+                method: 'POST',
+                body: formData
+            });
+        console.log('Email sent successfully:', res);
+    }    
+    
     const handleBack = () => {
         // if (window.history.length > 1) {
             router.back();
@@ -130,33 +167,37 @@ const SuitabilityRankingPage = () => {
                 <button onClick={handleBack} className="fixed right-0 mr-[210px] ml-4 text-2xl text-black font-bold py-2 px-4 rounded"><IoIosArrowBack /></button>
             </div>
             <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
-                <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
-                    <div className=" grid grid-cols-5 w-4/5">
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Name</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">email</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume Suitability</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
-                    </div>
-                </div>
-                {resumeDataList.map((resume, index) => {
-                    let bgColor = "bg-gray-200";
-                    if (index < 3) {
-                        topThreeRef.current.push(resume.uniqueResumeId);
-                        bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
-                    }
-                    return (
-                        <div key={resume.uniqueResumeId} className={`w-4/5 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-5`}>
-                            <div className="pr-2">{resume.filename}</div>
-                            <div className="pr-2">{resume.email}</div>
-                            <div className="pr-2">{(resume.suitability* 100).toFixed(2)}%</div> 
-                            <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedAiInterview(resume.uniqueResumeId); setLoading(!loading); }}> Proceed to Ai Interviewing</button>
-                            <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Resume</button>
+                {!loading && (
+                <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
+                    <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
+                        <div className=" grid grid-cols-5 w-4/5">
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume ID</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume Suitability</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
+                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
                         </div>
-                    );
-                }
-                )}
+                    </div>
+                    {resumeDataList.map((resume, index) => {
+                        let bgColor = "bg-gray-200";
+                        if (index < 3) {
+                            topThreeRef.current.push(resume.uniqueResumeId);
+                            bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
+                        }
+                        return (
+                            <div key={resume.uniqueResumeId} className={`w-4/5 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-5`}>
+                                <div className="pr-2">{resume.uniqueResumeId}</div>
+                                <div className="pr-2">{resume.email}</div>
+                                <div className="pr-2">{(resume.suitability* 100).toFixed(2)}%</div> 
+                                <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedAiInterview(resume.uniqueResumeId); sendEmail(resume.email); setLoading(!loading); }}> Proceed to Ai Interviewing</button>
+                                <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Resume</button>
+                            </div>
+                         );
+                        })}
+                    </div>
+                    )}
             </div>
+            <div className='flex justify-center items-center text-center'>
             <MoonLoader
                 color="#B91C1C"  
                 loading={loading}  
@@ -164,6 +205,7 @@ const SuitabilityRankingPage = () => {
                 aria-label="Loading Spinner"  
                 data-testid="loader"  
             />
+            </div>
         </div>
     );
 }

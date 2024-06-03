@@ -85,13 +85,37 @@ def getResumeDetailsNoPdf(jobTitle, stage):
     }
     return toReturn
 
+def getInterviewDetails(jobTitle, stage):
+    resumedetails =  getResumeDetailsNoPdf(jobTitle, stage)
+    unique_resume_ids = [resume['uniqueResumeId'] for resume in resumedetails['data']]
+    interview_data_list = None
+    for unique_id in unique_resume_ids:
+        interview_data = getAllDataFromCollection('reportData', {'interviewPosition': jobTitle, 'uniqueResumeID': unique_id})
+        if interview_data_list is None:
+            interview_data_list = interview_data  # Assuming interview_data is a list
+        else:
+            interview_data_list.extend(interview_data)
+    
+    interview_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': stage}, count=True)
+    
+    if interview_data_list is None:
+        interview_data_list = []
+    
+    toReturn = {
+        "data": interview_data_list,
+        "count": interview_count
+    }
+    
+    return toReturn
+    
 def getResumeCount(jobTitle):
-    # possible stage : 'Ai detection', 'Resume Suitability', 'Interview', 'Offer', 'Rejected'
+    # possible stage : 'Ai detection', 'Resume Suitability', 'Interview-ai', 'Interview-hr', 'Offer', 'Rejected'
     Ai_detection_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Ai detection'}, count=True)
     Resume_suitability_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Resume Suitability'}, count=True)
-    Interview_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview'}, count=True)
+    # Interview_ai_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview ai'}, count=True)
+    # Interview_hr_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview hr'}, count=True)
 
-    return {"Ai_detection": Ai_detection_count, "Resume_suitability": Resume_suitability_count, "Interview": Interview_count}
+    return {"Ai_detection": Ai_detection_count, "Resume_suitability": Resume_suitability_count}
 
 #! For maintenance only, should not be connected to server
 def deleteFirstTenData(collection):
