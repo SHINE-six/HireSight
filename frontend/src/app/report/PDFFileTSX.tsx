@@ -1,6 +1,7 @@
 'use client'
 import {Page, Text, View, Document, StyleSheet, render, PDFViewer, Font, Image} from '@react-pdf/renderer';
 import { get } from 'http';
+import { get } from 'http';
 import * as React from 'react';
 import { useState, useEffect } from "react";
 // import info from '../../../public/assets/ReportInfo.json'
@@ -178,28 +179,105 @@ interface information{
 // }
 
 
+interface information{
+    "InterveweeName": string,
+    "InterviewPosition": string,
+    "InterviewDate": string,
+    "RadarChartSummary": string,
+    "TechnicalSkill": {
+        "TechnicalSkillScore": number,
+        "TechnicalSkillSummary": string,
+    },
+    "SoftSkill": {
+        "PreparationSkill": {
+            "PreparationScore": number,
+            "PreparationDetailScoring": {
+                "Knowledge of the Company, Role, and Industry": number,
+                "Quality of Questions for the Interviewer": number,
+                "Alignment of Skills and Experiences with Job Requirements": number,
+                "Formal and Appropriate Attire": number,
+                "Grooming and Tidiness": number,
+            },
+            "PreparationSummary": string,
+        },
+        "CulturalFitSkill": {
+            "CulturalFitScore": number,
+            "CulturalFitDetailScoring": {
+                "Alignment with Core Company Values": number,
+                "Professionalism and Work Ethic": number,
+                "Teamwork and Collaboration Style": number,
+                "Adaptability to Work Environment Preferences": number,
+                "Problem-Solving and Decision-Making Style": number,
+            },
+            "CulturalFitSummary": string,
+        },
+        "AtitudeSkill": {
+            "AtitudeScore": number,
+            "AtitudeDetailScoring": {
+                "Professionalism": number,
+                "Positivity and Enthusiasm": number,
+                "Resilience and Response to Challenges": number,
+                "Motivation and Work Ethic": number,
+            },
+            "AtitudeSummary": string,
+        },
+        "CommunicationSkill": {
+            "CommunicationSkillScore": number,
+            "CommunicationSkillDetailScoring": {
+                "Clarity, Coherence, and Conciseness of Responses": number,
+                "Listening and Engagement in Dialogue": number,
+                "Written Communication Skills": number,
+                "Non-verbal communication": number,
+            },
+            "CommunicationSkillSummary": string,
+        },
+        "AdaptabilitySkill": {
+            "AdaptabilityScore": number,
+            "AdaptabilityDetailScoring": {
+                "Successful Adaptation to Change": number,
+                "Responses to Hypothetical Scenarios": number,
+                "Learning and Applying Feedback": number,
+                "Feedback from References on Adaptability and Problem-solving": number,
+            },
+            "AdaptabilitySummary": string,
+        },
+    },
+    "MBTISummary": string,
+    "FeedbackForCandidate": {
+        "Strength": string[],
+        "WeaknessAndAreasForDevelopment": string[],
+        "OtherRecommendedJobPosition": string[],
+    },
+
+}
+
+// interface PDFFileTSXProps {
+//     info: info[];
+// }
+
+
 const PDFFileTSX = ()  => {
-    const [info, setInfo] = useState<information>();
+//     const [info, setInfo] = useState<information>();
     
-    useEffect(() => {
-        const getReportInfo = async () => {
-            const response = await fetch('http://localhost:8000/get-report-data');
-            const body: information = await response.json();
-            console.log(body)
-            setInfo(body) // Update the type of setInfo to accept a single object instead of an array
+//     useEffect(() => {
+//         const getReportInfo = async () => {
+//             const response = await fetch('http://localhost:8000/get-report-data');
+//             const body: information = await response.json();
+//             console.log(body)
+//             setInfo(body) // Update the type of setInfo to accept a single object instead of an array
     
-            // if (response.status !== 200) {
-            //     throw Error(body.message) 
-            // }
-            return body;
-        }
+//             // if (response.status !== 200) {
+//             //     throw Error(body.message) 
+//             // }
+//             return body;
+//         }
 
-        getReportInfo();
-    }, [])
+//         getReportInfo();
+//     }, [])
 
-    if (!info) {
-        return <div>Loading...</div>
-    }
+//     if (!info) {
+//         return <div>Loading...</div>
+//     }
 
     return(
         <Document title='Interview Performance Report'>
