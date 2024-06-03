@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 async function getSubcategoryDetail(CategoryId: any) {
     const res = await fetch(`http://localhost:8000/jobopenings/${CategoryId}`);
     const data = await res.json();
-
+    console.log("request data done", data);
     return data;
 }
 

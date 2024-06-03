@@ -4,10 +4,14 @@ import React, { useState } from 'react';
 import { useUserInfoStore } from '@/stores/userInfoStore';
 
 
-const PostLoginInfo = async (formData: FormData) => {
+const PostLoginInfo = async (email: string, password: string) => {
     const res = await fetch('http://localhost:8000/login', {
         method: 'POST',
-        body: formData
+        // body: formData,
+        headers: {
+            Authorization: 'Basic ' + btoa(email + ':' + password),
+        },
+        credentials: 'include'  // Include credentials in the request
     });
     const data = await res.json();
     console.log(data);
@@ -21,10 +25,10 @@ const LoginPopup = () => {
 
     async function handleLocalSubmit(e: React.FormEvent) {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        const response = await PostLoginInfo(formData); // Await the response
+        // const formData = new FormData();
+        // formData.append('email', email);
+        // formData.append('password', password);
+        const response = await PostLoginInfo(email, password); // Await the response
         if (response.status === 200) { // Access the status property
             setEmail(email);
             setAiStage(response.aiStage);

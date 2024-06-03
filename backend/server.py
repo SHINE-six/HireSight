@@ -1,6 +1,7 @@
 import shutil
 import time
-from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, WebSocket
+from fastapi import Cookie, FastAPI, File, Form, Request, UploadFile, BackgroundTasks, Response, HTTPException, Depends
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
@@ -29,7 +30,7 @@ from pydantic import BaseModel
 
 
 app = FastAPI()
-
+security = HTTPBasic()
 
 origins = [
     "http://localhost:3000",  # Assuming your frontend app runs on localhost:3000
@@ -281,10 +282,14 @@ async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
 #     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 @app.post("/login")
-async def login(email: str = Form(...), password: str = Form(...)):
+async def login(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
+    email = credentials.username
+    password = credentials.password
+
     foundUser = mongoDB.getOneDataFromCollection("Users", {"email": email})
     if foundUser:
         if foundUser['password'] == password:
+            response.set_cookie(key="email", value=email, httponly=True, secure=False, max_age=3600, path="/", domain="localhost")
             return {"status": 200, "message": "Login successful", "aiStage": foundUser['aiStage']}
         else:
             return {"status": 401, "message": "Incorrect password"}
@@ -292,6 +297,13 @@ async def login(email: str = Form(...), password: str = Form(...)):
     elif (not foundUser):
         mongoDB.postData("Users", {"email": email, "password": password, "aiStage": False})
         return {"status": 200, "message": "Sign up successful", "aiStage": False}
+
+@app.post("/validate-session")
+async def validate_session(email: str = Form(None)):
+    if email:
+        return {"status": 200, "message": "Session valid"}
+    else:
+        return {"status": 401, "message": "Session invalid"}
 
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
