@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 global uniqueSessionID
-uniqueSessionID = "mc53tknse7nf4gliztva24"
+uniqueSessionID = "e9fap1bfvtj1tjgosxjkwt"
 
 def concat_all_transcript():
     t = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
@@ -32,6 +32,7 @@ try:
         aiReport,TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score = LLM_report.main(concatTranscript, mbti_type) 
         # Genmini Ai
         # ai_report = LLM_report.main(concatTranscript, mbti_type)
+        # print(aiReport)
     toStoreJson["ai_report"] = aiReport
 except Exception as e:
     print(f"An error occurred: {e}")
@@ -46,4 +47,4 @@ technicalScore = toStoreJson["ai_report"]['TechnicalSkill']['TechnicalSkillScore
 
 print("technicalScore", technicalScore)
 
-# print(mongoDB.postData("reportInfo", toStoreJson))
+print(mongoDB.postData("reportInfo", toStoreJson))

@@ -1,6 +1,7 @@
+import asyncio
 import shutil
 import time
-from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, WebSocket
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, BackgroundTasks, WebSocket
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
@@ -429,16 +430,19 @@ def checkProcessFiles():
 # ----------------------- Interview Session Finish -----------------------
 @app.post("/ai-interview/session/end")
 async def finish_interview(BackgroundTasks: BackgroundTasks):
-    time.sleep(5)   # Wait for the last process to finish
-
-    averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
-    BackgroundTasks.add_task(generateReportFormat(), averageBehavioralAnalysis)
+    time.sleep(10)   # Wait for the last process to finish
+    print("167")
+    # averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
+    print("178")
+    # BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
+    print("110")        
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
 def calculateAverageBehavioralAnalysis():
     combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
     totalBahavioralAnalysis = 0
+    print("combinedData: ", combinedData)
     for data in combinedData['sections']: #Chance to get error where KeyError: 'section' in for data in combinedData['sections']
         totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
 
@@ -473,7 +477,7 @@ def getJobPositionApply():
     data = mongoDB.getDataWithUniqueSessionID("combinedData", uniqueSessionID)
     return data['jobPositionApply'], data['uniqueResumeID'], data['email']
 
-def generateReportFormat():
+def generateReportFormat(averageBehavioralAnalysis):
 
     toStoreJson = {
         "email": None,
@@ -484,7 +488,7 @@ def generateReportFormat():
         "disfluencies": None,
         "plagiarism": None,
         "aiDetector": None,  # Dict
-        "behavioralAnalysis": calculateAverageBehavioralAnalysis(),  # Dict
+        "behavioralAnalysis": averageBehavioralAnalysis,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
@@ -510,19 +514,58 @@ def generateReportFormat():
     generateReport()
 
     return {"status": 200, "message": "Report generated successfully"}
+    # return None
+
+
+reportDone = False
 
 def generateReport():
+    global reportDone
+    reportDone = False
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    # print(reportData)
     toReportJson = reportGeneration.main(reportData)
-    #Overwrite whole reportdata with same uniqueSessionID
     mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
+    reportDone = True
+
+async def waitReportData():
+    timeout = 300  # Timeout set to 5 minutes (300 seconds)
+    start_time = time.time()
+    print("Testing")
+
+    while True:
+        if reportDone:
+            print("Report generated successfully")
+            # reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+            # print("Here is the report data: ", reportData)
+            # if reportData:
+            #     return reportData       
+            return "False"         
+        elif time.time() - start_time > timeout:
+            print("Dead")
+            return "True"
+        else:
+            print("Waiting for report data...")
+            await asyncio.sleep(5)
 
 @app.get("/get-report-data")
 async def getReportData():
+    # try:
+    #     reportData = await waitReportData()
+    #     print("Already get the data")
+    #     return reportData
+    # except HTTPException as e:
+    #     return {"status": e.status_code, "message": e.detail}
     reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
-    # print(reportData)
     return reportData
+    
+@app.get("/get-report-loading")
+async def getReportDataLoading():
+    try:
+        reportDataLoading = await waitReportData()
+        return {"message" : reportDataLoading}
+    except HTTPException as e:
+        return {"status": e.status_code, "message": e.detail}
+
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
