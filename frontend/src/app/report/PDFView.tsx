@@ -4,12 +4,11 @@ import { useEffect, useState } from "react"
 
 
 const InvoicePDF = dynamic(() => import("./PDFFileTSX"), {
-    
     ssr: false,
   });
 
 
-const View = ({info} : any) => {
+const View = () => {
 
     const [client, setClient] = useState(false)
 

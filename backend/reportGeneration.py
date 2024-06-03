@@ -13,7 +13,7 @@ def main(reportData):
 
     print("\n\n\nReportData in reportgeneration: ", reportData)
     dataForReport={
-        "uniqueSessionID": reportData['uniqueSessionID'],
+        "UniqueSessionID": reportData['uniqueSessionID'],
         "InterveweeName": reportData['email'],
         "InterveweeID": reportData['uniqueResumeID'],
         "InterviewPosition": reportData['interviewPosition'],
@@ -43,19 +43,6 @@ def main(reportData):
 
 
     print("\n\n\nDataForReport without ai report in reportgeneration: ", dataForReport)
-
-    if(TechnicalSkillScore == None):
-        TechnicalSkillScore = 6.0
-    if(preparation_score == None):
-        preparation_score = 6.0
-    if(cultural_score == None):
-        cultural_score = 6.0
-    if(attitude_score == None):
-        attitude_score = 6.0
-    if(communication_score == None):
-        communication_score = 6.0
-    if(adaptability_score == None):
-        adaptability_score = 6.0
 
     print("technicalScore", TechnicalSkillScore, '\n')
     print("preparationScore", preparation_score, '\n')

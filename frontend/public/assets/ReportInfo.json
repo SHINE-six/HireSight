@@ -35,16 +35,16 @@
             },
             "CulturalFitSummary": "The candidate aligns well with company values, showing strong professionalism and teamwork skills. Their adaptability and problem-solving abilities indicate they would integrate well into the company culture. "
         },
-        "AttitudeSkill":{
+        "AtitudeSkill":{
 
-            "AttitudeScore": 5,
-            "AttitudeDetailScoring": {
+            "AtitudeScore": 5,
+            "AtitudeDetailScoring": {
                 "Professionalism": 5,
                 "Positivity and Enthusiasm": 5,
                 "Resilience and Response to Challenges": 5,
                 "Motivation and Work Ethic": 5
             },
-            "AttitudeSummary": "The candidate exhibits a highly professional attitude, with strong motivation and resilience in facing challenges. Their enthusiasm towards the company and role is commendable. "
+            "AtitudeSummary": "The candidate exhibits a highly professional attitude, with strong motivation and resilience in facing challenges. Their enthusiasm towards the company and role is commendable. "
         },
         "CommunicationSkill":{
 

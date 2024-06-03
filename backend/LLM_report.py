@@ -37,7 +37,7 @@ def generate_technical(concatTranscript):
     TechnicalSkill Content:
     1. Generate the Technical Skills Rating 1 to 5 marks with one decimal.
     2. Generate a fifty words assessment summary about Tehcnical Skills of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
-    3. TechnicalSkillScore and TechnicalSkillSummary should not be NoneType or empty
+    3. TechnicalSkillScore and TechnicalSkillSummary should not be empty.
     4. Output should follow Json Format:
     {{
         "TechnicalSkillScore": float,  
@@ -48,11 +48,6 @@ def generate_technical(concatTranscript):
     technical_assessment = summary.text
     TechnicalSkillScore = float(extract_data(technical_assessment, r'"TechnicalSkillScore": (\d+(\.\d+)?)'))
     TechnicalSkillSummary = extract_data(technical_assessment, r'"TechnicalSkillSummary": "(.*)"')
-    print(TechnicalSkillScore)
-    if TechnicalSkillScore == None:
-        TechnicalSkillScore = 6.0
-    if TechnicalSkillSummary == None:
-        TechnicalSkillSummary = "Nothing"
     return TechnicalSkillScore, TechnicalSkillSummary
 
 def generate_preparation(concatTranscript):
@@ -64,7 +59,7 @@ def generate_preparation(concatTranscript):
     4. Rate the Alignment of Skills and Experiences with Job Requirements 1 to 5 marks by evaluate the candidate's ability to articulate how their background aligns with the role's requirements. 
     5. Only the PreparationScore with one decimal. The Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer, Alignment of Skills and Experiences with Job Requirements, Formal and Appropriate Attire and Grooming and Tidiness are integer.
     6. Generate a fifty words assessment summary for Soft Skills of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
-    7. PreparationScore, Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer,Alignment of Skills and Experiences with Job Requirements, PreparationSummary should not be NoneType or empty
+    7. PreparationScore, Knowledge of the Company, Role, and Industry, Quality of Questions for the Interviewer,Alignment of Skills and Experiences with Job Requirements, PreparationSummary should not be empty.
     8. Output should follow Json Format:
     {{
         "PreparationScore": float,
@@ -81,16 +76,6 @@ def generate_preparation(concatTranscript):
     quality_of_questions = int(extract_data(preparation_skill, r'"Quality of Questions for the Interviewer": (\d+(\.\d+)?)'))
     alignment_with_job_requirements = int(extract_data(preparation_skill, r'"Alignment of Skills and Experiences with Job Requirements": (\d+(\.\d+)?)'))
     preparation_summary = extract_data(preparation_skill, r'"PreparationSummary": "([^"]+)"')
-    if preparation_score == None:
-        preparation_score = 6.0
-    if knowledge_company_role_industry == None:
-        knowledge_company_role_industry = 6
-    if quality_of_questions == None:
-        quality_of_questions = 6
-    if alignment_with_job_requirements == None:
-        alignment_with_job_requirements = 6
-    if preparation_summary == None:
-        preparation_summary = "Nothing"
     return preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary
 
 def generate_culturalfit(concatTranscript):
@@ -104,7 +89,7 @@ def generate_culturalfit(concatTranscript):
     6. Generate the Problem-Solving and Decision-Making Style Ranking 1 to 5 marks by assessing problem-solving approach, creativity, critical thinking, and conflict resolution.
     7. Only the CulturalFitScore with one decimal. The Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style are integer.
     8. Generate a fifty words assessment summary for Cultural Fit of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
-    9. CulturalFitScore, Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style should not be NoneType or empty
+    9. CulturalFitScore, Alignment with Core Company Values, Professionalism and Work Ethic, Teamwork and Collaboration Style, Adaptability to Work Environment Preferences and Problem-Solving and Decision-Making Style should not be empty.
     10. Output should follow Json Format:
     {{
         "CulturalFitScore": ,
@@ -125,21 +110,6 @@ def generate_culturalfit(concatTranscript):
     adaptability_work_environment = int(extract_data(culturalfit_skill, r'"Adaptability to Work Environment Preferences": (\d+(\.\d+)?)'))
     problem_solving_decision_making = int(extract_data(culturalfit_skill, r'"Problem-Solving and Decision-Making Style": (\d+(\.\d+)?)'))
     cultural_summary = extract_data(culturalfit_skill, r'"CulturalFitSummary": "([^"]+)"')
-    if cultural_score == None:
-        cultural_score = 6.0
-    if alignment_with_company_values == None:
-        alignment_with_company_values = 6
-    if professionalism_work_ethic == None:
-        professionalism_work_ethic = 6
-    if teamwork_collaboration == None:
-        teamwork_collaboration = 6
-    if adaptability_work_environment == None:
-        adaptability_work_environment = 6
-    if problem_solving_decision_making == None:
-        problem_solving_decision_making = 6
-    if cultural_summary == None:
-        cultural_summary = "Nothing"
-    
     return cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary
 
 def generate_attitude(concatTranscript):
@@ -171,18 +141,6 @@ def generate_attitude(concatTranscript):
     resilience_response = int(extract_data(attitude_skill, r'"Resilience and Response to Challenges": (\d+(\.\d+)?)'))
     motivation_work_ethic = int(extract_data(attitude_skill, r'"Motivation and Work Ethic": (\d+(\.\d+)?)'))
     attitude_summary = extract_data(attitude_skill, r'"AtitudeSummary": "([^"]+)"')
-    if attitude_score == None:
-        attitude_score = 6.0
-    if professionalism == None:
-        professionalism = 6
-    if positivity_enthusiasm == None:
-        positivity_enthusiasm = 6
-    if resilience_response == None:
-        resilience_response = 6
-    if motivation_work_ethic == None:
-        motivation_work_ethic = 6
-    if attitude_summary == None:
-        attitude_summary = "Nothing"
     return attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary
 
 def generate_communicationskill(concatTranscript):
@@ -195,7 +153,7 @@ def generate_communicationskill(concatTranscript):
     5. Generate the Non-verbal communication Ranking 1 to 5 marks by evaluate the use of non-verbal cues, such as eye contact, gestures, and facial expressions, to complement verbal communication and enhance understanding. 
     6. Only the Communication Skill Mark with one decimal. The Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication are integer.
     7. Generate a fifty words assessment summary for Communication Skill of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
-    8. CommunicationSkillScore, Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication should not be NoneType or empty
+    8. CommunicationSkillScore, Clarity, Coherence, and Conciseness of Responses, Listening and Engagement in Dialogue, Written Communication Skills and Non-verbal communication should not be empty.
     9. Output should follow Json Format:
     {{
         "CommunicationSkillScore": float,
@@ -214,18 +172,6 @@ def generate_communicationskill(concatTranscript):
     written_communication = int(extract_data(communication_skill, r'"Written Communication Skills": (\d+(\.\d+)?)'))
     non_verbal_communication = int(extract_data(communication_skill, r'"Non-verbal Communication": (\d+(\.\d+)?)'))
     communication_summary = extract_data(communication_skill, r'"CommunicationSkillSummary": "([^"]+)"')
-    if communication_score == None:
-        communication_score = 6.0
-    if response_clarity_coherence == None:
-        response_clarity_coherence = 6
-    if listening_engagement == None:
-        listening_engagement = 6
-    if written_communication == None:
-        written_communication = 6
-    if non_verbal_communication == None:
-        non_verbal_communication = 6
-    if communication_summary == None:
-        communication_summary = "Nothing"
     return communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary
 
 def generate_adaptability(concatTranscript):
@@ -238,7 +184,7 @@ def generate_adaptability(concatTranscript):
     5. Generate the Feedback from References on Adaptability and Problem-solving Ranking 1 to 5 marks by evaluate external perspectives on the candidate's adaptability and problem-solving skills in previous roles or projects, as provided by references. 
     6. Only the AdaptabilityScore with one decimal. The Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solving are integer.
     7. Generate a fifty words assessment summary for Adaptability of the following interview conversation: {concatTranscript}. The assessment summary only can write pronoun as 'the applicant' and 'his/her'.
-    8. AdaptabilityScore, Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solvin should not be NoneType or empty
+    8. AdaptabilityScore, Successful Adaptation to Change, Responses to Hypothetical Scenarios, Learning and Applying Feedback and Feedback from References on Adaptability and Problem-solvin should not be empty.
     9. Output should follow Json Format:
     {{
         "AdaptabilityScore": float,
@@ -257,18 +203,6 @@ def generate_adaptability(concatTranscript):
     learning_and_applying_feedback = int(extract_data(adaptability_skill, r'"Learning and Applying Feedback": (\d+(\.\d+)?)'))
     feedback_from_references = int(extract_data(adaptability_skill, r'"Feedback from References on Adaptability and Problem-solving": (\d+(\.\d+)?)'))
     adaptability_summary = extract_data(adaptability_skill, r'"AdaptabilitySummary": "([^"]+)"')
-    if adaptability_score == None:
-        adaptability_score = 6.0
-    if successful_adaptation == None:
-        successful_adaptation = 6
-    if responses_to_scenarios == None:
-        responses_to_scenarios = 6
-    if learning_and_applying_feedback == None:
-        learning_and_applying_feedback = 6
-    if feedback_from_references == None:
-        feedback_from_references = 6
-    if adaptability_summary == None:
-        adaptability_summary = "Nothing"
     return adaptability_score, successful_adaptation, responses_to_scenarios, learning_and_applying_feedback, feedback_from_references, adaptability_summary
 
 def generate_mbti(mbti_type):
@@ -285,8 +219,6 @@ def generate_mbti(mbti_type):
     summary = model.generate_content(prompt)
     mbti_summary = summary.text
     mbti_summary = extract_data(mbti_summary, r'"MBTISummary": "([^"]+)"')
-    if mbti_summary == None:
-        mbti_summary = "Nothing"
     return mbti_summary
 
 def generate_feedback_for_candidate(concatTranscript):
@@ -299,7 +231,7 @@ def generate_feedback_for_candidate(concatTranscript):
     5. If the candidate does not have any strength, write the candidate did not demonstrate any significant strengths during the interview process.
     6. Generate the list of the candidate's 3 weaknesses and areas for improvement as demonstrated in the following interview conversation: {concatTranscript}. 
     7. Generate the list of the candidate's other 3 recommended job position as demonstrated in the following interview conversation: {concatTranscript}. 
-    8. The Strengths, Weakness and Areas For Improvement, Other Recommended Job Position should not be NoneType or empty They should more than one.
+    8. The Strengths, Weakness and Areas For Improvement, Other Recommended Job Position should not be empty. They should more than one.
     9. Output should follow Json Format:
     {{
         "Strengths": {{
@@ -324,12 +256,6 @@ def generate_feedback_for_candidate(concatTranscript):
     strengths = extract_feedback_items(feedback_for_candidate, r'"Strength (\d+)": "(.*?)"', "Strength")
     weaknesses = extract_feedback_items(feedback_for_candidate, r'"Weakness (\d+)": "(.*?)"', "Weakness")
     job_positions = extract_feedback_items(feedback_for_candidate, r'"Job Position (\d+)": "(.*?)"', "Job Position")
-    if strengths == None:
-        strengths = "Nothing"
-    if weaknesses == None:
-        weaknesses = "Nothing"
-    if job_positions == None:
-        job_positions = "Nothing"
     return strengths, weaknesses, job_positions
 
 def generate_overall_evaluation_N_recommendation(concatTranscript):
@@ -348,10 +274,6 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
     overall_evaluation_N_recommendation = summary.text
     summary = extract_data(overall_evaluation_N_recommendation, r'"Summary": "([^"]+)"')
     recommendation = extract_data(overall_evaluation_N_recommendation, r'"Recommendation": "([^"]+)"')
-    if summary == None:
-        summary = "Nothing"
-    if recommendation == None:
-        recommendation = "Nothing"
     return summary, recommendation
 
 def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score):
@@ -375,8 +297,6 @@ def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultura
     summary = model.generate_content(prompt)
     radar_chart_summary = summary.text
     RadarChartSummary = extract_data(radar_chart_summary, r'"RadarChartSummary": "([^"]+)"')
-    if RadarChartSummary == None:
-        RadarChartSummary = "Nothing"
     return RadarChartSummary
 
 def main(concatTranscript, mbti_type):
@@ -398,7 +318,7 @@ def main(concatTranscript, mbti_type):
         print("alignment_with_job_requirements is empty")
     if(preparation_summary == None):
         print("preparation_summary is empty")
-    time.sleep(60)
+    time.sleep(20)
     cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary = generate_culturalfit(concatTranscript)
     if(cultural_score == None):
         print("cultural_score is empty")
@@ -429,7 +349,7 @@ def main(concatTranscript, mbti_type):
     if(attitude_summary == None):
         print("attitude_summary is empty")
 
-    time.sleep(60)
+    time.sleep(13)
     communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary = generate_communicationskill(concatTranscript)
     if(communication_score == None):
         print("communication_score is empty")
@@ -458,7 +378,7 @@ def main(concatTranscript, mbti_type):
     if(adaptability_summary == None):
         print("adaptability_summary is empty")
 
-    time.sleep(60)
+    time.sleep(13)
     mbti_summary = generate_mbti(mbti_type)
     if(mbti_summary == None):
         print("mbti_summary is empty")

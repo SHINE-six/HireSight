@@ -84,9 +84,9 @@ const ApplicantDetailPage = () => {
                 method: 'POST',
                 body: formData
             });
-            console.log(res);
-            setLoading(false);
-            window.location.reload();
+        window.location.reload();
+        console.log(res);
+        setLoading(false);
     }
 
     const handleProceedResumeSuitability = (uniqueResumeId: string) => {
@@ -100,9 +100,9 @@ const ApplicantDetailPage = () => {
                 method: 'POST',
                 body: formData
             });
+        window.location.reload();
         console.log(res);
         setLoading(false);
-        window.location.reload();
     }
     
     const handleBack = () => {
