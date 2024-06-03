@@ -39,7 +39,7 @@ const LoginPopup = () => {
     }
     
     return (
-        <div className="absolute top-0 left-0 w-screen h-full bg-black bg-opacity-50 z-50">
+        <div className="absolute top-0 left-[-3rem] w-full h-full bg-black bg-opacity-50 z-50">
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-[2rem] rounded-lg shadow-lg">
                 <div className="text-2xl font-bold text-red-700">Login</div>
                 <form className="mt-[1rem]" onSubmit={(e)=>handleLocalSubmit(e)}>

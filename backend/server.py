@@ -323,7 +323,7 @@ async def create_session(sessionJson: Request):
     return {"status": 200, "message": "Session created successfully"}
 
 def getJobPositionApplyAndUniqueResumeID(email: str):
-    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview"}, exclude=["pdfData"])
+    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview ai"}, exclude=["pdfData"])
     return resumeData['jobPostitionApply'], resumeData['uniqueResumeId']
 
 # ----------------------- Audio thingy -----------------------

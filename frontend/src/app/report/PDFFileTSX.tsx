@@ -1,10 +1,9 @@
 'use client'
 import {Page, Text, View, Document, StyleSheet, render, PDFViewer, Font, Image} from '@react-pdf/renderer';
 import { get } from 'http';
-import { get } from 'http';
 import * as React from 'react';
 import { useState, useEffect } from "react";
-// import info from '../../../public/assets/ReportInfo.json'
+import info from '../../../public/assets/ReportInfo.json'
 
 const styles = StyleSheet.create({
     page:{
