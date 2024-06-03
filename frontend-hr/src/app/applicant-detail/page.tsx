@@ -5,6 +5,7 @@ import { usePageConfigStore } from '@/stores/PageConfigStore';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { useRouter } from 'next/navigation';
 import { IoIosArrowBack } from "react-icons/io";
+import IntervieweeReport from "../interviewee-report/page"
 
 interface ResumeData {
     'filename': string;
@@ -46,6 +47,7 @@ const ApplicantDetailPage = () => {
     let [loading, setLoading] = useState(false);
     const { resumeCount, currentAvailableJob, setResumeCount_Ai_detection } = usePageConfigStore();
     const [ resumeDataList, setResumeDataList ] = useState<ResumeData[]>([]);
+    const [showReport, setShowReport] = useState(false)
     const topThreeRef = useRef<string[]>([]);
     const router = useRouter();
 
@@ -113,7 +115,13 @@ const ApplicantDetailPage = () => {
         // }
     }
 
+    const handleReportClick = () => {
+        // router.push('/interviewee-report');
+        window.open('/interviewee-report', '_blank')
+    }
+
     return (
+        
         <div className="mt-[2rem] mx-[3rem] sweet-loading">
             <div className="flex flex-row items-center">
                 <div className='w-[5rem] h-[5rem] rounded-full bg-white shadow-sm shadow-black flex justify-center'>
@@ -151,7 +159,7 @@ const ApplicantDetailPage = () => {
                             <div className="pr-2">{(resume.AiDetection)}%</div>
                             <div className="pr-2">{(resume.plagiarism)}</div>
                             <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedResumeSuitability(resume.uniqueResumeId); setLoading(!loading); }}> Proceed to Resume Suitability</button>
-                            <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Resume</button>
+                            <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50" onClick={handleReportClick}>View Resume</button>
                         </div>
                     );
                 })}

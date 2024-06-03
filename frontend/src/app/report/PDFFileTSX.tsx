@@ -3,7 +3,7 @@ import {Page, Text, View, Document, StyleSheet, render, PDFViewer, Font, Image} 
 import { get } from 'http';
 import * as React from 'react';
 import { useState, useEffect } from "react";
-// import info from '../../../public/assets/ReportInfo.json'
+import info from '../../../public/assets/ReportInfo.json'
 
 const styles = StyleSheet.create({
     page:{
@@ -179,27 +179,27 @@ interface information{
 
 
 const PDFFileTSX = ()  => {
-    const [info, setInfo] = useState<information>();
+//     const [info, setInfo] = useState<information>();
     
-    useEffect(() => {
-        const getReportInfo = async () => {
-            const response = await fetch('http://localhost:8000/get-report-data');
-            const body: information = await response.json();
-            console.log(body)
-            setInfo(body) // Update the type of setInfo to accept a single object instead of an array
+//     useEffect(() => {
+//         const getReportInfo = async () => {
+//             const response = await fetch('http://localhost:8000/get-report-data');
+//             const body: information = await response.json();
+//             console.log(body)
+//             setInfo(body) // Update the type of setInfo to accept a single object instead of an array
     
-            // if (response.status !== 200) {
-            //     throw Error(body.message) 
-            // }
-            return body;
-        }
+//             // if (response.status !== 200) {
+//             //     throw Error(body.message) 
+//             // }
+//             return body;
+//         }
 
-        getReportInfo();
-    }, [])
+//         getReportInfo();
+//     }, [])
 
-    if (!info) {
-        return <div>Loading...</div>
-    }
+//     if (!info) {
+//         return <div>Loading...</div>
+//     }
 
     return(
         <Document title='Interview Performance Report'>
