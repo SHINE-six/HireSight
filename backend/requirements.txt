@@ -24,6 +24,9 @@ PyPDF2==3.0.1
 vertexai==1.48.0
 google-cloud-texttospeech==2.16.3
 wordcloud==1.9.3
+plotly==5.22.0
+pandas
+kaleido==0.1.0.post1
 
 # for ffmpeg-python, need to install ffmpeg first, download from https://ffmpeg.org/download.html, then add to PATH, tutorial: https://phoenixnap.com/kb/ffmpeg-windows
 
@@ -33,3 +36,4 @@ wordcloud==1.9.3
 # # nltk
 # python -m nltk.downloader words
 # python -m nltk.downloader stopwords
+# python -m nltk.downloader wordnet #Yi Kai think should add this one

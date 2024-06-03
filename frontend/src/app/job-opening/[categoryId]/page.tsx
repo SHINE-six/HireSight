@@ -31,6 +31,7 @@ export default function CatOpeningPage({ params }: any) {
     useEffect(() => {
         const initializeData = async (CategoryId: any) => {
             const data = await getSubcategoryDetail(params.categoryId);
+            console.log(data)
             setThisCategory(data);
         }
         if (firstTimeRef.current) {

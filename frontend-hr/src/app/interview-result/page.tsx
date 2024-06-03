@@ -2,9 +2,10 @@
 
 
 import { useEffect, useState } from 'react';
-
 import { usePageConfigStore } from '@/stores/PageConfigStore';
-
+import MoonLoader from 'react-spinners/MoonLoader';
+import { useRouter } from 'next/navigation';
+import { IoIosArrowBack } from "react-icons/io";
 
 interface ResumeData {
     'filename': string;
@@ -43,9 +44,10 @@ const getResumeData = async (currentAvailableJob: string) => {
 }
 
 
-const ApplicantDetailPage = () => {
-    const { resumeCount, currentAvailableJob, setResumeCount_Ai_detection } = usePageConfigStore();
+const InterviewResultPage = () => {
+    const { resumeCount, currentAvailableJob, setResumeCount_Interview } = usePageConfigStore();
     const [ resumeDataList, setResumeDataList ] = useState<ResumeData[]>([]);
+    const router = useRouter();
 
     // const resumeRanking:any[] = await fetchResumeRanking();
     // resumeRanking.sort((a, b) => {
@@ -58,9 +60,13 @@ const ApplicantDetailPage = () => {
 	useEffect(() => {
 		getResumeData(currentAvailableJob)?.then((data) => {
             if (data) {
+            if (data.data.length > 1) {
                 const sortedData = data.data.sort((a, b) => a.AiDetection - b.AiDetection);
                 setResumeDataList(sortedData);
-                setResumeCount_Ai_detection(data.count);
+            } else if (data.data.length === 1) {
+                setResumeDataList(data.data); 
+            }
+            setResumeCount_Interview(data.count);
             }
         });
 	}, [currentAvailableJob]);
@@ -79,6 +85,14 @@ const ApplicantDetailPage = () => {
         console.log(res);
     }
 
+    const handleBack = () => {
+        // if (window.history.length > 1) {
+            router.back();
+        // } else {
+        //     router.push('/');
+        // }
+    }
+
     return (
         <div className="mt-[2rem] mx-[3rem]">
             <div className="flex flex-row items-center">
@@ -90,22 +104,23 @@ const ApplicantDetailPage = () => {
                     <div>Applicant:</div> 
                     <div className='text-red-700'>{resumeCount['Ai_detection']}</div>
                 </div>
+                <button onClick={handleBack} className="fixed right-0 mr-[210px] ml-4 text-2xl text-black font-bold py-2 px-4 rounded"><IoIosArrowBack /></button>
             </div>
             <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
                 <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
                     <div className=" grid grid-cols-5 w-4/5">
                         <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Name</div>
                         <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">email</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI detection</div>
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Overall Suitability</div>
                         <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
-                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
+                        <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Ai Report</div>
                     </div>
                 </div>
                 {resumeDataList.map((resume, index) => {
                     let bgColor = "bg-gray-200";
-                    if (index < 3) {
-                        bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
-                    }
+                    // if (index < 3) {
+                    //     bgColor = "bg-blue-200"; // Change this to the color you want for the first 3 items
+                    // }
                     return (
                         <div key={resume.uniqueResumeId} className={`w-4/5 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-5`}>
                             <div className="pr-2">{resume.filename}</div>
@@ -123,4 +138,4 @@ const ApplicantDetailPage = () => {
     );
 }
 
-export default ApplicantDetailPage;
+export default InterviewResultPage;

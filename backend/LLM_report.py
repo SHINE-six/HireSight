@@ -3,6 +3,7 @@ import os
 import re
 import json
 import time
+import radarChart
 import vertexai
 from vertexai.generative_models import GenerativeModel
 import vertexai.preview.generative_models as generative_models
@@ -275,21 +276,132 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
     recommendation = extract_data(overall_evaluation_N_recommendation, r'"Recommendation": "([^"]+)"')
     return summary, recommendation
 
+def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score):
+    prompt = f"""
+    RadarChartSummary Content:
+    1. Generate a 80 words Summary of the radar chart content.
+    Using following Radar Chart Summary:
+       Technical Skill score: {TechnicalSkillScore},
+       SoftSkill:
+            Preparation Score: {preparation_score}, 
+            Cultural Score: {cultural_score},
+            Attitude Score: {attitude_score}, 
+            Communication Score: {communication_score}
+            Adaptability Score: {adaptability_score}. 
+       The summary only can write pronoun as 'the applicant' and 'his/her'.
+    2. Output should follow Json Format:
+    {{
+        "RadarChartSummary":"string",
+    }}
+    """
+    summary = model.generate_content(prompt)
+    radar_chart_summary = summary.text
+    RadarChartSummary = extract_data(radar_chart_summary, r'"RadarChartSummary": "([^"]+)"')
+    return RadarChartSummary
+
 def main(concatTranscript, mbti_type):
+    print("concatTranscript in LLMReport: ", concatTranscript)
+    print("mbti_type in LLMReport: ", mbti_type)
     TechnicalSkillScore, TechnicalSkillSummary = generate_technical(concatTranscript)
+    if(TechnicalSkillScore == None):
+        print("TechnicalSkillScore is empty")
+    if(TechnicalSkillSummary == None):
+        print("TechnicalSkillSummary is empty")
     preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary = generate_preparation(concatTranscript)
+    if(preparation_score == None):
+        print("preparation_score is empty")
+    if(knowledge_company_role_industry == None):
+        print("knowledge_company_role_industry is empty")
+    if(quality_of_questions == None):
+        print("quality_of_questions is empty")
+    if(alignment_with_job_requirements == None):
+        print("alignment_with_job_requirements is empty")
+    if(preparation_summary == None):
+        print("preparation_summary is empty")
     time.sleep(20)
     cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary = generate_culturalfit(concatTranscript)
+    if(cultural_score == None):
+        print("cultural_score is empty")
+    if(alignment_with_company_values == None):
+        print("alignment_with_company_values is empty")
+    if(professionalism_work_ethic == None):
+        print("professionalism_work_ethic is empty")
+    if(teamwork_collaboration == None):
+        print("teamwork_collaboration is empty")
+    if(adaptability_work_environment == None):
+        print("adaptability_work_environment is empty")
+    if(problem_solving_decision_making == None):
+        print("problem_solving_decision_making is empty")
+    if(cultural_summary == None):
+        print("cultural_summary is empty")
+    
     attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary = generate_attitude(concatTranscript)
+    if(attitude_score == None):
+        print("attitude_score is empty")
+    if(professionalism == None):
+        print("professionalism is empty")
+    if(positivity_enthusiasm == None):
+        print("positivity_enthusiasm is empty")
+    if(resilience_response == None):
+        print("resilience_response is empty")
+    if(motivation_work_ethic == None):
+        print("motivation_work_ethic is empty")
+    if(attitude_summary == None):
+        print("attitude_summary is empty")
+
     time.sleep(13)
     communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary = generate_communicationskill(concatTranscript)
+    if(communication_score == None):
+        print("communication_score is empty")
+    if(response_clarity_coherence == None):
+        print("response_clarity_coherence is empty")
+    if(listening_engagement == None):
+        print("listening_engagement is empty")
+    if(written_communication == None):
+        print("written_communication is empty")
+    if(non_verbal_communication == None):
+        print("non_verbal_communication is empty")
+    if(communication_summary == None):
+        print("communication_summary is empty")
+    
     adaptability_score, successful_adaptation, responses_to_scenarios, learning_and_applying_feedback, feedback_from_references, adaptability_summary = generate_adaptability(concatTranscript)
+    if(adaptability_score == None):
+        print("adaptability_score is empty")
+    if(successful_adaptation == None):
+        print("successful_adaptation is empty")
+    if(responses_to_scenarios == None):
+        print("responses_to_scenarios is empty")
+    if(learning_and_applying_feedback == None):
+        print("learning_and_applying_feedback is empty")
+    if(feedback_from_references == None):
+        print("feedback_from_references is empty")
+    if(adaptability_summary == None):
+        print("adaptability_summary is empty")
+
     time.sleep(13)
     mbti_summary = generate_mbti(mbti_type)
+    if(mbti_summary == None):
+        print("mbti_summary is empty")
     strengths, weaknesses, job_positions = generate_feedback_for_candidate(concatTranscript)
+    if(strengths == None):
+        print("strengths is empty")
+    if(weaknesses == None):
+        print("weaknesses is empty")
+    if(job_positions == None):
+        print("job_positions is empty")
+
     time.sleep(13)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
+    if(summary == None):
+        print("summary is empty")
+    if(recommendation == None):
+        print("recommendation is empty")
+    
+    RadarChartSummary = generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score)
+    if(RadarChartSummary == None):
+        print("RadarChartSummary is empty")
     ai_report={
+    "RadarChartSummary": RadarChartSummary,
     "TechnicalSkill":{
         "TechnicalSkillScore": TechnicalSkillScore,
         "TechnicalSkillSummary": TechnicalSkillSummary,
@@ -359,7 +471,8 @@ def main(concatTranscript, mbti_type):
         "Recommendation": recommendation,
     },
     }
-    return ai_report
+
+    return ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score
 
 # concatTranscript = """
 #   HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?

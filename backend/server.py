@@ -1,6 +1,7 @@
+import asyncio
 import shutil
 import time
-from fastapi import Cookie, FastAPI, File, Form, Request, UploadFile, BackgroundTasks, Response, HTTPException, Depends
+from fastapi import Cookie, FastAPI, File, Form, HTTPException, Request, UploadFile, BackgroundTasks, Response, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse
 import uvicorn
@@ -11,6 +12,7 @@ import facial_prediction
 import eye_tracking
 # import LLM
 # import tts
+import behavioralAnalysis
 # import LLM
 # import tts
 import LLM_copy
@@ -22,6 +24,7 @@ import plagiarism
 import aiDetection
 import mbti_last
 import reportGeneration
+import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
@@ -103,10 +106,10 @@ data = [
             "jobId": "1_b",
             "jobTitle": "Process Expert - Procurement IT",
             "jobDescription": "As a Procurement Support Specialist at Hilti, you will assist and guide Procurement Managers through the sourcing process to ensure compliance and high quality. You'll gain expertise in drafting Requests for Proposal, setting up auctions, and forming contracts, while also managing supplier data and leading system improvement projects. This role offers a comprehensive introduction to Hilti's business operations and involvement in a global team.",
-            "jobSkills": ["Bachelor’s degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
+            "jobSkills": ["Bachelor's degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
                           "Good analytical abilities with a strong affinity for IT systems","Excellent communication and presentation skills in English; additional languages beneficial."]
         },
-    ]
+    ],
 },
 {
     "categoryId": 2,
@@ -242,7 +245,7 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
     toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
     toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
-    toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
+    # toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
     print(mongoDB.postData("resumeDatabase", toStoreJson))
 
@@ -421,8 +424,7 @@ def combineTranscriptEmotionEye():
 
     combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
     combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
-    # combinedJsonData[behavioralAnalysis] = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
-    #* to process, behavioral analysis at here
+    combinedJsonData["behavioralAnalysis"] = behavioralAnalysis.main(combinedJsonData)  
 
     print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
 
@@ -440,18 +442,21 @@ def checkProcessFiles():
 # ----------------------- Interview Session Finish -----------------------
 @app.post("/ai-interview/session/end")
 async def finish_interview(BackgroundTasks: BackgroundTasks):
-    time.sleep(5)   # Wait for the last process to finish
-
-    averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
-    BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
+    time.sleep(10)   # Wait for the last process to finish
+    print("167")
+    # averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
+    print("178")
+    # BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
+    print("110")        
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
 def calculateAverageBehavioralAnalysis():
     combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
     totalBahavioralAnalysis = 0
-    for data in combinedData['sections']:
-        totalBahavioralAnalysis += data['behavioralAnalysis']
+    print("combinedData: ", combinedData)
+    for data in combinedData['sections']: #Chance to get error where KeyError: 'section' in for data in combinedData['sections']
+        totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
 
     averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
     return averageBehavioralAnalysis
@@ -479,9 +484,17 @@ def concatUserEvaTranscript():
 
 # def concat_user_answering(flag):
 
+#Get UniqueResumeID and JobPositionApply from combinedData collecetion to be put into reportData collection
+def getJobPositionApply():
+    data = mongoDB.getDataWithUniqueSessionID("combinedData", uniqueSessionID)
+    return data['jobPositionApply'], data['uniqueResumeID'], data['email']
+
 def generateReportFormat(averageBehavioralAnalysis):
+
     toStoreJson = {
         "email": None,
+        "interviewPosition": None,
+        "uniqueResumeID": None,
         "concatAllResult": None,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
@@ -494,12 +507,16 @@ def generateReportFormat(averageBehavioralAnalysis):
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
+
     concatAllResult = concatUserEvaTranscript()
     concatApplicantResult = concatUserTranscript()
+    toStoreJson["interviewPosition"] = getJobPositionApply()[0]
+    toStoreJson["uniqueResumeID"] = getJobPositionApply()[1]
+    toStoreJson["email"] = getJobPositionApply()[2]
     toStoreJson['concatAllResult'] = concatAllResult
     toStoreJson['concatResult'] = concatApplicantResult
     toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
-    toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
+    # toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatApplicantResult)
     toStoreJson['mbti'] = mbti_last.main(concatApplicantResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
@@ -509,10 +526,58 @@ def generateReportFormat(averageBehavioralAnalysis):
     generateReport()
 
     return {"status": 200, "message": "Report generated successfully"}
+    # return None
+
+
+reportDone = False
 
 def generateReport():
+    global reportDone
+    reportDone = False
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    reportGeneration.main(reportData)
+    toReportJson = reportGeneration.main(reportData)
+    mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
+    reportDone = True
+
+async def waitReportData():
+    timeout = 300  # Timeout set to 5 minutes (300 seconds)
+    start_time = time.time()
+    print("Testing")
+
+    while True:
+        if reportDone:
+            print("Report generated successfully")
+            # reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+            # print("Here is the report data: ", reportData)
+            # if reportData:
+            #     return reportData       
+            return "False"         
+        elif time.time() - start_time > timeout:
+            print("Dead")
+            return "True"
+        else:
+            print("Waiting for report data...")
+            await asyncio.sleep(5)
+
+@app.get("/get-report-data")
+async def getReportData():
+    # try:
+    #     reportData = await waitReportData()
+    #     print("Already get the data")
+    #     return reportData
+    # except HTTPException as e:
+    #     return {"status": e.status_code, "message": e.detail}
+    reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+    return reportData
+    
+@app.get("/get-report-loading")
+async def getReportDataLoading():
+    try:
+        reportDataLoading = await waitReportData()
+        return {"message" : reportDataLoading}
+    except HTTPException as e:
+        return {"status": e.status_code, "message": e.detail}
+
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
