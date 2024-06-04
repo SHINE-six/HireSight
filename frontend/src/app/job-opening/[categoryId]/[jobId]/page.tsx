@@ -30,7 +30,8 @@ export default async function jobOpeningPage({ params }: any) {
             const formData = new FormData();
             
             // 6 characters random string
-            const uniqueResumeID = Math.random().toString(36).substring(2, 8);
+            // const uniqueResumeID = Math.random().toString(36).substring(2, 8);
+            const uniqueResumeID = "122ed2";
             
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 formData.append('resume', fileInput.files[0]);

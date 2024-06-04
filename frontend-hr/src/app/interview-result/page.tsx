@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { IoIosArrowBack } from "react-icons/io";
 
 interface ReportData{
-    "uniqueSessionID": string,
     "InterveweeName": string,
     "InterveweeID": string,
     "overallSuitability": number,
@@ -252,7 +251,7 @@ const InterviewResultPage = () => {
                                     }
                                     return (
                                         <div className='mx-[2rem]'>
-                                            <div key={resume.uniqueSessionID} className={`w-full ${bgColor} rounded-md shadow-md text- smdhadow-black mb-[1rem] p-[1rem] justify-items-center items-center grid grid-cols-6`}>
+                                            <div key={resume.InterveweeID} className={`w-full ${bgColor} rounded-md shadow-md text- smdhadow-black mb-[1rem] p-[1rem] justify-items-center items-center grid grid-cols-6`}>
                                                 <div className="pr-2">{resume.InterveweeID}</div>
                                                 <div className="pr-2">{resume.InterveweeName}</div>
                                                 <div className="pr-2">{(resume.overallSuitability)}%</div>
