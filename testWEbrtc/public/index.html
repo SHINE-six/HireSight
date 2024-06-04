@@ -1,0 +1,177 @@
+<html>
+
+<head>
+    <script lang="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="/simple-peer/simplepeer.min.js"></script>
+    <style>
+        .containers {
+            display: grid;
+            grid-gap: 5px;
+            grid-template-columns: repeat(auto-fit, 1fr);
+            grid-template-rows: repeat(auto-fit, 300px);
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .vid {
+            flex: 0 1 auto;
+            height: 400px;
+            width: 400px;
+        }
+
+        .settings {
+            background-color: #fdfdfd;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 2px 2px;
+            cursor: pointer;
+        }
+
+        .chatpanel{
+            width: 25rem;
+            height: 65vh;
+            background-color: #f1f1f1;
+            overflow: auto;
+        }
+
+        #sendButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline;
+            font-size: 14px;
+            margin: 2px 2px;
+            cursor: pointer;
+            border-radius: 10px;
+            border: none;
+        }
+
+        #chatInput {
+            width: 80%;
+            padding: 5px 10px;
+            margin: 2px 2px;
+            border-radius: 10px;
+            border: none;
+            display: inline;
+        }
+
+        .dashboard {
+            width: 25rem;
+            height: 35vh;
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #000;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="videos" class="container">
+        <video id="localVideo" class="vid" autoplay muted></video>
+    </div>
+    <br />
+    <div style="display:block">
+        <button id="muteButton" class="settings" onclick="toggleMute()">Unmuted</button>
+        <span>|</span>
+        <button id="toggleChatButton" class="settings">Toggle Chat</button>
+    </div>
+    <div style="position: absolute; right: 0; top: 0">
+        <div class="dashboard" id="dashboard">
+        </div>
+        <div class="chatpanel">
+            <div id="chat"></div>
+            <div style="position: absolute; bottom: 2rem; left:10%">
+                <input type="text" id="chatInput" />
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+</body>
+<footer>
+    <script src='/js/main.js' lang="text/javascript"></script>
+    <script>
+        let z = 0;
+        const content = [
+            `
+            <h3>AI detection score : 0%</h3>
+            <h3>Plagiarism detection score : 0%</h3>
+            <h3>Behavior risk detection score : 5%</h3>
+            `,
+            `
+            <h3>AI detection score : 25%</h3>
+            <h3>Plagiarism detection score : 3%</h3>
+            <h3>Behavior risk detection score : 5%</h3>
+            `,
+            `
+            <h3>AI detection score : 11%</h3>
+            <h3>Plagiarism detection score : 3%</h3>
+            <h3>Behavior risk detection score : 5%</h3>
+            `,
+            `
+            <h3>AI detection score : 11%</h3>
+            <h3>Plagiarism detection score : 3%</h3>
+            <h3>Behavior risk detection score : 5%</h3>
+            `,
+        ]
+        document.getElementById('dashboard').addEventListener('click', function() {
+            if (z >= content.length) {
+                z = 0;
+            }
+            document.getElementById('dashboard').innerHTML = content[z];
+            z++;
+        });
+        
+    </script>
+    <script>
+        let i = 0;
+        const toResponse = ['Hello!', 'How are you?', 'Goodbye!']
+        
+        function chatbotResponse(input) {
+            return new Promise((resolve, reject) => {
+                setInterval(() => {
+                    let res = toResponse[i];
+                    i++;
+                    
+                    // If we've gone past the end of the array, reset i to 0
+                    if (i >= toResponse.length) {
+                        i = 0;
+                    }
+                    
+                    resolve(res);
+                }, 5000); // Delay of 3 seconds
+            });
+        }
+        
+        document.getElementById('sendButton').addEventListener('click', function() {
+            var chatInput = document.getElementById('chatInput');
+            var chat = document.getElementById('chat');
+            
+            // Add the user's message to the chat
+            var userMessage = document.createElement('p');
+            userMessage.textContent = 'User: ' + chatInput.value;
+            chat.appendChild(userMessage);
+        
+            // Clear the chat input
+            chatInput.value = '';
+        
+            // Add a simple chatbot response after a delay
+            chatbotResponse(chatInput.value).then(response => {
+                var botMessage = document.createElement('p');
+                botMessage.textContent = 'Bot: ' + response;
+                chat.appendChild(botMessage);
+            });
+        });
+    </script>
+
+</footer>
+
+</html>
