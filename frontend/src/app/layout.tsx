@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
-// import AiPopup from "@/components/ai-popup";
+import AiPopup from "@/components/ai-popup";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="bg-white py-[1rem] font-work-sans">
         <Navbar />
         <main>{children}</main>
-        {/* <AiPopup /> */}
+        <AiPopup />
       </body>
     </html>
   );
