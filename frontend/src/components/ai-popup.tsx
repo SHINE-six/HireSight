@@ -62,7 +62,7 @@ const AiPopup = () => {
     }
 
     return (
-        <div className='fixed top-0 left-0 w-full h-full flex justify-end items-end z-40'>
+        <div className='fixed bottom-0 right-0 flex justify-end items-end z-40'>
             <div onClick={handleOnClick} className='bg-gray-200 p-[0.8rem] rounded-full aspect-square mr-[1rem] mb-[1rem] text-3xl border-black border-[0.01rem]'>
                 {isOpen ? <FaWindowClose /> : <IoChatboxEllipses />}
             </div>
