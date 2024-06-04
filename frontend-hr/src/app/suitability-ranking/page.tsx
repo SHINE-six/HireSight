@@ -110,24 +110,31 @@ const SuitabilityRankingPage = () => {
 
     const sendEmail = (email: string) => {
         const formData = new FormData();
-        const subject = 'Opportunity at Hilti'; 
-        const message = `Dear Teh Chen Ming,
+        const subject = 'Invitation for IT Business Analyst (Sustainability) Interview at Hilti'; 
+        const message = `
+        Dear Teh Chen Ming,
+        
+        We're excited to inform you that your application for the IT Business Analyst (Sustainability) position at Hilti has impressed our team! Your qualifications and potential for contributing to our sustainability efforts are promising.
+        
+        As the next step, we'd like to offer you two options for your interview:
+        
+        AI Interview: This engaging and interactive session allows you to showcase your skills and problem-solving abilities at your own convenience. It evaluates your suitability for the role through a series of questions related to business analysis and communication.
+        
+        HR Interview: If you prefer a more traditional format, you can choose a live interview with a member of our HR team. This allows for a direct conversation about your experience and goals.
+        
+        To help you decide:
 
-        I trust this email finds you in good spirits.
+        AI Interview: This option provides flexibility and allows you to complete it at your own pace.
         
-        I am delighted to inform you that your application for the Business Analyst position at Hilti has successfully cleared the resume screening phase. Congratulations on reaching this milestone!
+        HR Interview: This option offers a chance to directly interact with the HR team and ask questions.
+
+        Ready to proceed?
+        AI Interview: Click this link to access the platform whenever you're prepared: https://locall.host/3000/
+
+        HR Interview: Schedule your interview at your convenience through this link: https://hr-interview.
+
+        We look forward to learning more about you through your chosen interview format. Congratulations on reaching this stage, and best of luck!
         
-        Your qualifications and experience have left a positive impression on our team, and we believe you possess the potential to make significant contributions to our organization. As the next step in our recruitment process, we would like to extend an invitation for you to participate in an AI interview session.
-        
-        The AI interview session aims to evaluate your skills, competencies, and suitability for the role in an engaging and interactive manner. It will provide you with the opportunity to demonstrate your expertise in business analysis, problem-solving capabilities, and communication skills.
-        
-        We encourage you to prepare thoroughly for the interview by revisiting your knowledge of business analysis principles, methodologies, and drawing upon relevant experiences. Should you have any inquiries or require additional information ahead of the interview, please don't hesitate to reach out to us.
-        
-        Your AI interview session can be started any time you want. Please follow this link to our AI interviewer platform when you are fully prepared, http://localhost:3000/ai-interview
-        
-        Once again, congratulations on progressing to this stage of our selection process. We eagerly anticipate the opportunity to learn more about you during the AI interview session and wish you the very best of luck!
-        
-        Your feedback is absolutely valuable for us. Please take a moment to share your thoughts through our feedback link, https://HireSight/Feedback
         
         Warm regards,
         
@@ -142,7 +149,7 @@ const SuitabilityRankingPage = () => {
                 method: 'POST',
                 body: formData
             });
-        console.log('Email sent successfully:', res);
+        console.log('Interview Email sent successfully:', res);
     }    
     
     const handleBack = () => {

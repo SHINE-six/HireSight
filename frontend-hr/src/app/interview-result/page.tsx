@@ -133,44 +133,55 @@ const InterviewResultPage = () => {
 
     const sendEmail = (email: string, stage: string) => {
         const formData = new FormData();
-        const subject = 'Opportunity at Hilti'; 
-        const rejectmessage = `Dear Teh Chen Ming,
-        Rejected
-        
+        const offersubject = 'Congratulations! Invitation to HR Interview at Hilti'; 
+        const rejectmessage = `
+        Dear Teh Chen Ming,
+
+        We sincerely appreciate the time and effort you've dedicated to the application process for the IT Business Analyst (Sustainability) position at Hilti. We recognize the competitive nature of the selection process and are grateful for your interest in joining our team.
+
+        After thorough consideration, we regret to inform you that your application was not selected to proceed to the next stage. Please understand that we had to make difficult decisions among a pool of highly qualified candidates.
+
+        While this outcome may be disappointing, we encourage you to continue pursuing opportunities that align with your skills and career aspirations. Your determination and perseverance will undoubtedly lead you to the right fit.
+
+        Additionally, we value your feedback on our recruitment process. If you would like specific feedback on your application, please do not hesitate to reach out to us.
+
+        We wish you all the best in your future endeavors and hope our paths may cross again in the future. Thank you for considering Hilti as a potential employer.
+
+        Warm regards,
+
         Yi Kai
         HR Team
         Hilti`; 
 
-        const offermessage = `Dear Teh Chen Ming,
+        const rejectsubject = 'Application Update: IT Business Analyst (Sustainability) Position at Hilti'; 
+        const offermessage = `
+        Dear Teh Chen Ming,
 
         I trust this email finds you in good spirits.
-        
+
         I am delighted to inform you that your application for the Business Analyst position at Hilti has successfully cleared the resume screening phase. Congratulations on reaching this milestone!
-        
+
         Your qualifications and experience have left a positive impression on our team, and we believe you possess the potential to make significant contributions to our organization. As the next step in our recruitment process, we would like to extend an invitation for you to participate in an HR interview session.
-        
-        The HR interview session aims to evaluate your skills, competencies, and suitability for the role in an engaging and interactive manner. It will provide you with the opportunity to demonstrate your expertise in business analysis, problem-solving capabilities, and communication skills.
-        
-        We encourage you to prepare thoroughly for the interview by revisiting your knowledge of business analysis principles, methodologies, and drawing upon relevant experiences. Should you have any inquiries or require additional information ahead of the interview, please don't hesitate to reach out to us.
-        
-        Your HR interview session can be started any time you want. Please follow this link to our HR interviewer platform when you are fully prepared, http://localhost:3000/ai-interview
-        
+
+        During the HR interview session, our aim is to gain a deeper understanding of your background, experiences, and motivations. We will explore how your skills and competencies align with the requirements of the role and assess your fit within our team culture.
+
+        Please reply to this email with your availability for the HR interview, and we will coordinate a suitable date and time.
+
         Once again, congratulations on progressing to this stage of our selection process. We eagerly anticipate the opportunity to learn more about you during the HR interview session and wish you the very best of luck!
-        
-        Your feedback is absolutely valuable for us. Please take a moment to share your thoughts through our feedback link, https://HireSight/Feedback
-        
+
         Warm regards,
-        
+
         Yi Kai
         HR Team
         Hilti`;
         formData.append('email_receiver', email);
-        formData.append('subject', subject);
 
-        if (stage === "Interview hr") {
+        if (stage === "offered") {
             formData.append('message', offermessage);
+            formData.append('subject', offersubject);
         } else {
             formData.append('message', rejectmessage);
+            formData.append('subject', rejectsubject);
         }
 
         const res = fetch('http://localhost:8000/send_email', 
