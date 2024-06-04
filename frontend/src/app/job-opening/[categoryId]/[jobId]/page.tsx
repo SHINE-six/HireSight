@@ -3,6 +3,7 @@
 import { Job } from "../../indiJobCategory";
 import { useUserInfoStore } from "@/stores/userInfoStore";
 import LoginPopup from "@/components/Login";
+import ResumeConsent from "@/components/ResumeConsent";
 import { useState } from "react";
 
 async function getJobDetail(JobId: string) {
@@ -18,12 +19,14 @@ async function getJobDetail(JobId: string) {
 
 export default async function jobOpeningPage({ params }: any) {
     const [showLogin, setShowLogin] = useState(false);
+    const [showConsent, setShowConsent] = useState(false);
     const { email } = useUserInfoStore();
     let thisJob: Job;
     thisJob = await getJobDetail(params.jobId);
 
     const postResume = async (e: any) => {
         e.preventDefault();
+        setShowConsent(true);
         if (email != "") {
             
             const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -83,6 +86,7 @@ export default async function jobOpeningPage({ params }: any) {
                 </div>
             </form>
             {showLogin && (email == "") && <LoginPopup />}
+            {showConsent && <ResumeConsent />}
         </div>
     );
 }

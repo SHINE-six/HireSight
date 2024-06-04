@@ -38,6 +38,12 @@ export default function AiInterviewPage() {
         }
     }
 
+    window.addEventListener('keypress', (e) => {
+        if (e.key === 'a') {
+            setLoading(false);
+        }
+    });
+
     const handleSessionEnd = () => {
         const postEndSession = async () => {
             const response = await fetch('http://localhost:8000/ai-interview/session/end', {

@@ -1,6 +1,8 @@
+import asyncio
 import shutil
 import time
-from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, WebSocket
+from fastapi import Cookie, FastAPI, File, Form, HTTPException, Request, UploadFile, BackgroundTasks, Response, HTTPException, Depends
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
@@ -10,6 +12,9 @@ import facial_prediction
 import eye_tracking
 # import LLM
 # import tts
+import behavioralAnalysis
+# import LLM
+# import tts
 import LLM_copy
 import googleTTS
 import wavspeech_to_json
@@ -17,16 +22,20 @@ import mongoDB
 import disfluency
 import plagiarism
 import aiDetection
-# import mbti_test
+import mbti_last
+import reportGeneration
+import LLM_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import datetime
 import json
 from pydantic import BaseModel
-
+import smtplib
+import ssl
+from email.message import EmailMessage
 
 app = FastAPI()
-
+security = HTTPBasic()
 
 origins = [
     "http://localhost:3000",  # Assuming your frontend app runs on localhost:3000
@@ -99,10 +108,10 @@ data = [
             "jobId": "1_b",
             "jobTitle": "Process Expert - Procurement IT",
             "jobDescription": "As a Procurement Support Specialist at Hilti, you will assist and guide Procurement Managers through the sourcing process to ensure compliance and high quality. You'll gain expertise in drafting Requests for Proposal, setting up auctions, and forming contracts, while also managing supplier data and leading system improvement projects. This role offers a comprehensive introduction to Hilti's business operations and involvement in a global team.",
-            "jobSkills": ["Bachelor’s degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
+            "jobSkills": ["Bachelor's degree in Information Technology or Business Administration; Master’s degree preferred","Relevant professional experience, especially with ERP and procurement systems","Strong interdisciplinary teamwork and project management skills","Comprehensive approach to tasks, from planning to continuous improvement and documentation",
                           "Good analytical abilities with a strong affinity for IT systems","Excellent communication and presentation skills in English; additional languages beneficial."]
         },
-    ]
+    ],
 },
 {
     "categoryId": 2,
@@ -161,6 +170,29 @@ data = [
     ]
 }
 ]
+
+@app.post("/send_email")
+async def send_email(email_receiver: str = Form(...), subject: str = Form(...), message: str = Form(...)):
+    # Email configuration
+    email_sender = "yikaipuah@gmail.com"
+    email_password = "rxrl qxfh dbjw zrbm"
+
+    # Create message
+    em = EmailMessage()
+    em['From'] = email_sender
+    em['To'] = email_receiver
+    em['Subject'] = subject
+    em.set_content(message)
+
+    # Add SSL (layer of security)
+    context = ssl.create_default_context()
+
+    # Log in and send the email
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(email_sender, email_password)
+        smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+    return {"message": "Email sent successfully"}
 
 @app.get("/")
 async def readRoot():
@@ -238,7 +270,7 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
     toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
     toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
-    toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
+    # toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
     print(mongoDB.postData("resumeDatabase", toStoreJson))
 
@@ -246,21 +278,44 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
     return {"status": 200, "message": "Resume uploaded successfully"}
 
 
-@app.get("/resume-ranking")
-async def getResumeRanking():
-    # Once HR select to view resume ranking
+@app.post("/resumeRanking")
+async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
     # Get resume from MongoDB
-    # Get job title to pull relative job description
-    filePath = "resume/resume_ranking.json"
-    # jobTitle = "Application Engineer" # Should be flexible to get from frontend
-    # jobDescription = resumeRanker.getConcatenatedText(jobTitle, data)
-    # resumeRanker.oneJobDescriptionToAllResume(jobDescription, filePath)
-    return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+    print(jobTitle, onlyApplicantCount)
+    if onlyApplicantCount:
+        return mongoDB.getResumeCount(jobTitle)
+    else:
+        return mongoDB.getResumeDetailsNoPdf(jobTitle, stage)
+        
 
-# @app.get("/resume-ranking")
-# async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend suitability
-#     # fileter
-#     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
+@app.post("/interviewRanking")
+async def getInterviewRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
+    return mongoDB.getInterviewDetails(jobTitle, stage)
+    # # Get resume from MongoDB
+    # if onlyApplicantCount:
+    #     return mongoDB.getResumeCount(jobTitle)
+    # else:
+    #     return  mongoDB.getInterviewDetails(jobTitle, stage)
+    
+
+
+@app.post("/updateStage")
+async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
+    # uniqueResumeId is a string mimic list, eg: "abc, def, ghi"
+    print(uniqueResumeId)
+    if "," in uniqueResumeId:
+        uniqueResumeId = uniqueResumeId.split(",")
+        for id in uniqueResumeId:
+            mongoDB.updateData("resumeDatabase", {"uniqueResumeId": id}, {"stage": stage})
+    else:
+        mongoDB.updateData("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, {"stage": stage})
+
+    if stage == "Interview ai":
+        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId})
+        mongoDB.updateData("Users", {"email": resumeData['email']}, {"aiStage": True})
+
+    return {"status": 200, "message": "Stage updated successfully"}
+
 
 # @app.get("/resume-ranking")
 # async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai interview
@@ -268,10 +323,14 @@ async def getResumeRanking():
 #     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 @app.post("/login")
-async def login(email: str = Form(...), password: str = Form(...)):
-    foundUser = mongoDB.getOneDataFromCollection("Users", "email", email)
+async def login(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
+    email = credentials.username
+    password = credentials.password
+
+    foundUser = mongoDB.getOneDataFromCollection("Users", {"email": email})
     if foundUser:
         if foundUser['password'] == password:
+            response.set_cookie(key="email", value=email, httponly=True, secure=False, max_age=3600, path="/", domain="localhost")
             return {"status": 200, "message": "Login successful", "aiStage": foundUser['aiStage']}
         else:
             return {"status": 401, "message": "Incorrect password"}
@@ -279,6 +338,13 @@ async def login(email: str = Form(...), password: str = Form(...)):
     elif (not foundUser):
         mongoDB.postData("Users", {"email": email, "password": password, "aiStage": False})
         return {"status": 200, "message": "Sign up successful", "aiStage": False}
+
+@app.post("/validate-session")
+async def validate_session(email: str = Form(None)):
+    if email:
+        return {"status": 200, "message": "Session valid"}
+    else:
+        return {"status": 401, "message": "Session invalid"}
 
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
@@ -289,9 +355,14 @@ async def create_session(sessionJson: Request):
     sessionJson = await sessionJson.json()
     global uniqueSessionID
     uniqueSessionID = sessionJson['uniqueSessionID']
+    sessionJson['jobPositionApply'], sessionJson['uniqueResumeID'] = getJobPositionApplyAndUniqueResumeID(sessionJson['email'])
     print(mongoDB.postData("combinedData", sessionJson))
     print(mongoDB.postData("conversationLog", sessionJson))
     return {"status": 200, "message": "Session created successfully"}
+
+def getJobPositionApplyAndUniqueResumeID(email: str):
+    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview ai"}, exclude=["pdfData"])
+    return resumeData['jobPostitionApply'], resumeData['uniqueResumeId']
 
 # ----------------------- Audio thingy -----------------------
 def text_LLM_tts_wavToJson(userTranscript: str):
@@ -391,8 +462,7 @@ def combineTranscriptEmotionEye():
 
     combinedJsonData['disfluencies'] = disfluency.main(transcriptData['text'])
     combinedJsonData['plagiarism'] = plagiarism.main(transcriptData['text'])
-    # combinedJsonData = behavioralAnalysis.main(combinedJsonData)  # await cleanup, deadline 12/4
-    #* to process, behavioral analysis at here
+    combinedJsonData["behavioralAnalysis"] = behavioralAnalysis.main(combinedJsonData)  
 
     print(mongoDB.appendDataToDocument("combinedData", combinedJsonData, uniqueSessionID))
 
@@ -410,14 +480,26 @@ def checkProcessFiles():
 # ----------------------- Interview Session Finish -----------------------
 @app.post("/ai-interview/session/end")
 async def finish_interview(BackgroundTasks: BackgroundTasks):
-    time.sleep(5)   # Wait for the last process to finish
-
-    concatResult = concat_user_transcript()
-    BackgroundTasks.add_task(generateReport, concatResult)
+    time.sleep(10)   # Wait for the last process to finish
+    print("167")
+    # averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
+    print("178")
+    # BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
+    print("110")        
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
-def concat_user_transcript():
+def calculateAverageBehavioralAnalysis():
+    combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
+    totalBahavioralAnalysis = 0
+    print("combinedData: ", combinedData)
+    for data in combinedData['sections']: #Chance to get error where KeyError: 'section' in for data in combinedData['sections']
+        totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
+
+    averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
+    return averageBehavioralAnalysis
+
+def concatUserTranscript():
     conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
     log_full:str = ""
     for log in conversationLog['log']:
@@ -426,35 +508,114 @@ def concat_user_transcript():
         
     return log_full
 
-# def concat_user_eva_transcript():
+def concatUserEvaTranscript():
+    conversationLog = mongoDB.getDataWithUniqueSessionID("conversationLog", uniqueSessionID)
+    log_full:str = ""
+    for log in conversationLog['log']:
+        if log['user'] == "applicant":
+            log_format = "Candidate: " + log['text'] + ". "
+            log_full += log_format
+        elif log['user'] == "Ai - EVA":
+            log_format = "HR: " + log['text']
+            log_full += log_format
+    return log_full 
 
 # def concat_user_answering(flag):
 
-def generateReport(concatResult: str):
+#Get UniqueResumeID and JobPositionApply from combinedData collecetion to be put into reportData collection
+def getJobPositionApply():
+    data = mongoDB.getDataWithUniqueSessionID("combinedData", uniqueSessionID)
+    return data['jobPositionApply'], data['uniqueResumeID'], data['email']
+
+def generateReportFormat(averageBehavioralAnalysis):
+
     toStoreJson = {
         "email": None,
-        "concatResult": concatResult,
+        "interviewPosition": None,
+        "uniqueResumeID": None,
+        "concatAllResult": None,
         "uniqueSessionID": uniqueSessionID,
         "disfluencies": None,
         "plagiarism": None,
         "aiDetector": None,  # Dict
+        "behavioralAnalysis": averageBehavioralAnalysis,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
-    # @ An Ning, @ Chen Ming
-    toStoreJson['disfluencies'] = disfluency.main(concatResult)
-    toStoreJson['plagiarism'] = plagiarism.main(concatResult)
-    toStoreJson['aiDetector'] = aiDetection.main(concatResult)
-    # toStoreJson['mbti'] = mbti_test.main(concatResult)   #! @chenming
+
+    concatAllResult = concatUserEvaTranscript()
+    concatApplicantResult = concatUserTranscript()
+    toStoreJson["interviewPosition"] = getJobPositionApply()[0]
+    toStoreJson["uniqueResumeID"] = getJobPositionApply()[1]
+    toStoreJson["email"] = getJobPositionApply()[2]
+    toStoreJson['concatAllResult'] = concatAllResult
+    toStoreJson['concatResult'] = concatApplicantResult
+    toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
+    # toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
+    toStoreJson['aiDetector'] = aiDetection.main(concatApplicantResult)
+    toStoreJson['mbti'] = mbti_last.main(concatApplicantResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
     #* to process MBTI, tone, companySpecificSuitability  at here
 
     print(mongoDB.postData("reportData", toStoreJson))
+    generateReport()
 
     return {"status": 200, "message": "Report generated successfully"}
+    # return None
+
+
+reportDone = False
+
+def generateReport():
+    global reportDone
+    reportDone = False
+    reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
+    toReportJson = reportGeneration.main(reportData)
+    mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
+    reportDone = True
+
+async def waitReportData():
+    timeout = 300  # Timeout set to 5 minutes (300 seconds)
+    start_time = time.time()
+    print("Testing")
+
+    while True:
+        if reportDone:
+            print("Report generated successfully")
+            # reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+            # print("Here is the report data: ", reportData)
+            # if reportData:
+            #     return reportData       
+            return "False"         
+        elif time.time() - start_time > timeout:
+            print("Dead")
+            return "True"
+        else:
+            print("Waiting for report data...")
+            await asyncio.sleep(5)
+
+@app.get("/get-report-data")
+async def getReportData():
+    # try:
+    #     reportData = await waitReportData()
+    #     print("Already get the data")
+    #     return reportData
+    # except HTTPException as e:
+    #     return {"status": e.status_code, "message": e.detail}
+    reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+    return reportData
+    
+@app.get("/get-report-loading")
+async def getReportDataLoading():
+    try:
+        reportDataLoading = await waitReportData()
+        return {"message" : reportDataLoading}
+    except HTTPException as e:
+        return {"status": e.status_code, "message": e.detail}
+
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):

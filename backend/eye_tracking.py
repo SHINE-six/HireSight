@@ -4,9 +4,6 @@ import dlib
 import numpy as np
 import time
 
-
-
-
 def eye_aspect_ratio(eye):
     A = np.linalg.norm(eye[1] - eye[5])
     B = np.linalg.norm(eye[2] - eye[4])

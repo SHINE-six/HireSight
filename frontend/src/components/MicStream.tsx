@@ -86,7 +86,7 @@ const MicStream: React.FC<ChildProps> = (props) => {
 
     console.log(response);
 
-    get_fromAI_fromBackend();
+    // get_fromAI_fromBackend();
 
   };
 
