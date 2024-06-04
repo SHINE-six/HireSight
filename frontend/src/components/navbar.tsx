@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
 
     return (
         <nav>
-            <div className='flex justify-between items-center mx-[3rem]'>
+            <div className='flex justify-between items-center mx-[3rem] cursor-pointer'>
                 <div className='text-[2.2rem] font-semibold text-red-700'>
                     <Link href="/">HireSight</Link>
                 </div>

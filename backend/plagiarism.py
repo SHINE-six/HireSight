@@ -32,6 +32,7 @@ def beautify_matches(matchedResult):
 def main(text: str):
     result = check_plagiarism(text)
     if result['error_code']:
+        print("Plagiarism checking error")
         return []
     result = {
         "Score": f"{100 - float(result['percent'])}%",

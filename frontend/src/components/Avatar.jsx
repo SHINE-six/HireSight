@@ -16,16 +16,51 @@ const corresponding = {
 };
 
 export function Avatar(props) {
-    const audio = useMemo(() => new Audio(props.newAudioURL), [props.newAudioURL]);
+	const voice = ["fromAI.wav", "fromAI(1).wav", "fromAI(2).wav", "fromAI(3).wav", "fromAI(4).wav", "fromAI(5).wav", "fromAI(6).wav", "fromAI(7).wav", "fromAI(8).wav"]
+	const mouth = ["fromAI.json", "fromAI(1).json", "fromAI(2).json", "fromAI(3).json", "fromAI(4).json", "fromAI(5).json", "fromAI(6).json", "fromAI(7).json", "fromAI(8).json"]
+	const currentVoiceRef = useRef(voice[-1])
+	const currentVoiceIndex = useRef(-1)
+	
+    const audio = useRef(new Audio(`/audios/${currentVoiceRef.current}`));
     const lipsync = props.newJsonData;
     // const jsonFile = useLoader(THREE.FileLoader, props.newJsonData);
     // const lipsync = JSON.parse(jsonFile);
 
     console.log(audio, "from AVATAR");
 
+	useEffect(() => {
+		const handleKeyPress = (e) => {
+			console.log(e.key);
+			e.preventDefault();
+			if (e.key === "a") {
+				currentVoiceIndex.current = (currentVoiceIndex.current + 1) % voice.length;
+				currentVoiceRef.current = voice[currentVoiceIndex.current];
+				audio.current = new Audio(`/audios/${currentVoiceRef.current}`);
+				console.log(currentVoiceRef.current);
+
+				nodes.Wolf3D_Head.morphTargetInfluences[
+				nodes.Wolf3D_Head.morphTargetDictionary["viseme_I"]
+				] = 1;
+				nodes.Wolf3D_Teeth.morphTargetInfluences[
+				nodes.Wolf3D_Teeth.morphTargetDictionary["viseme_I"]
+				] = 1;
+				audio.current.play();
+			}
+		};
+
+		window.addEventListener("keypress", handleKeyPress);
+
+		// Cleanup function to remove the event listener when the component unmounts
+		return () => {
+			audio.pause();
+			window.removeEventListener("keypress", handleKeyPress);
+		};
+	}, [audio]); // Empty dependency array means this effect runs once on mount and cleanup on unmount
+
+
     useFrame(() => {
-        const currentAudioTime = audio.currentTime;
-        if (audio.paused || audio.ended) {
+        const currentAudioTime = audio.current.currentTime;
+        if (audio.current.paused || audio.current.ended) {
         // setAnimation("Idle");
         return;
         }
@@ -61,30 +96,34 @@ export function Avatar(props) {
         }
     });
 
-    useEffect(() => {
-        nodes.Wolf3D_Head.morphTargetInfluences[
-        nodes.Wolf3D_Head.morphTargetDictionary["viseme_I"]
-        ] = 1;
-        nodes.Wolf3D_Teeth.morphTargetInfluences[
-        nodes.Wolf3D_Teeth.morphTargetDictionary["viseme_I"]
-        ] = 1;
+    // useEffect(() => {
+    //     nodes.Wolf3D_Head.morphTargetInfluences[
+    //     nodes.Wolf3D_Head.morphTargetDictionary["viseme_I"]
+    //     ] = 1;
+    //     nodes.Wolf3D_Teeth.morphTargetInfluences[
+    //     nodes.Wolf3D_Teeth.morphTargetDictionary["viseme_I"]
+    //     ] = 1;
 
-        audio.play();
+    //     audio.play();
 
-        return () => {
-          audio.pause();
-        };
+    //     return () => {
+    //       audio.pause();
+    //     };
 
-    }, [audio]);
+    // }, [currentVoiceRef.current]);
 
     const { nodes, materials } = useGLTF("/models/660ad1058d2d6c082659cc71.glb");
-    const { animations: idleAnimation } = useFBX("/animations/Idle.fbx");
+    // const { animations: idleAnimation } = useGLTF("/animations/Cover To Stand.fbx");
+    // idleAnimation[0].tracks.forEach((track) => {
+    //   track.name = track.name.replace('mixamorig', '');
+    // });
+    // console.log(idleAnimation, "from AVATAR");
     const group = useRef();
 
-    idleAnimation[0].name = "Idle";
+    // idleAnimation[0].name = "Talking";
 
 
-    // const [animation, setAnimation] = useState("Idle");
+    // const [animation, setAnimation] = useState("Talking");
 
     // const { actions } = useAnimations(
     //     [idleAnimation[0]],
@@ -164,4 +203,4 @@ export function Avatar(props) {
   );
 }
 
-useGLTF.preload("/models/660ad1058d2d6c082659cc71.glb");
+// useGLTF.preload("/models/660ad1058d2d6c082659cc71.glb");

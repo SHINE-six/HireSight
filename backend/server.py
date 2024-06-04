@@ -1,6 +1,8 @@
+import asyncio
 import shutil
 import time
-from fastapi import FastAPI, File, Form, Request, UploadFile, BackgroundTasks, WebSocket
+from fastapi import Cookie, FastAPI, File, Form, HTTPException, Request, UploadFile, BackgroundTasks, Response, HTTPException, Depends
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse
 import uvicorn
 # import resume_parser
@@ -33,7 +35,7 @@ import ssl
 from email.message import EmailMessage
 
 app = FastAPI()
-
+security = HTTPBasic()
 
 origins = [
     "http://localhost:3000",  # Assuming your frontend app runs on localhost:3000
@@ -268,7 +270,7 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
     toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
     toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
-    toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
+    # toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
     print(mongoDB.postData("resumeDatabase", toStoreJson))
 
@@ -321,10 +323,14 @@ async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
 #     return FileResponse(filePath, media_type="application/json", filename="resume_ranking.json")
 
 @app.post("/login")
-async def login(email: str = Form(...), password: str = Form(...)):
+async def login(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
+    email = credentials.username
+    password = credentials.password
+
     foundUser = mongoDB.getOneDataFromCollection("Users", {"email": email})
     if foundUser:
         if foundUser['password'] == password:
+            response.set_cookie(key="email", value=email, httponly=True, secure=False, max_age=3600, path="/", domain="localhost")
             return {"status": 200, "message": "Login successful", "aiStage": foundUser['aiStage']}
         else:
             return {"status": 401, "message": "Incorrect password"}
@@ -332,6 +338,13 @@ async def login(email: str = Form(...), password: str = Form(...)):
     elif (not foundUser):
         mongoDB.postData("Users", {"email": email, "password": password, "aiStage": False})
         return {"status": 200, "message": "Sign up successful", "aiStage": False}
+
+@app.post("/validate-session")
+async def validate_session(email: str = Form(None)):
+    if email:
+        return {"status": 200, "message": "Session valid"}
+    else:
+        return {"status": 401, "message": "Session invalid"}
 
 # -------------------- Initialize the session --------------------
 global uniqueSessionID
@@ -467,17 +480,20 @@ def checkProcessFiles():
 # ----------------------- Interview Session Finish -----------------------
 @app.post("/ai-interview/session/end")
 async def finish_interview(BackgroundTasks: BackgroundTasks):
-    time.sleep(5)   # Wait for the last process to finish
-
-    averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
-    BackgroundTasks.add_task(generateReportFormat(), averageBehavioralAnalysis)
+    time.sleep(10)   # Wait for the last process to finish
+    print("167")
+    # averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
+    print("178")
+    # BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
+    print("110")        
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
 def calculateAverageBehavioralAnalysis():
     combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
     totalBahavioralAnalysis = 0
-    for data in combinedData['sections']:
+    print("combinedData: ", combinedData)
+    for data in combinedData['sections']: #Chance to get error where KeyError: 'section' in for data in combinedData['sections']
         totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
 
     averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
@@ -511,8 +527,8 @@ def getJobPositionApply():
     data = mongoDB.getDataWithUniqueSessionID("combinedData", uniqueSessionID)
     return data['jobPositionApply'], data['uniqueResumeID'], data['email']
 
-def generateReportFormat():
-    ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score = LLM_report.main()
+def generateReportFormat(averageBehavioralAnalysis):
+
     toStoreJson = {
         "email": None,
         "interviewPosition": None,
@@ -522,15 +538,13 @@ def generateReportFormat():
         "disfluencies": None,
         "plagiarism": None,
         "aiDetector": None,  # Dict
-        "behavioralAnalysis": calculateAverageBehavioralAnalysis(),  # Dict
+        "behavioralAnalysis": averageBehavioralAnalysis,  # Dict
         "mbti": None,
         "tone": None,  # Dict
         "companySpecificSuitability": None,   # Dict
         # "personalityAnalysis": None,   # Dict
         "hiringIndex": None
     }
-
-    toStoreJson.update(ai_report)
 
     concatAllResult = concatUserEvaTranscript()
     concatApplicantResult = concatUserTranscript()
@@ -540,7 +554,7 @@ def generateReportFormat():
     toStoreJson['concatAllResult'] = concatAllResult
     toStoreJson['concatResult'] = concatApplicantResult
     toStoreJson['disfluencies'] = disfluency.main(concatApplicantResult)
-    toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
+    # toStoreJson['plagiarism'] = plagiarism.main(concatApplicantResult)
     toStoreJson['aiDetector'] = aiDetection.main(concatApplicantResult)
     toStoreJson['mbti'] = mbti_last.main(concatApplicantResult)
     # toStoreJson['hiringIndex'] = hiringIndex.main(toStoreJson)
@@ -550,18 +564,58 @@ def generateReportFormat():
     generateReport()
 
     return {"status": 200, "message": "Report generated successfully"}
+    # return None
+
+
+reportDone = False
 
 def generateReport():
+    global reportDone
+    reportDone = False
     reportData = mongoDB.getOneDataFromCollection("reportData", {"uniqueSessionID": uniqueSessionID})
-    print(reportData)
     toReportJson = reportGeneration.main(reportData)
-    #Overwrite whole reportdata with same uniqueSessionID
     mongoDB.overwriteDocument("reportData", {"uniqueSessionID": uniqueSessionID}, toReportJson)
+    reportDone = True
+
+async def waitReportData():
+    timeout = 300  # Timeout set to 5 minutes (300 seconds)
+    start_time = time.time()
+    print("Testing")
+
+    while True:
+        if reportDone:
+            print("Report generated successfully")
+            # reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
+            # print("Here is the report data: ", reportData)
+            # if reportData:
+            #     return reportData       
+            return "False"         
+        elif time.time() - start_time > timeout:
+            print("Dead")
+            return "True"
+        else:
+            print("Waiting for report data...")
+            await asyncio.sleep(5)
 
 @app.get("/get-report-data")
 async def getReportData():
+    # try:
+    #     reportData = await waitReportData()
+    #     print("Already get the data")
+    #     return reportData
+    # except HTTPException as e:
+    #     return {"status": e.status_code, "message": e.detail}
     reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
     return reportData
+    
+@app.get("/get-report-loading")
+async def getReportDataLoading():
+    try:
+        reportDataLoading = await waitReportData()
+        return {"message" : reportDataLoading}
+    except HTTPException as e:
+        return {"status": e.status_code, "message": e.detail}
+
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):

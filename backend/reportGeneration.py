@@ -1,3 +1,4 @@
+import time
 import LLM_report
 import radarChart
 from datetime import date
@@ -9,29 +10,58 @@ def main(reportData):
     # "interviewDate": None, #reportPurpose
     # "radarChartBinaryArray" : None, #reportPurpose
     # "radarChartSummary": None, #reportPurpose
-    aiReport = LLM_report.main(reportData['concatAllResult'], reportData['mbti'])
 
-    technicalScore = aiReport['TechnicalSkill']['TechnicalSkillScore']
-    preparationScore = aiReport['SoftSkill']['PreparationSkill']['PreparationScore']
-    culturalScore = aiReport['SoftSkill']['CulturalFitSkill']['CulturalFitScore']
-    attitudeScore = aiReport['SoftSkill']['AttitudeSkill']['AttitudeScore']
-    communicationScore = aiReport['SoftSkill']['CommunicationSkill']['CommunicationSkillScore']
-    adaptabilityScore = aiReport['SoftSkill']['AdaptabilitySkill']['AdaptabilityScore']
-
-    radarChartBinaryArray = radarChart.main(technicalScore, preparationScore, culturalScore, attitudeScore, communicationScore, adaptabilityScore)
-
+    print("\n\n\nReportData in reportgeneration: ", reportData)
     dataForReport={
-        "UniqueSessionID": reportData.uniqueSessionID,
-        "InterveweeName": reportData.email,
-        "InterveweeID": reportData.uniqueResumeID,
-        "InterviewPosition": reportData.interviewPosition,
+        "UniqueSessionID": reportData['uniqueSessionID'],
+        "InterveweeName": reportData['email'],
+        "InterveweeID": reportData['uniqueResumeID'],
+        "InterviewPosition": reportData['interviewPosition'],
         "overallSuitability": None,
-        "InterviewDate": date.today(),
-        "RadarChartBinaryArray" : radarChartBinaryArray,
+        "InterviewDate": date.today().isoformat(),
+        "RadarChartBinaryArray" : None,
         "RadarChartSummary": None,
         "MBTIBinaryArray": None
     }
 
-    dataForReport.update(aiReport)
+    print('date: ', dataForReport['InterviewDate'])
+
+    try:
+        aiReport = None
+        if aiReport == None:
+            # Vertex Ai    
+            aiReport, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score = LLM_report.main(reportData['concatAllResult'], reportData['mbti']) 
+            # Genmini Ai
+            # ai_report = LLM_report.main(concatTranscript, mbti_type)
+            dataForReport["aiReport"] = aiReport
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print("Retrying in 5 seconds...")
+        time.sleep(5)
+
+    print("\n\n\nAI Report: ", aiReport)
+
+
+    print("\n\n\nDataForReport without ai report in reportgeneration: ", dataForReport)
+
+    print("technicalScore", TechnicalSkillScore, '\n')
+    print("preparationScore", preparation_score, '\n')
+    print("culturalScore", cultural_score, '\n')
+    print("attitudeScore", attitude_score, '\n')
+    print("communicationScore", communication_score, '\n')
+    print("adaptabilityScore", adaptability_score, '\n')
+
+    print("technicalScoreType", type(TechnicalSkillScore), '\n')
+    print("preparationScoreType", type(preparation_score), '\n')
+    print("culturalScoreType", type(cultural_score), '\n')
+    print("attitudeScoreType", type(attitude_score), '\n')
+    print("communicationScoreType", type(communication_score), '\n')
+    print("adaptabilityScoreType", type(adaptability_score), '\n')
+
+    radarChartBinaryArray = radarChart.main(float(TechnicalSkillScore), float(preparation_score), float(cultural_score), float(attitude_score), float(communication_score), float(adaptability_score))
+
+    print("\n\n\nRadarChartBinaryArray in reportgeneration: ", radarChartBinaryArray)
+
+    print("\n\n\nDataForReport in reportgeneration: ", dataForReport)
     return dataForReport
     # Add more report generation scripts here
