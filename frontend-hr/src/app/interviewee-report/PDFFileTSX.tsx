@@ -30,14 +30,22 @@ const styles = StyleSheet.create({
         fontFamily: 'Times-Bold', 
         paddingTop: 10, // Adjust as needed
     },
+    reportSupSupText: {
+        fontSize: 16,
+        fontFamily: 'Times-Bold', 
+        paddingTop: 10, // Adjust as needed
+        paddingBottom: 10, // Adjust as needed
+    },
     reportText: {
         fontSize: 12,
         fontFamily: 'Times-Roman', 
         textAlign: 'justify',
+        paddingTop: 5, // Adjust as needed
     },
     reportSupTextBold: {
         fontSize: 14,
         fontFamily: 'Times-Bold', 
+        paddingTop: 5, // Adjust as needed  
     },
     reportTextBold: {
         fontSize: 12,
@@ -55,6 +63,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 12,
         color: 'grey',
+    },
+    seperateLineDesign: {
+        fontSize: 12,
+        fontFamily: 'Times-Roman', 
+        textAlign: 'justify',
+        paddingTop: 5, // Adjust as needed
+        paddingBottom: 5, // Adjust as needed
     },
 });
 
@@ -82,6 +97,12 @@ const SupBoldText = ({text}: {text: string}) => (
     </View>
 );
 
+const SupSupBoldText = ({text}: {text: string}) => (
+    <View style={styles.reportSupSupText}>
+        <Text>{text}</Text>
+    </View>
+);
+
 const BulletNormalText = ({text}: {text: string}) => (
     <View style={styles.reportText}>
         <Text>{'\u2022  '} {text}</Text>
@@ -95,175 +116,165 @@ const BlankLine = () => (
 );
 
 const SeperateLine = () => (
-    <View style={styles.reportText}>
+    <View style={styles.seperateLineDesign}>
         <Text>{"__________________________________________________________________________"} </Text>
     </View>
 );
 
 const PDFFileTSX = ()  => {
     return(
-        <Document title='Interview Performance Report'>
-            <Page size="A4" style={styles.page}>
-                <View style={styles.body}>
-                    <View style={styles.reportTitle}>
-                        <Text>
-                            Interviewee Performance Report
-                        </Text>
-                    </View>
-
-                    <NormalText text={"Interviewee Name: " + info.InterveweeName}/>
-
-                    <NormalText text={"Position Applied For: " + info.InterviewPosition}/>
-
-                    <NormalText text={"Interview Date: " + info.InterviewDate}/>
-
-                    <SubTitle text="Overview of the Interviewee's Performance"/>
-
-                    <View style={styles.charts}>
-                        <Image src = '/images/RadarChart.jpeg'/>
-                    </View>
-
-                    <NormalText text= {info.RadarChartSummary}/>
-
-                    <SubTitle text="Technical Assessment"/>
-
-                    <SupBoldText text={"Technical Skill Rating: "+ info.TechnicalSkill.TechnicalSkillScore + "/5"}/>
-
-                    <BoldText text="Assessment Summary:"/>                                        
-
-                    <NormalText text={info.TechnicalSkill.TechnicalSkillSummary}/>
-
-                    <SubTitle text="Soft Skills Assessment"/>
-
-                    <SupBoldText text={"Preparation Mark:" + info.SoftSkill.PreparationSkill.PreparationScore+ "/5"}/>
-
-                    <BulletNormalText text={"Knowledge of the Company, Role, and Industry :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Knowledge of the Company, Role, and Industry']}/>
-
-                    <BulletNormalText text={"Quality of Questions for the Interviewer :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Quality of Questions for the Interviewer']} />
-
-                    <BulletNormalText text={"Alignment of Skills and Experiences with Job Requirements :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Alignment of Skills and Experiences with Job Requirements']}/>
-
-                    <BulletNormalText text={"Formal and Appropriate Attire :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Formal and Appropriate Attire']}/>
-
-                    <BulletNormalText text={"Grooming and Tidiness :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Grooming and Tidiness']}/>
-
-                    <BlankLine/>
-
-                    <BoldText text="Assessment Summary:"/>  
-
-                    <NormalText text= {info.SoftSkill.PreparationSkill.PreparationSummary}/>
-
-                    <SeperateLine />
-
-                    <SupBoldText text={"Cultural Fit Mark:" +info.SoftSkill.CulturalFitSkill.CulturalFitScore+ "/5"}/>
-
-                    <BulletNormalText text={"Alignment with Core Company Values: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Alignment with Core Company Values']} />
-
-                    <BulletNormalText text={"Professionalism and Work Ethic: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Professionalism and Work Ethic']}  />
-
-                    <BulletNormalText text={"Teamwork and Collaboration Style: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Teamwork and Collaboration Style']} />
-
-                    <BulletNormalText text={"Adaptability to Work Environment Preferences:  " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Adaptability to Work Environment Preferences']} />
-
-                    <BulletNormalText text={"Problem-Solving and Decision-Making Style: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Problem-Solving and Decision-Making Style']} />
-
-                    <BlankLine/>
-
-                    <BoldText text="Assessment Summary:"/>  
-
-                    <NormalText text={info.SoftSkill.CulturalFitSkill.CulturalFitSummary}/>
-
-                    <SeperateLine />
-
-                    <SupBoldText text={"Attitude Mark: " + info.SoftSkill.AtitudeSkill.AtitudeScore +"/5"}/>
-
-                    <BulletNormalText text={"Professionalism: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring.Professionalism}/>
-
-                    <BulletNormalText text={"Positivity and Enthusiasm: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring['Positivity and Enthusiasm']} />
-
-                    <BulletNormalText text={"Resilience and Response to Challenges: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring['Resilience and Response to Challenges']}/>
-
-                    <BulletNormalText text={"Motivation and Work Ethic: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring['Motivation and Work Ethic']}/>
-
-                    <BlankLine/>
-
-                    <BoldText text="Assessment Summary:"/>  
-
-                    <NormalText text={info.SoftSkill.AtitudeSkill.AtitudeSummary}/>
-
-                    <SeperateLine />
-
-                    <SupBoldText text={"Communication Skill Mark: " + info.SoftSkill.CommunicationSkill.CommunicationSkillScore +"/5"}/>
-
-                    <BulletNormalText text={"Clarity, Coherence, and Conciseness of Responses: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Clarity, Coherence, and Conciseness of Responses']}/>
-
-                    <BulletNormalText text={"Listening and Engagement in Dialogue: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Listening and Engagement in Dialogue']} />
-
-                    <BulletNormalText text={"Written Communication Skills: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Written Communication Skills']}/>
-
-                    <BulletNormalText text={"Non-verbal communication: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Non-verbal communication']}/>
-
-                    <BlankLine/>
-
-                    <BoldText text="Assessment Summary:"/>  
-
-                    <NormalText text={info.SoftSkill.CommunicationSkill.CommunicationSkillSummary}/>
-
-                    <SeperateLine />                    
-
-                    <SupBoldText text={"Adaptability Mark: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityScore + "/5"}/>
-
-                    <BulletNormalText text={"Successful Adaptation to Change: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Successful Adaptation to Change']}/>
-
-                    <BulletNormalText text={"Responses to Hypothetical Scenarios: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Responses to Hypothetical Scenarios']} />
-
-                    <BulletNormalText text={"Learning and Applying Feedback: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Learning and Applying Feedback']}/>
-
-                    <BulletNormalText text={"Feedback from References on Adaptability and Problem-solving: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Feedback from References on Adaptability and Problem-solving']}/>
-
-                    <BlankLine/>
-
-                    <BoldText text="Assessment Summary:"/>  
-
-                    <NormalText text={info.SoftSkill.AdaptabilitySkill.AdaptabilitySummary}/>
-
-                    <SeperateLine />     
-
-                    <SubTitle text="MBTI Personality Assessment in Workplace"/>
-
-                    <View>
-                        <Image src = '/images/MBTI.jpg'/>
-                    </View>
-
-                    <NormalText text={info.MBTISummary}/>
-
-                    <SubTitle text="Overall Evaluation and Recommendation"/>
-
-                    <SupBoldText text="Feedback for Candidate"/>
-
-                    <BoldText text="Strengths:"/>
-
-                    <View render={() => Object.values(info.FeedbackForCandidate.Strength).map((strength: string) => (
-                        <BulletNormalText text={strength}/>
-                    ))}/>
-                    <BlankLine/>
-                    
-                    <BoldText text="Weakness and Areas for Development:"/>
-
-                    <View render={() => Object.values(info.FeedbackForCandidate.WeaknessAndAreasForDevelopment).map((Weakness: string) => (
-                        <BulletNormalText text={Weakness}/>
-                    ))}/>
-
-                    <BlankLine/>
-                    
-                    <BoldText text = "Other Recommended Job Positions:"/>
-
-                    <View render={() => Object.values(info.FeedbackForCandidate.OtherRecommendedJobPosition).map((Position: string) => (
-                        <BulletNormalText text={Position}/>
-                    ))}/>
+    <Document title='Interview Performance Report'>
+        <Page size="A4" style={styles.page}>
+            <View style={styles.body}>
+                <View style={styles.reportTitle}>
+                    <Text>
+                        Interviewee Performance Report
+                    </Text>
                 </View>
-            </Page>
-        </Document>
+
+                <SupSupBoldText text={"Overall Suitability: " + info.OverallSuitability + "%"}/>
+
+                <NormalText text={"Interviewee ID: " + info.InterveweeID}/>
+
+                <NormalText text={"Position Applied For: " + info.InterviewPosition}/>
+
+                <NormalText text={"Interview Date: " + info.InterviewDate}/>
+
+                <SubTitle text="Overview of the Interviewee's Performance"/>
+
+                <View style={styles.charts}>
+                    <Image src = '/images/radar.jpeg'/>
+                </View>
+
+                <NormalText text= {info.RadarChartSummary}/>
+
+                <SubTitle text="Technical Assessment"/>
+
+                <SupBoldText text={"Technical Skill Rating: "+ info.TechnicalSkill.TechnicalSkillScore + "/5"}/>
+
+                <BoldText text="Assessment Summary:"/>                                        
+
+                <NormalText text={info.TechnicalSkill.TechnicalSkillSummary}/>
+
+                <SubTitle text="Soft Skills Assessment"/>
+
+                <SupBoldText text={"Preparation Mark:" + info.SoftSkill.PreparationSkill.PreparationScore+ "/5"}/>
+
+                <BulletNormalText text={"Knowledge of the Company, Role, and Industry :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Knowledge of the Company, Role, and Industry']}/>
+
+                <BulletNormalText text={"Quality of Questions for the Interviewer :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Quality of Questions for the Interviewer']} />
+
+                <BulletNormalText text={"Alignment of Skills and Experiences with Job Requirements :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Alignment of Skills and Experiences with Job Requirements']}/>
+
+                <BulletNormalText text={"Formal and Appropriate Attire :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Formal and Appropriate Attire']}/>
+
+                <BulletNormalText text={"Grooming and Tidiness :"  + info.SoftSkill.PreparationSkill.PreparationDetailScoring['Grooming and Tidiness']}/>
+
+                <BlankLine/>
+
+                <BoldText text="Assessment Summary:"/>  
+
+                <NormalText text= {info.SoftSkill.PreparationSkill.PreparationSummary}/>
+
+                <SeperateLine />
+
+                <SupBoldText text={"Cultural Fit Mark:" +info.SoftSkill.CulturalFitSkill.CulturalFitScore+ "/5"}/>
+
+                <BulletNormalText text={"Alignment with Core Company Values: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Alignment with Core Company Values']} />
+
+                <BulletNormalText text={"Professionalism and Work Ethic: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Professionalism and Work Ethic']}  />
+
+                <BulletNormalText text={"Teamwork and Collaboration Style: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Teamwork and Collaboration Style']} />
+
+                <BulletNormalText text={"Adaptability to Work Environment Preferences:  " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Adaptability to Work Environment Preferences']} />
+
+                <BulletNormalText text={"Problem-Solving and Decision-Making Style: " + info.SoftSkill.CulturalFitSkill.CulturalFitDetailScoring['Problem-Solving and Decision-Making Style']} />
+
+                <BlankLine/>
+
+                <BoldText text="Assessment Summary:"/>  
+
+                <NormalText text={info.SoftSkill.CulturalFitSkill.CulturalFitSummary}/>
+
+                <SeperateLine />
+
+                <SupBoldText text={"Attitude Mark: " + info.SoftSkill.AtitudeSkill.AtitudeScore +"/5"}/>
+
+                <BulletNormalText text={"Professionalism: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring.Professionalism}/>
+
+                <BulletNormalText text={"Positivity and Enthusiasm: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring['Positivity and Enthusiasm']} />
+
+                <BulletNormalText text={"Resilience and Response to Challenges: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring['Resilience and Response to Challenges']}/>
+
+                <BulletNormalText text={"Motivation and Work Ethic: " + info.SoftSkill.AtitudeSkill.AtitudeDetailScoring['Motivation and Work Ethic']}/>
+
+                <BlankLine/>
+
+                <BoldText text="Assessment Summary:"/>  
+
+                <NormalText text={info.SoftSkill.AtitudeSkill.AtitudeSummary}/>
+
+                <SeperateLine />
+
+                <SupBoldText text={"Communication Skill Mark: " + info.SoftSkill.CommunicationSkill.CommunicationSkillScore +"/5"}/>
+
+                <BulletNormalText text={"Clarity, Coherence, and Conciseness of Responses: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Clarity, Coherence, and Conciseness of Responses']}/>
+
+                <BulletNormalText text={"Listening and Engagement in Dialogue: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Listening and Engagement in Dialogue']} />
+
+                <BulletNormalText text={"Written Communication Skills: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Written Communication Skills']}/>
+
+                <BulletNormalText text={"Non-verbal communication: " + info.SoftSkill.CommunicationSkill.CommunicationSkillDetailScoring['Non-verbal communication']}/>
+
+                <BlankLine/>
+
+                <BoldText text="Assessment Summary:"/>  
+
+                <NormalText text={info.SoftSkill.CommunicationSkill.CommunicationSkillSummary}/>
+
+                <SeperateLine />                    
+
+                <SupBoldText text={"Adaptability Mark: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityScore + "/5"}/>
+
+                <BulletNormalText text={"Successful Adaptation to Change: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Successful Adaptation to Change']}/>
+
+                <BulletNormalText text={"Responses to Hypothetical Scenarios: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Responses to Hypothetical Scenarios']} />
+
+                <BulletNormalText text={"Learning and Applying Feedback: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Learning and Applying Feedback']}/>
+
+                <BulletNormalText text={"Feedback from References on Adaptability and Problem-solving: " + info.SoftSkill.AdaptabilitySkill.AdaptabilityDetailScoring['Feedback from References on Adaptability and Problem-solving']}/>
+
+                <BlankLine/>
+
+                <BoldText text="Assessment Summary:"/>  
+
+                <NormalText text={info.SoftSkill.AdaptabilitySkill.AdaptabilitySummary}/>
+
+                <SeperateLine />     
+
+                <SubTitle text="MBTI Personality Assessment in Workplace"/>
+
+                <View>
+                    <Image src = '/images/MBTI.png'/>
+                </View>
+
+                <NormalText text={info.MBTISummary}/>
+
+                <SubTitle text="Overall Evaluation and Recommendation"/>
+
+                <SupBoldText text="Summary:"/>
+
+                <NormalText text={info.OverallEvaluationAndReccomendation.Summary} />
+
+                <BlankLine/>
+
+                <SupBoldText text="Recommendation: "/>
+
+                <NormalText text={info.OverallEvaluationAndReccomendation.Recommendation}/>
+            </View>
+        </Page>
+    </Document>
+
     );
 }
 

@@ -1,25 +1,50 @@
-# Vertex AI
-import os
+# Gemini
 import re
 import json
 import time
 import radarChart
-import vertexai
-from vertexai.generative_models import GenerativeModel
-import vertexai.preview.generative_models as generative_models
+import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./GOOGLE_APPLICATION_CRED.json"
+import google.generativeai as genai
 
-vertexai.init(project="civic-surge-420016", location="asia-southeast1")
- 
-# Set up the model
+genai.configure(api_key="AIzaSyDnuYpnAc3Eo47m_HtCY0JRzNSHifaIbds")
+
+
 generation_config = {
-    "max_output_tokens": 500,
-    "temperature": 0.2,
-    "top_p": 0.8,
+  "temperature": 1,
+  "top_p": 0.95,
+  "top_k": 64,
+  "max_output_tokens": 8192,
 }
 
-model = GenerativeModel("gemini-1.0-pro",generation_config=generation_config)
+safety_settings = [
+  {
+    "category": "HARM_CATEGORY_HARASSMENT",
+    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+  },
+  {
+    "category": "HARM_CATEGORY_HATE_SPEECH",
+    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+  },
+  {
+    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+  },
+  {
+    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+  },
+]
+
+
+model = genai.GenerativeModel(
+  model_name="gemini-1.5-flash",
+  safety_settings=safety_settings,
+  generation_config=generation_config,
+)
+
+response = model.generate_content('Tell me a story about a magic backpack')
+print(response.text)
 
 def extract_data(summary, pattern):
     match = re.search(pattern, summary)
@@ -48,6 +73,10 @@ def generate_technical(concatTranscript):
     technical_assessment = summary.text
     TechnicalSkillScore = float(extract_data(technical_assessment, r'"TechnicalSkillScore": (\d+(\.\d+)?)'))
     TechnicalSkillSummary = extract_data(technical_assessment, r'"TechnicalSkillSummary": "(.*)"')
+    if TechnicalSkillScore == None:
+        TechnicalSkillScore = 6.0
+    if TechnicalSkillSummary == None:
+        TechnicalSkillSummary = "Nothing"
     return TechnicalSkillScore, TechnicalSkillSummary
 
 def generate_preparation(concatTranscript):
@@ -76,6 +105,17 @@ def generate_preparation(concatTranscript):
     quality_of_questions = int(extract_data(preparation_skill, r'"Quality of Questions for the Interviewer": (\d+(\.\d+)?)'))
     alignment_with_job_requirements = int(extract_data(preparation_skill, r'"Alignment of Skills and Experiences with Job Requirements": (\d+(\.\d+)?)'))
     preparation_summary = extract_data(preparation_skill, r'"PreparationSummary": "([^"]+)"')
+    if preparation_score == None:
+        preparation_score = 6.0
+    if knowledge_company_role_industry == None:
+        knowledge_company_role_industry = 6
+    if quality_of_questions == None:
+        quality_of_questions = 6
+    if alignment_with_job_requirements == None:
+        alignment_with_job_requirements = 6
+    if preparation_summary == None:
+        preparation_summary = "Nothing"
+    
     return preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary
 
 def generate_culturalfit(concatTranscript):
@@ -110,6 +150,21 @@ def generate_culturalfit(concatTranscript):
     adaptability_work_environment = int(extract_data(culturalfit_skill, r'"Adaptability to Work Environment Preferences": (\d+(\.\d+)?)'))
     problem_solving_decision_making = int(extract_data(culturalfit_skill, r'"Problem-Solving and Decision-Making Style": (\d+(\.\d+)?)'))
     cultural_summary = extract_data(culturalfit_skill, r'"CulturalFitSummary": "([^"]+)"')
+    if cultural_score == None:
+        cultural_score = 6.0
+    if alignment_with_company_values == None:
+        alignment_with_company_values = 6
+    if professionalism_work_ethic == None:
+        professionalism_work_ethic = 6
+    if teamwork_collaboration == None:
+        teamwork_collaboration = 6
+    if adaptability_work_environment == None:
+        adaptability_work_environment = 6
+    if problem_solving_decision_making == None:
+        problem_solving_decision_making = 6
+    if cultural_summary == None:
+        cultural_summary = "Nothing"
+
     return cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary
 
 def generate_attitude(concatTranscript):
@@ -141,6 +196,19 @@ def generate_attitude(concatTranscript):
     resilience_response = int(extract_data(attitude_skill, r'"Resilience and Response to Challenges": (\d+(\.\d+)?)'))
     motivation_work_ethic = int(extract_data(attitude_skill, r'"Motivation and Work Ethic": (\d+(\.\d+)?)'))
     attitude_summary = extract_data(attitude_skill, r'"AtitudeSummary": "([^"]+)"')
+    if attitude_score == None:
+        attitude_score = 6.0
+    if professionalism == None:
+        professionalism = 6
+    if positivity_enthusiasm == None:
+        positivity_enthusiasm = 6
+    if resilience_response == None:
+        resilience_response = 6
+    if motivation_work_ethic == None:
+        motivation_work_ethic = 6
+    if attitude_summary == None:
+        attitude_summary = "Nothing"
+
     return attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary
 
 def generate_communicationskill(concatTranscript):
@@ -172,6 +240,19 @@ def generate_communicationskill(concatTranscript):
     written_communication = int(extract_data(communication_skill, r'"Written Communication Skills": (\d+(\.\d+)?)'))
     non_verbal_communication = int(extract_data(communication_skill, r'"Non-verbal Communication": (\d+(\.\d+)?)'))
     communication_summary = extract_data(communication_skill, r'"CommunicationSkillSummary": "([^"]+)"')
+    if communication_score == None:
+        communication_score = 6.0
+    if response_clarity_coherence == None:
+        response_clarity_coherence = 6
+    if listening_engagement == None:
+        listening_engagement = 6
+    if written_communication == None:
+        written_communication = 6
+    if non_verbal_communication == None:
+        non_verbal_communication = 6
+    if communication_summary == None:
+        communication_summary = "Nothing"
+
     return communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary
 
 def generate_adaptability(concatTranscript):
@@ -203,6 +284,19 @@ def generate_adaptability(concatTranscript):
     learning_and_applying_feedback = int(extract_data(adaptability_skill, r'"Learning and Applying Feedback": (\d+(\.\d+)?)'))
     feedback_from_references = int(extract_data(adaptability_skill, r'"Feedback from References on Adaptability and Problem-solving": (\d+(\.\d+)?)'))
     adaptability_summary = extract_data(adaptability_skill, r'"AdaptabilitySummary": "([^"]+)"')
+    if adaptability_score == None:
+        adaptability_score = 6.0
+    if successful_adaptation == None:
+        successful_adaptation = 6
+    if responses_to_scenarios == None:
+        responses_to_scenarios = 6
+    if learning_and_applying_feedback == None:
+        learning_and_applying_feedback = 6
+    if feedback_from_references == None:
+        feedback_from_references = 6
+    if adaptability_summary == None:
+        adaptability_summary = "Nothing"
+
     return adaptability_score, successful_adaptation, responses_to_scenarios, learning_and_applying_feedback, feedback_from_references, adaptability_summary
 
 def generate_mbti(mbti_type):
@@ -219,6 +313,9 @@ def generate_mbti(mbti_type):
     summary = model.generate_content(prompt)
     mbti_summary = summary.text
     mbti_summary = extract_data(mbti_summary, r'"MBTISummary": "([^"]+)"')
+    if mbti_summary == None:
+        mbti_summary = "Nothing"
+
     return mbti_summary
 
 def generate_feedback_for_candidate(concatTranscript):
@@ -256,6 +353,13 @@ def generate_feedback_for_candidate(concatTranscript):
     strengths = extract_feedback_items(feedback_for_candidate, r'"Strength (\d+)": "(.*?)"', "Strength")
     weaknesses = extract_feedback_items(feedback_for_candidate, r'"Weakness (\d+)": "(.*?)"', "Weakness")
     job_positions = extract_feedback_items(feedback_for_candidate, r'"Job Position (\d+)": "(.*?)"', "Job Position")
+    if strengths == None:
+        strengths = "Nothing"
+    if weaknesses == None:
+        weaknesses = "Nothing"
+    if job_positions == None:
+        job_positions = "Nothing"
+
     return strengths, weaknesses, job_positions
 
 def generate_overall_evaluation_N_recommendation(concatTranscript):
@@ -274,6 +378,11 @@ def generate_overall_evaluation_N_recommendation(concatTranscript):
     overall_evaluation_N_recommendation = summary.text
     summary = extract_data(overall_evaluation_N_recommendation, r'"Summary": "([^"]+)"')
     recommendation = extract_data(overall_evaluation_N_recommendation, r'"Recommendation": "([^"]+)"')
+    if summary == None:
+        summary = "Nothing"
+    if recommendation == None:
+        recommendation = "Nothing"
+
     return summary, recommendation
 
 def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score):
@@ -297,6 +406,9 @@ def generate_radar_chart_summary(TechnicalSkillScore, preparation_score, cultura
     summary = model.generate_content(prompt)
     radar_chart_summary = summary.text
     RadarChartSummary = extract_data(radar_chart_summary, r'"RadarChartSummary": "([^"]+)"')
+    if RadarChartSummary == None:
+        RadarChartSummary = "Nothing"
+        
     return RadarChartSummary
 
 def main(concatTranscript, mbti_type):
@@ -307,6 +419,7 @@ def main(concatTranscript, mbti_type):
         print("TechnicalSkillScore is empty")
     if(TechnicalSkillSummary == None):
         print("TechnicalSkillSummary is empty")
+    # time.sleep(60)
     preparation_score, knowledge_company_role_industry, quality_of_questions, alignment_with_job_requirements, preparation_summary = generate_preparation(concatTranscript)
     if(preparation_score == None):
         print("preparation_score is empty")
@@ -318,7 +431,7 @@ def main(concatTranscript, mbti_type):
         print("alignment_with_job_requirements is empty")
     if(preparation_summary == None):
         print("preparation_summary is empty")
-    time.sleep(20)
+    # time.sleep(60)
     cultural_score,alignment_with_company_values,professionalism_work_ethic,teamwork_collaboration,adaptability_work_environment,problem_solving_decision_making,cultural_summary = generate_culturalfit(concatTranscript)
     if(cultural_score == None):
         print("cultural_score is empty")
@@ -334,7 +447,7 @@ def main(concatTranscript, mbti_type):
         print("problem_solving_decision_making is empty")
     if(cultural_summary == None):
         print("cultural_summary is empty")
-    
+    # time.sleep(60)
     attitude_score, professionalism, positivity_enthusiasm, resilience_response, motivation_work_ethic, attitude_summary = generate_attitude(concatTranscript)
     if(attitude_score == None):
         print("attitude_score is empty")
@@ -349,7 +462,7 @@ def main(concatTranscript, mbti_type):
     if(attitude_summary == None):
         print("attitude_summary is empty")
 
-    time.sleep(13)
+    # time.sleep(60)
     communication_score, response_clarity_coherence, listening_engagement, written_communication, non_verbal_communication, communication_summary = generate_communicationskill(concatTranscript)
     if(communication_score == None):
         print("communication_score is empty")
@@ -363,7 +476,7 @@ def main(concatTranscript, mbti_type):
         print("non_verbal_communication is empty")
     if(communication_summary == None):
         print("communication_summary is empty")
-    
+    # time.sleep(60)
     adaptability_score, successful_adaptation, responses_to_scenarios, learning_and_applying_feedback, feedback_from_references, adaptability_summary = generate_adaptability(concatTranscript)
     if(adaptability_score == None):
         print("adaptability_score is empty")
@@ -378,7 +491,7 @@ def main(concatTranscript, mbti_type):
     if(adaptability_summary == None):
         print("adaptability_summary is empty")
 
-    time.sleep(13)
+    # time.sleep(60)
     mbti_summary = generate_mbti(mbti_type)
     if(mbti_summary == None):
         print("mbti_summary is empty")
@@ -390,7 +503,7 @@ def main(concatTranscript, mbti_type):
     if(job_positions == None):
         print("job_positions is empty")
 
-    time.sleep(13)
+    # time.sleep(60)
     summary, recommendation = generate_overall_evaluation_N_recommendation(concatTranscript)
     if(summary == None):
         print("summary is empty")
@@ -437,7 +550,7 @@ def main(concatTranscript, mbti_type):
                     "Resilience and Response to Challenges": resilience_response,
                     "Motivation and Work Ethic": motivation_work_ethic,
                 },
-            "AtitudeSummary": attitude_summary,
+            "AttitudeSummary": attitude_summary,
         },
         "CommunicationSkill":{
             "CommunicationSkillScore": communication_score,
@@ -472,7 +585,8 @@ def main(concatTranscript, mbti_type):
     },
     }
 
-    return ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score
+    return ai_report
+    # return ai_report, TechnicalSkillScore, preparation_score, cultural_score, attitude_score, communication_score, adaptability_score
 
 # concatTranscript = """
 #   HR: Good morning! Thank you for coming in today. Let's start with some general questions about your knowledge of the company, role, and industry. Can you tell me what you know about our company's approach to sustainability?

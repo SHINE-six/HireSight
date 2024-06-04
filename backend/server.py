@@ -29,7 +29,9 @@ from typing import Dict
 import datetime
 import json
 from pydantic import BaseModel
-
+import smtplib
+import ssl
+from email.message import EmailMessage
 
 app = FastAPI()
 
@@ -168,6 +170,29 @@ data = [
 }
 ]
 
+@app.post("/send_email")
+async def send_email(email_receiver: str = Form(...), subject: str = Form(...), message: str = Form(...)):
+    # Email configuration
+    email_sender = "yikaipuah@gmail.com"
+    email_password = "rxrl qxfh dbjw zrbm"
+
+    # Create message
+    em = EmailMessage()
+    em['From'] = email_sender
+    em['To'] = email_receiver
+    em['Subject'] = subject
+    em.set_content(message)
+
+    # Add SSL (layer of security)
+    context = ssl.create_default_context()
+
+    # Log in and send the email
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(email_sender, email_password)
+        smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+    return {"message": "Email sent successfully"}
+
 @app.get("/")
 async def readRoot():
     print("Welcome to the Job Portal!")
@@ -244,7 +269,7 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
     toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
     toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
-    # toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
+    toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
     print(mongoDB.postData("resumeDatabase", toStoreJson))
 
@@ -255,10 +280,22 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 @app.post("/resumeRanking")
 async def getResumeRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
     # Get resume from MongoDB
+    print(jobTitle, onlyApplicantCount)
     if onlyApplicantCount:
         return mongoDB.getResumeCount(jobTitle)
     else:
         return mongoDB.getResumeDetailsNoPdf(jobTitle, stage)
+        
+
+@app.post("/interviewRanking")
+async def getInterviewRanking( jobTitle: str = Form(...), onlyApplicantCount: bool = Form(False), stage: str = Form(None)):
+    return mongoDB.getInterviewDetails(jobTitle, stage)
+    # # Get resume from MongoDB
+    # if onlyApplicantCount:
+    #     return mongoDB.getResumeCount(jobTitle)
+    # else:
+    #     return  mongoDB.getInterviewDetails(jobTitle, stage)
+    
 
 
 @app.post("/updateStage")
@@ -272,11 +309,12 @@ async def updateStage(uniqueResumeId: str = Form(...), stage: str = Form(...)):
     else:
         mongoDB.updateData("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, {"stage": stage})
 
-    if stage == "Interview":
-        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId}, exclude=["pdfData"])
+    if stage == "Interview ai":
+        resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"uniqueResumeId": uniqueResumeId})
         mongoDB.updateData("Users", {"email": resumeData['email']}, {"aiStage": True})
 
     return {"status": 200, "message": "Stage updated successfully"}
+
 
 # @app.get("/resume-ranking")
 # async def getResumeRanking():  #* to change; pull all 'ba' job from mongodb, combine to json, and serve to hr frontend ai interview
@@ -311,7 +349,7 @@ async def create_session(sessionJson: Request):
     return {"status": 200, "message": "Session created successfully"}
 
 def getJobPositionApplyAndUniqueResumeID(email: str):
-    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview"}, exclude=["pdfData"])
+    resumeData = mongoDB.getOneDataFromCollection("resumeDatabase", {"email": email, "stage": "Interview ai"}, exclude=["pdfData"])
     return resumeData['jobPostitionApply'], resumeData['uniqueResumeId']
 
 # ----------------------- Audio thingy -----------------------
@@ -435,7 +473,7 @@ async def finish_interview(BackgroundTasks: BackgroundTasks):
     # averageBehavioralAnalysis = calculateAverageBehavioralAnalysis()
     print("178")
     # BackgroundTasks.add_task(generateReportFormat, averageBehavioralAnalysis)
-    print("110")        
+    print("110")   
 
     return {"status": 200, "message": "Interview session finished successfully"}
 
@@ -443,7 +481,7 @@ def calculateAverageBehavioralAnalysis():
     combinedData = mongoDB.getOneDataFromCollection("combinedData", {"uniqueSessionID": uniqueSessionID})
     totalBahavioralAnalysis = 0
     print("combinedData: ", combinedData)
-    for data in combinedData['sections']: #Chance to get error where KeyError: 'section' in for data in combinedData['sections']
+    for data in combinedData['sections']:
         totalBahavioralAnalysis += float(data['behavioralAnalysis']['Score'])
 
     averageBehavioralAnalysis = totalBahavioralAnalysis / len(combinedData['sections'])
@@ -516,7 +554,6 @@ def generateReportFormat(averageBehavioralAnalysis):
     return {"status": 200, "message": "Report generated successfully"}
     # return None
 
-
 reportDone = False
 
 def generateReport():
@@ -557,7 +594,7 @@ async def getReportData():
     #     return {"status": e.status_code, "message": e.detail}
     reportData = mongoDB.getDataWithUniqueSessionID("reportData", uniqueSessionID)
     return reportData
-    
+
 @app.get("/get-report-loading")
 async def getReportDataLoading():
     try:
@@ -565,7 +602,6 @@ async def getReportDataLoading():
         return {"message" : reportDataLoading}
     except HTTPException as e:
         return {"status": e.status_code, "message": e.detail}
-
 
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):

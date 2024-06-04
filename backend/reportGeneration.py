@@ -1,7 +1,9 @@
 import time
 import LLM_report
 import radarChart
+import mbtiImageDecoder
 from datetime import date
+import overall_suitability
 def main(reportData):
 
     # "name": None, #reportPurpose
@@ -13,7 +15,7 @@ def main(reportData):
 
     print("\n\n\nReportData in reportgeneration: ", reportData)
     dataForReport={
-        "UniqueSessionID": reportData['uniqueSessionID'],
+        "uniqueSessionID": reportData['uniqueSessionID'],
         "InterveweeName": reportData['email'],
         "InterveweeID": reportData['uniqueResumeID'],
         "InterviewPosition": reportData['interviewPosition'],
@@ -62,6 +64,13 @@ def main(reportData):
 
     print("\n\n\nRadarChartBinaryArray in reportgeneration: ", radarChartBinaryArray)
 
+    dataForReport["RadarChartBinaryArray"] = radarChartBinaryArray
+
+    mbtiBinaryArray = mbtiImageDecoder.main()
+
+    dataForReport["MBTIBinaryArray"] = mbtiBinaryArray
+
+    dataForReport["overallSuitability"] = overall_suitability.main(reportData, float(TechnicalSkillScore), float(preparation_score), float(cultural_score), float(attitude_score), float(communication_score), float(adaptability_score))
     print("\n\n\nDataForReport in reportgeneration: ", dataForReport)
     return dataForReport
     # Add more report generation scripts here
