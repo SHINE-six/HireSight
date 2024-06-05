@@ -78,7 +78,7 @@ const ApplicantDetailPage = () => {
         // top three applicants stage will change to 'Resume_suitability'
         const formData = new FormData();
         formData.append('uniqueResumeId', topThreeRef.current.join(','));
-        formData.append('stage', 'Resume Suitability');
+        formData.append('stage', 'Interview ai');
         const res = fetch('http://localhost:8000/updateStage',
             { 
                 method: 'POST',
@@ -91,10 +91,10 @@ const ApplicantDetailPage = () => {
 
     const handleProceedResumeSuitability = (uniqueResumeId: string) => {
         setLoading(true);
-        console.log("Proceeding to Resume Suitability", uniqueResumeId);
+        console.log("Proceeding to Interview Ai", uniqueResumeId);
         const formData = new FormData();
         formData.append('uniqueResumeId', uniqueResumeId);
-        formData.append('stage', 'Resume Suitability');
+        formData.append('stage', 'Interview ai');
         const res = fetch('http://localhost:8000/updateStage',
             { 
                 method: 'POST',
@@ -119,7 +119,7 @@ const ApplicantDetailPage = () => {
                 <div className='w-[5rem] h-[5rem] rounded-full bg-white shadow-sm shadow-black flex justify-center'>
                     <img src="resume.svg" alt="resume" className='w-[3.5rem]'/>
                 </div>
-                <div className="py-[1rem] px-[4rem] text-2xl font-bold border-b-[0.1rem] border-gray-300">Resume AI Detection</div>
+                <div className="py-[1rem] px-[4rem] text-2xl font-bold border-b-[0.1rem] border-gray-300">Resume Matching</div>
                 <div className='w-[14rem] bg-white rounded-xl text-xl justify-between flex flex-row py-[0.5rem] px-[1rem] border-b-[0.1rem] border-gray-300 shadow-md font-semibold'>
                     <div>Applicant:</div> 
                     <div className='text-red-700'>{resumeCount['Ai_detection']}</div>
@@ -131,12 +131,13 @@ const ApplicantDetailPage = () => {
                 {!loading && (
                 <div className="mt-[2rem] mx-[1rem] flex flex-col items-center w-full">
                     <div className="flex justify-center w-full p-[0.5rem] mb-[1rem]">
-                        <div className="grid grid-cols-6 w-5/6"> 
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume ID</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI detection</div>
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Plagiarism</div> 
-                            <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
+                        <div className="flex flex-cols w-[78%]"> 
+                            <div className="mr-[8rem] px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume ID</div>
+                            <div className="mr-[4rem] px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Email</div>
+                            <div className="mr-[5rem] px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">AI detection</div>
+                            <div className="mr-[4rem] px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Plagiarism</div> 
+                            <div className="mr-[7rem] px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume Suitability</div> 
+                            <div className="mr-[5rem] px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Manual proceed</div>
                             <div className="px-[1rem] py-[0.5rem] border-gray-500 border-b-[0.1rem] w-fit rounded-lg shadow-lg shadow-gray-500">Resume</div>
                         </div>
                     </div>
@@ -147,12 +148,13 @@ const ApplicantDetailPage = () => {
                             bgColor = "bg-blue-200"; 
                         }
                         return (
-                            <div key={resume.uniqueResumeId} className={`w-5/6 ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-6`}>
+                            <div key={resume.uniqueResumeId} className={`w-[78%] ${bgColor} rounded-md shadow-md shadow-black mb-[1rem] p-[0.5rem] items-center grid grid-cols-7`}>
                                 <div className="pr-2">{resume.uniqueResumeId}</div>
                                 <div className="pr-2">{resume.email}</div>
                                 <div className="pr-2">{(resume.AiDetection)}%</div>
                                 <div className="pr-2">{(resume.plagiarism)}</div>
-                                <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedResumeSuitability(resume.uniqueResumeId); setLoading(!loading); }}> Proceed to Resume Suitability</button>
+                                <div className="pr-2">{(resume.suitability * 100).toFixed(2)}%  </div>
+                                <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" onClick={() => { handleProceedResumeSuitability(resume.uniqueResumeId); setLoading(!loading); }}> Proceed to Interview Ai</button>
                                 <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50">View Resume</button>
                             </div>
                         );

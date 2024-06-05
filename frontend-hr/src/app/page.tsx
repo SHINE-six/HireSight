@@ -46,7 +46,7 @@ const App = () => {
 					<div className='w-[5rem] h-[5rem] rounded-full bg-white shadow-sm shadow-black absolute top-[-3rem] flex justify-center'>
 						<img src="resume.svg" alt="resume" className='w-[3.5rem]'/>
 					</div>
-					<div className='font-bold my-[1rem] px-[2rem]'>Resume AI Detection</div>
+					<div className='font-bold my-[1rem] px-[2rem]'>Resume Matching</div>
 					<div className='w-[14rem] bg-gray-400 h-[0.1rem]'></div>
 					<div className='w-[14rem] bg-white rounded-md mt-[3rem] text-xl justify-between flex flex-row py-[0.5rem] px-[1rem] font-semibold shadow-sm shadow-black'>
 						<div>Applicant:</div> 
@@ -55,7 +55,7 @@ const App = () => {
 					<Link href='/applicant-detail'><div className='mt-[3rem] w-[14rem] bg-red-700 text-xl px-[1rem] py-[0.25rem] rounded-lg text-white font-semibold'>View Applicant Detail</div></Link>
 				</div>
 
-				<div className='w-[20rem] bg-gray-200 flex flex-col relative p-[2rem] items-center rounded-lg'>
+				{/* <div className='w-[20rem] bg-gray-200 flex flex-col relative p-[2rem] items-center rounded-lg'>
 					<div className='w-[5rem] h-[5rem] rounded-full bg-white shadow-sm shadow-black absolute top-[-3rem] flex justify-center'>
 						<img src="suitability.svg" alt="suitability" className='w-[3.5rem]'/>
 					</div>
@@ -66,7 +66,7 @@ const App = () => {
 						<div className='text-red-700'>{resumeCount['Resume_suitability']}</div>
 					</div>
 					<Link href='/suitability-ranking'><div className='mt-[3rem] w-[14rem] bg-red-700 text-xl px-[1rem] py-[0.25rem] rounded-lg text-white font-semibold'>View Suitability Ranking</div></Link>
-				</div>
+				</div> */}
 
 				<div className='w-[20rem] bg-gray-200 flex flex-col relative p-[2rem] items-center rounded-lg'>
 					<div className='w-[5rem] h-[5rem] rounded-full bg-white shadow-sm shadow-black absolute top-[-3rem] flex justify-center'>
