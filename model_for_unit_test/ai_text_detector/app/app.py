@@ -9,8 +9,8 @@ nltk.download('punkt')
 nltk.download('words')
 
 def predict_text(df):
-    model = joblib.load('ai_text_detector/app/model/gb_model_v1.pkl')
-    pca = joblib.load('ai_text_detector/app/model/pca_v5.pkl')
+    model = joblib.load('HireSight\\model_for_unit_test\\ai_text_detector\\app\model\\gb_model_v1.pkl')
+    pca = joblib.load('HireSight\\model_for_unit_test\\ai_text_detector\\app\model\\pca_v5.pkl')
     
 
     X = df.drop(['normal_text', 'cleaned_text'], axis=1)
@@ -43,5 +43,5 @@ def analyze():
     print("end result" + result + "  probability_human" + str(probability_human) + "   probability_ ai" + str(probability_ai))
     # return jsonify({'result': result, 'probability1': str(probability_human), 'probability2': str(probability_ai)})
 
-analyze()
+print(analyze())
 

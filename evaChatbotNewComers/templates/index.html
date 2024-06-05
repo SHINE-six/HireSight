@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
 </head>
@@ -16,7 +16,7 @@
   language-code="en"
   max-query-length="-1">
   <df-messenger-chat-bubble
-   chat-title="">
+   chat-title="Onboarding chatbot">
   </df-messenger-chat-bubble>
 </df-messenger>
 <style>
@@ -24,13 +24,60 @@
     z-index: 999;
     position: fixed;
     --df-messenger-font-color: #000;
-    --df-messenger-font-family: Google Sans;
-    --df-messenger-chat-background: #f3f6fc;
-    --df-messenger-message-user-background: #d3e3fd;
+    --df-messenger-font-family: Roboto;
+    --df-messenger-chat-background: #FBEBE9;
+    --df-messenger-message-user-background: #F4C7C3;
     --df-messenger-message-bot-background: #fff;
     bottom: 16px;
     right: 16px;
   }
 </style>
 </body>
+</html> -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--<link rel="stylesheet" href="style.css">-->
+        <link rel="icon" src="wood.png">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Wesley Carson - Undergraduate Chemist at University of Delaware</title>
+        <style type="text/css">
+          html, body {min-height: 100%;}
+body {background-size: cover;}
+          body{
+          background: url(https://i.postimg.cc/ZKV7JfpJ/hilti-About-Me.png);
+          background-size: 1600px 1717px;
+          background-repeat: no-repeat;}
+          h1 {text-align: center;}
+          h2 {text-align: center;}
+        </style>
+ 
+    </head>
+    <body>
+      <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+      <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+      <df-messenger
+        project-id="civic-surge-420016"
+        agent-id="a6413236-0474-4e92-86ab-7bc12f6a1b1a"
+        language-code="en"
+        max-query-length="-1">
+        <df-messenger-chat-bubble
+         chat-title="Onboarding chatbot">
+        </df-messenger-chat-bubble>
+      </df-messenger>
+      <style>
+        df-messenger {
+          z-index: 999;
+          position: fixed;
+          --df-messenger-font-color: #000;
+          --df-messenger-font-family: Roboto;
+          --df-messenger-chat-background: #FBEBE9;
+          --df-messenger-message-user-background: #F4C7C3;
+          --df-messenger-message-bot-background: #fff;
+          bottom: 16px;
+          right: 16px;
+        }
+      </style>
+    </body>
 </html>

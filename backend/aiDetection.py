@@ -2,7 +2,6 @@ from preprocess import preprocess_text, postprocess_text
 from features import feature_extraction
 import joblib
 import nltk
-import json
 
 nltk.download('maxent_ne_chunker')
 nltk.download('averaged_perceptron_tagger')
@@ -47,5 +46,5 @@ def main(text):
     }
     return toReturnJson
 
-    
+
 

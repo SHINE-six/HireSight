@@ -10,10 +10,10 @@ import joblib
 
 def feature_extraction(df):
 
-    count_vectorizer = joblib.load('ai_text_detector/app/tools/count_vectorizer_50k.pkl')
-    bigram_vectorizer = joblib.load('ai_text_detector/app/tools/bigram_vectorizer_50k.pkl')
-    trigram_vectorizer = joblib.load('ai_text_detector/app/tools/trigram_vectorizer_50k.pkl')
-    bitri_vectorizer = joblib.load('ai_text_detector/app/tools/bitri_vectorizer_50k.pkl')
+    count_vectorizer = joblib.load('HireSight\\model_for_unit_test\\ai_text_detector\\app\\tools\\count_vectorizer_50k.pkl')
+    bigram_vectorizer = joblib.load('HireSight\\model_for_unit_test\\ai_text_detector\\app\\tools\\bigram_vectorizer_50k.pkl')
+    trigram_vectorizer = joblib.load('HireSight\\model_for_unit_test\\ai_text_detector\\app\\tools\\trigram_vectorizer_50k.pkl')
+    bitri_vectorizer = joblib.load('HireSight\\model_for_unit_test\\ai_text_detector\\app\\tools\\bitri_vectorizer_50k.pkl')
 
     # Basic NLP ------------------------------------------------
 
