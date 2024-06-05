@@ -17,8 +17,8 @@
 
         .vid {
             flex: 0 1 auto;
-            height: 400px;
-            width: 400px;
+            height: 800px;
+            width: 40rem;
         }
 
         .settings {
@@ -70,6 +70,7 @@
             background-color: #f1f1f1;
             border-bottom: 1px solid #000;
             overflow: auto;
+            padding-left: 2rem;
         }
     </style>
 </head>
@@ -77,6 +78,7 @@
 <body>
     <div id="videos" class="container">
         <video id="localVideo" class="vid" autoplay muted></video>
+        <div style="color: white;">00fdsf</div>
     </div>
     <br />
     <div style="display:block">
@@ -86,6 +88,9 @@
     </div>
     <div style="position: absolute; right: 0; top: 0">
         <div class="dashboard" id="dashboard">
+            <h3>AI detection score : 0%</h3>
+            <h3>Plagiarism detection score : 0%</h3>
+            <h3>Behavior risk detection score : 0%</h3>
         </div>
         <div class="chatpanel">
             <div id="chat"></div>
@@ -102,14 +107,14 @@
         let z = 0;
         const content = [
             `
-            <h3>AI detection score : 0%</h3>
-            <h3>Plagiarism detection score : 0%</h3>
+            <h3>AI detection score : 80%</h3>
+            <h3>Plagiarism detection score : 30%</h3>
             <h3>Behavior risk detection score : 5%</h3>
             `,
             `
-            <h3>AI detection score : 25%</h3>
+            <h3>AI detection score : 1%</h3>
             <h3>Plagiarism detection score : 3%</h3>
-            <h3>Behavior risk detection score : 5%</h3>
+            <h3>Behavior risk detection score : 89%</h3>
             `,
             `
             <h3>AI detection score : 11%</h3>
@@ -133,7 +138,7 @@
     </script>
     <script>
         let i = 0;
-        const toResponse = ['Hello!', 'How are you?', 'Goodbye!']
+        const toResponse = ['We measure sustainability success through metrics like carbon emissions reduction, energy efficiency, waste reduction, and resource conservation, aligned with industry standards. Regular reporting and analysis guide our progress, ensuring continuous improvement towards our sustainability goals.', 'How are you?', 'Goodbye!']
         
         function chatbotResponse(input) {
             return new Promise((resolve, reject) => {
@@ -164,11 +169,12 @@
             chatInput.value = '';
         
             // Add a simple chatbot response after a delay
-            chatbotResponse(chatInput.value).then(response => {
-                var botMessage = document.createElement('p');
-                botMessage.textContent = 'Bot: ' + response;
-                chat.appendChild(botMessage);
-            });
+            return "We measure sustainability success through metrics like carbon emissions reduction, energy efficiency, waste reduction, and resource conservation, aligned with industry standards. Regular reporting and analysis guide our progress, ensuring continuous improvement towards our sustainability goals."
+            // chatbotResponse(chatInput.value).then(response => {
+            //     var botMessage = document.createElement('p');
+            //     botMessage.textContent = 'Bot: ' + response;
+            //     chat.appendChild(botMessage);
+            // });
         });
     </script>
 

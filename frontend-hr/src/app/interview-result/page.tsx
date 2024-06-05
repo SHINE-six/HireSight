@@ -199,6 +199,12 @@ const InterviewResultPage = () => {
         // }
     }
 
+    const handleReportShow = () =>{
+        
+        router.push('/interviewee-report');
+        
+    }
+
     return (
         <div className="mt-[2rem] mx-[3rem] sweet-loading">
             <div className="flex flex-row items-center">
@@ -259,7 +265,7 @@ const InterviewResultPage = () => {
                                                     <button className="bg-green-400 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick={() => { handleProceedHrInterview(resume.InterveweeID, resume.InterveweeName,"Interview hr"); setLoading(!loading); }}> Proceed to Hr Interview</button>
                                                     <button className="bg-red-700 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-700" onClick={() => { handleProceedHrInterview(resume.InterveweeID, resume.InterveweeName,"rejected"); setLoading(!loading); }}> Rejected</button>
                                                 </div>
-                                                <button className="bg-blue-700 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-blue-900 focus:outline-none focus:ring-2">View Report</button>
+                                                <button className="bg-blue-700 rounded-lg px-[1rem] py-[0.5rem] h-full text-white hover:bg-blue-900 focus:outline-none focus:ring-2" onClick={handleReportShow}>View Report</button>
                                             </div>
                                         </div>
                                     );

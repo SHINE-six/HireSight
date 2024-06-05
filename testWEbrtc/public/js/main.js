@@ -120,6 +120,12 @@ document.getElementById('toggleChatButton').addEventListener('click', function()
     } else {
         chatPanel.style.display = 'block';
     }
+    var dashboard = document.querySelector('.dashboard');
+    if (dashboard.style.display === 'block') {
+        dashboard.style.display = 'none';
+    } else {
+        dashboard.style.display = 'block';
+    }
 });
 
 document.getElementById('sendButton').addEventListener('click', function() {
@@ -141,7 +147,7 @@ document.getElementById('sendButton').addEventListener('click', function() {
 });
 
 let i = 0;
-const toResponse = ['Hello!', 'How are you?', 'Goodbye!']
+const toResponse = ['We measure sustainability success through metrics like carbon emissions reduction, energy efficiency, waste reduction, and resource conservation, aligned with industry standards. Regular reporting and analysis guide our progress, ensuring continuous improvement towards our sustainability goals.', 'How are you?', 'Goodbye!']
 
 function chatbotResponse(input) {
     let res = toResponse[i];
@@ -152,7 +158,7 @@ function chatbotResponse(input) {
         i = 0;
     }
     
-    return res;
+    return "Eva : " + res;
 }
 /**
  * Remove a peer with given socket_id. 

@@ -17,7 +17,9 @@ const View = () => {
     }, [])
 
     return(
-        <InvoicePDF/>
+        <div className="absolute top-0 h-fit w-screen">
+            <InvoicePDF/>
+        </div>
     )
 }
 
