@@ -112,11 +112,12 @@ def getInterviewDetails(jobTitle, stage):
 def getResumeCount(jobTitle):
     # possible stage : 'Ai detection', 'Resume Suitability', 'Interview-ai', 'Interview-hr', 'Offer', 'Rejected'
     Ai_detection_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Ai detection'}, count=True)
-    Resume_suitability_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Resume Suitability'}, count=True)
+    # Resume_suitability_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Resume Suitability'}, count=True)
     Interview_ai_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview ai'}, count=True)
     Interview_hr_count = getAllDataFromCollection('resumeDatabase', {'jobPostitionApply': jobTitle, 'stage': 'Interview hr'}, count=True)
 
-    return {"Ai_detection": Ai_detection_count, "Resume_suitability": Resume_suitability_count, "Interview_ai": Interview_ai_count, "Interview_hr": Interview_hr_count}
+    return {"Ai_detection": Ai_detection_count, "Interview_ai": Interview_ai_count, "Interview_hr": Interview_hr_count}
+    # return {"Ai_detection": Ai_detection_count, "Resume_suitability": Resume_suitability_count, "Interview_ai": Interview_ai_count, "Interview_hr": Interview_hr_count}
 
 #! For maintenance only, should not be connected to server
 def deleteFirstTenData(collection):
