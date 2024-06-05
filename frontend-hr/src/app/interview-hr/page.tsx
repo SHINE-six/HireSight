@@ -87,28 +87,60 @@ const InterviewResultPage = () => {
 
     const sendEmail = (email: string, stage: string) => {
         const formData = new FormData();
-        const subject = 'Opportunity at Hilti'; 
-        const offermessage = `Dear Teh Chen Ming,
+        const offersubject = 'Job Offer - IT Business Analyst (Sustainability) at Hilti'; 
+        const offermessage = `
+        Dear Teh Chen Ming,
 
-        Offer
-        
+        We are delighted to inform you that, following a comprehensive review of your qualifications and interview performance, we are very interested in offering you the IT Business Analyst (Sustainability) position at Hilti.
+
+        Your demonstrated skills and experience in business analysis, coupled with your passion for sustainability, have left a strong impression on our team. We believe you would be a valuable asset to our organization and play a key role in advancing our sustainability goals.
+
+        Next Steps:
+
+        To provide you with a more detailed understanding of the role and its benefits, we would like to schedule a call with you to discuss the position further and answer any questions you may have. Please reply to this email with your preferred date and time for a call, and we will do our best to accommodate your schedule.
+
+        Decision Timeline:
+
+        To allow us to continue our recruitment process efficiently, we kindly request that you confirm your interest in this opportunity by 07/05/2024.
+
+        We are enthusiastic about the potential for you to join our team and look forward to discussing the details of the position with you soon.
+
+        Your feedback is invaluable to us. Please take a moment to share your thoughts on our recruitment process here: Feedback Link
+
+        Congratulations again,
+
         Yi Kai
         HR Team
         Hilti`;
 
-        const rejectmessage = `Dear Teh Chen Ming,
-        Rejected
-        
+        const rejectsubject = 'Application Update: IT Business Analyst (Sustainability) Position at Hilti'; 
+        const rejectmessage = `
+        Dear Teh Chen Ming,
+
+        We sincerely appreciate the time and effort you've dedicated to the application process for the IT Business Analyst (Sustainability) position at Hilti. We recognize the competitive nature of the selection process and are grateful for your interest in joining our team.
+
+        After thorough consideration, we regret to inform you that your application was not selected to proceed to the next stage. Please understand that we had to make difficult decisions among a pool of highly qualified candidates.
+
+        While this outcome may be disappointing, we encourage you to continue pursuing opportunities that align with your skills and career aspirations. Your determination and perseverance will undoubtedly lead you to the right fit.
+
+        Additionally, we value your feedback on our recruitment process. If you would like specific feedback on your application, please do not hesitate to reach out to us.
+
+        We wish you all the best in your future endeavors and hope our paths may cross again in the future. Thank you for considering Hilti as a potential employer.
+
+        Warm regards,
+
         Yi Kai
         HR Team
         Hilti`;
         formData.append('email_receiver', email);
-        formData.append('subject', subject);
+        
 
         if (stage === "offered") {
             formData.append('message', offermessage);
+            formData.append('subject', offersubject);
         } else {
             formData.append('message', rejectmessage);
+            formData.append('subject', rejectsubject);
         }
 
         const res = fetch('http://localhost:8000/send_email', 
