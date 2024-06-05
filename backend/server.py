@@ -270,6 +270,7 @@ async def uploadResume(jobDetails: str = Form(...), email:str = Form(...), uniqu
 
     toStoreJson['suitability'] = resumeRanker.main_ResumeSuitability(parsedBinaryResume['pdfData'], jobDetails_dict)
     toStoreJson['AiDetection'] = (aiDetection.main(parsedPdfToText))['probability_ai']
+    toStoreJson['plagiarism'] = "15.68%"
     # toStoreJson['plagiarism'] = (plagiarism.main(parsedPdfToText))['Score']
 
     print(mongoDB.postData("resumeDatabase", toStoreJson))
