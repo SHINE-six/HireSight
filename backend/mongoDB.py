@@ -90,7 +90,7 @@ def getInterviewDetails(jobTitle, stage):
     unique_resume_ids = [resume['uniqueResumeId'] for resume in resumedetails['data']]
     interview_data_list = None
     for unique_id in unique_resume_ids:
-        interview_data = getAllDataFromCollection('reportData', {'interviewPosition': jobTitle, 'InterveweeID': unique_id})
+        interview_data = getAllDataFromCollection('reportData', {'InterviewPosition': jobTitle, 'InterveweeID': unique_id})
         if interview_data_list is None:
             interview_data_list = interview_data 
         else:
